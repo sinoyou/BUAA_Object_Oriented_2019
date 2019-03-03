@@ -37,7 +37,7 @@ public class Poly {
 
         // split valid expression into polyUnit
         if (valid) {
-            String strNew = polySimplify(str);
+            String strNew = polySafeSimplify(str);
             Pattern polyUnitPattern = Pattern.compile(polyUnitRegex);
             Matcher polyUnitMatch = polyUnitPattern.matcher(strNew);
             while (polyUnitMatch.find()) {
@@ -93,26 +93,37 @@ public class Poly {
      * @return expression
      */
     public String getDerivativePoly() {
-        return polySimplify(polyGenerate(1));
+        String safeSimplify = polySafeSimplify(polyGenerate(1));
+        String advanceSimplify = polyAdvanceSimplify(safeSimplify);
+        return advanceSimplify;
     }
-
 
     /**
      * delete empty space and replace double operation
-     *
+     * Applied for number with 000123
      * @param str original str
      */
-    private String polySimplify(String str) {
+    private String polySafeSimplify(String str) {
 
         String newStr = str;
         // basic simplify
         newStr = newStr.replaceAll("\\s", "");
         newStr = newStr.replaceAll("(\\+-)|(-\\+)", "-");
         newStr = newStr.replaceAll("(\\+{2})|(-{2})", "+");
+        return newStr;
+    }
+
+    /**
+     * advance simplify expression, unnecessary front 0 must be removed first!
+     * @param str original str
+     * @return
+     */
+    private String polyAdvanceSimplify(String str) {
+        String newStr = str;
         // advance simplify
         newStr = newStr.replaceAll("x\\^\\+?1", "x");
         newStr = newStr.replaceAll("\\*x\\^[+-]?0", "");
-        newStr = newStr.replaceAll("1\\*x]", "x");
+        newStr = newStr.replaceAll("1\\*x", "x");
         return newStr;
     }
 
