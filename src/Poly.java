@@ -37,7 +37,7 @@ public class Poly {
 
         // split valid expression into polyUnit
         if (valid) {
-            String strNew = polySafeSimplify(str);
+            String strNew = polySimplify(str);
             Pattern polyUnitPattern = Pattern.compile(polyUnitRegex);
             Matcher polyUnitMatch = polyUnitPattern.matcher(strNew);
             while (polyUnitMatch.find()) {
@@ -93,9 +93,7 @@ public class Poly {
      * @return expression
      */
     public String getDerivativePoly() {
-        String safeSimplify = polySafeSimplify(polyGenerate(1));
-        String advanceSimplify = polyAdvanceSimplify(safeSimplify);
-        return advanceSimplify;
+        return polySimplify(polyGenerate(1));
     }
 
     /**
@@ -103,8 +101,7 @@ public class Poly {
      * Applied for number with 000123
      * @param str original str
      */
-    private String polySafeSimplify(String str) {
-
+    private String polySimplify(String str) {
         String newStr = str;
         // basic simplify
         newStr = newStr.replaceAll("\\s", "");
@@ -112,21 +109,6 @@ public class Poly {
         newStr = newStr.replaceAll("(\\+{2})|(-{2})", "+");
         return newStr;
     }
-
-    /**
-     * advance simplify expression, unnecessary front 0 must be removed first!
-     * @param str original str
-     * @return
-     */
-    private String polyAdvanceSimplify(String str) {
-        String newStr = str;
-        // advance simplify
-        newStr = newStr.replaceAll("x\\^\\+?1", "x");
-        newStr = newStr.replaceAll("\\*x\\^[+-]?0", "");
-        newStr = newStr.replaceAll("1\\*x", "x");
-        return newStr;
-    }
-
 
     /**
      * generate poly of original poly given derivation number
@@ -146,5 +128,4 @@ public class Poly {
         }
         return strBuf.toString();
     }
-
 }
