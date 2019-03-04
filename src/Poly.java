@@ -8,13 +8,13 @@ import java.util.regex.Pattern;
 public class Poly {
 
     // 3 states of poly units: 1) C*x^n. 2)C. 3)[+-]x^n
-    private static String polyUnitRegex =
+    private static final String polyUnitRegex =
         "(" +
             "([+-]?\\d+\\s*\\*\\s*x(\\s*\\^\\s*[+-]?\\d+)?)|" +
             "([+-]?\\d+)|" +
             "([+-]?\\s*x(\\s*\\^\\s*[+-]?\\d+)?)" +
             ")";
-    private static String polyRegex =
+    private static final String polyRegex =
         "\\s*" +
             "\\s*[+-]?\\s*" + polyUnitRegex + "\\s*" +
             "(" + "\\s*[+-]\\s*" + polyUnitRegex + "\\s*" + ")*" +
@@ -33,7 +33,9 @@ public class Poly {
      */
     public Poly(String str) {
         // format check
-        valid = formatCheck(str);
+        // TODO
+        // valid = formatCheck(str);
+        valid = formatCheckSequence(str);
 
         // split valid expression into polyUnit
         if (valid) {
@@ -60,9 +62,6 @@ public class Poly {
         }
     }
 
-    /**
-     * check format validation of poly
-     */
     public boolean formatCheck() {
         return valid;
     }
@@ -84,11 +83,12 @@ public class Poly {
      * @return expression
      */
     public String getOriginalPoly() {
-        return polyGenerate(0);
+
+        return polySimplify(polyGenerate(0));
     }
 
     /**
-     * return formatted expression after one derivation
+     * return formatted expression after one getDerivation
      *
      * @return expression
      */
@@ -97,8 +97,44 @@ public class Poly {
     }
 
     /**
+     * check format using poly unit, to avoid stack overflow when string is to
+     * large
+     *
+     * @param str expression string to be checked
+     * @return
+     */
+    private boolean formatCheckSequence(String str) {
+        // case 1: empty string
+        if (str.isEmpty()) {
+            return false;
+        }
+        // case 2: check first and following poly unit
+        else {
+            String firstUnit = "\\s*[+-]?\\s*" + polyUnitRegex + "\\s*";
+            String followUnit = "\\s*[+-]\\s*" + polyUnitRegex + "\\s*";
+            Pattern firstUnitPattern = Pattern.compile(firstUnit);
+            Pattern followUnitPattern = Pattern.compile(followUnit);
+            Matcher firstMatcher = firstUnitPattern.matcher(str);
+            Matcher followMatcher = followUnitPattern.matcher(str);
+            // check first poly unit
+            if (firstMatcher.find() && firstMatcher.start() == 0) {
+                // check following unit
+                int p = firstMatcher.end();
+                while (followMatcher.find(p) && followMatcher.start() == p) {
+                    p = followMatcher.end();
+                }
+                // reach the end of expression -> true
+                return (p == str.length());
+            }
+        }
+        return false;
+    }
+
+
+    /**
      * delete empty space and replace double operation
      * Applied for number with 000123
+     *
      * @param str original str
      */
     private String polySimplify(String str) {
@@ -111,7 +147,7 @@ public class Poly {
     }
 
     /**
-     * generate poly of original poly given derivation number
+     * generate poly of original poly given getDerivation number
      *
      * @param derivationNum times of derivative
      * @return poly expression
@@ -124,8 +160,14 @@ public class Poly {
         strBuf.append("0");
         for (int i = 0; i < indexList.size(); i++) {
             PolyUnit temp = coeMap.get(indexList.get(i));
-            strBuf.append(temp.derivation(derivationNum));
+            strBuf.append(temp.getDerivation(derivationNum));
         }
         return strBuf.toString();
+    }
+
+    public static void main(String[] arg) {
+        String s = "         -123987* x^123  + -x^1 + 192873          ";
+        Poly p = new Poly(s);
+        p.formatCheckSequence(s);
     }
 }

@@ -3,6 +3,11 @@ import java.math.BigInteger;
 public class PolyUnit {
     private BigInteger coe;
     private BigInteger index;
+    // define 4 simplified format of poly unit.
+    private static final String constant = "[+-]?\\d+";
+    private static final String xNoCoeNoIndex = "[+-]?x";
+    private static final String xNoCoe = "[+-]?x\\^[+-]?\\d+";
+    private static final String xNoIndex = "[+-]?\\d+\\*x";
 
     PolyUnit(String str) {
         polyUnitRecord(str);
@@ -11,18 +16,6 @@ public class PolyUnit {
     PolyUnit(BigInteger coe, BigInteger index) {
         this.coe = coe;
         this.index = index;
-    }
-
-    public String getUnit() {
-        return unitSimpleGenerate(this.coe, this.index);
-    }
-
-    public BigInteger getCoe() {
-        return coe;
-    }
-
-    public BigInteger getIndex() {
-        return index;
     }
 
     /**
@@ -34,7 +27,19 @@ public class PolyUnit {
         this.coe = this.coe.add(newCoe);
     }
 
-    public String derivation(int derivationNum) {
+    public BigInteger getCoe() {
+        return coe;
+    }
+
+    public BigInteger getIndex() {
+        return index;
+    }
+
+    public String getUnit() {
+        return unitSimpleGenerate(this.coe, this.index);
+    }
+
+    public String getDerivation(int derivationNum) {
         BigInteger index = this.index;
         BigInteger coe = this.coe;
         for (int j = 0; j < derivationNum; j++) {
@@ -124,24 +129,24 @@ public class PolyUnit {
         BigInteger coe = BigInteger.ZERO;
         BigInteger index = BigInteger.ZERO;
         // take out coefficient and index in total 5 situation
-        if (str.matches("[+-]?\\d+")) {
+        if (str.matches(constant)) {
             coe = new BigInteger(str);
             index = new BigInteger("0");
-        } else if (str.matches("[+-]?x")) {
+        } else if (str.matches(xNoCoeNoIndex)) {
             if (str.charAt(0) == '-') {
                 coe = new BigInteger("-1");
             } else {
                 coe = new BigInteger("1");
             }
             index = new BigInteger("1");
-        } else if (str.matches("[+-]?x\\^[+-]?\\d+")) {
+        } else if (str.matches(xNoCoe)) {
             if (str.charAt(0) == '-') {
                 coe = new BigInteger("-1");
             } else {
                 coe = new BigInteger("1");
             }
             index = new BigInteger(str.substring(str.indexOf("^") + 1));
-        } else if (str.matches("[+-]?\\d+\\*x")) {
+        } else if (str.matches(xNoIndex)) {
             coe = new BigInteger(str.substring(0, str.indexOf("*")));
             index = new BigInteger("1");
         } else {
