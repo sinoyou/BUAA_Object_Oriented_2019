@@ -165,9 +165,9 @@ public class Poly {
         return strBuf.toString();
     }
 
-    public static void main(String[] arg) {
+    /*public static void main(String[] arg) {
         String s = "         -123987* x^123  + -x^1 + 192873          ";
         Poly p = new Poly(s);
         p.formatCheckSequence(s);
-    }
+    }*/
 }
