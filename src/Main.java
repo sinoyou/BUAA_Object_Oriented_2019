@@ -5,9 +5,13 @@ import java.util.Scanner;
 public class Main {    // test function
     public static void main(String[] arg) {
         Scanner scan = new Scanner(System.in);
-        Poly poly = new Poly(scan.nextLine());
-        if (poly.formatCheck()) {
-            System.out.println(poly.getDerivativePoly());
+        if (scan.hasNextLine()) {
+            Poly poly = new Poly(scan.nextLine());
+            if (poly.getFormat()) {
+                System.out.println(poly.getDerivativePoly());
+            } else {
+                System.out.println("WRONG FORMAT!");
+            }
         } else {
             System.out.println("WRONG FORMAT!");
         }

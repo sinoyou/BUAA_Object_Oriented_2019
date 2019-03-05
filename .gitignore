@@ -2,7 +2,6 @@
 ### Java template
 # Compiled class file
 *.class
-
 # Log file
 *.log
 
@@ -117,3 +116,4 @@ modules.xml
  .idea/sonarlint
 
 # End of https://www.gitignore.io/api/intellij+all
+/bug修复文档.txt

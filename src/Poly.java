@@ -17,7 +17,7 @@ public class Poly {
     private static final String polyRegex =
         "\\s*" +
             "\\s*[+-]?\\s*" + polyUnitRegex + "\\s*" +
-            "(" + "\\s*[+-]\\s*" + polyUnitRegex + "\\s*" + ")*" +
+            "(" + "\\s*[+-]\\s*" + polyUnitRegex + "\\s*" + ")*+" +
             "\\s*";
     // valid of input expression
     private boolean valid;
@@ -62,9 +62,37 @@ public class Poly {
         }
     }
 
-    public boolean formatCheck() {
+    public boolean getFormat() {
         return valid;
     }
+
+    /**
+     * return formatted original expression
+     *
+     * @return expression
+     */
+    public String getOriginalPoly() {
+        if (valid) {
+            return polySimplify(polyGenerate(0));
+        } else {
+            return "";
+        }
+    }
+
+    /**
+     * return formatted expression after one getDerivation
+     *
+     * @return expression
+     */
+    public String getDerivativePoly() {
+        if (valid) {
+            return polySimplify(polyGenerate(1));
+        } else {
+            return "";
+        }
+
+    }
+
 
     /**
      * check format validation of given expression
@@ -75,25 +103,6 @@ public class Poly {
         Pattern polyPattern = Pattern.compile(polyRegex);
         Matcher polyMatch = polyPattern.matcher(str);
         return polyMatch.matches();
-    }
-
-    /**
-     * return formatted original expression
-     *
-     * @return expression
-     */
-    public String getOriginalPoly() {
-
-        return polySimplify(polyGenerate(0));
-    }
-
-    /**
-     * return formatted expression after one getDerivation
-     *
-     * @return expression
-     */
-    public String getDerivativePoly() {
-        return polySimplify(polyGenerate(1));
     }
 
     /**
@@ -110,12 +119,17 @@ public class Poly {
         }
         // case 2: check first and following poly unit
         else {
+            // trim string and replace >=2 empty space with 1 space which don't
+            // influence string's validation.
+            String strTrim = str.trim();
+            strTrim = strTrim.replaceAll("\\s{2,}+", " ");
+            // normal process
             String firstUnit = "\\s*[+-]?\\s*" + polyUnitRegex + "\\s*";
             String followUnit = "\\s*[+-]\\s*" + polyUnitRegex + "\\s*";
             Pattern firstUnitPattern = Pattern.compile(firstUnit);
             Pattern followUnitPattern = Pattern.compile(followUnit);
-            Matcher firstMatcher = firstUnitPattern.matcher(str);
-            Matcher followMatcher = followUnitPattern.matcher(str);
+            Matcher firstMatcher = firstUnitPattern.matcher(strTrim);
+            Matcher followMatcher = followUnitPattern.matcher(strTrim);
             // check first poly unit
             if (firstMatcher.find() && firstMatcher.start() == 0) {
                 // check following unit
@@ -124,7 +138,7 @@ public class Poly {
                     p = followMatcher.end();
                 }
                 // reach the end of expression -> true
-                return (p == str.length());
+                return (p == strTrim.length());
             }
         }
         return false;
@@ -157,10 +171,19 @@ public class Poly {
         indexList.sort(Collections.reverseOrder());
         // generate message
         StringBuffer strBuf = new StringBuffer();
-        strBuf.append("0");
         for (int i = 0; i < indexList.size(); i++) {
             PolyUnit temp = coeMap.get(indexList.get(i));
-            strBuf.append(temp.getDerivation(derivationNum));
+            String unitStr = temp.getDerivation(derivationNum);
+            // visible only when derivation is not 0.
+            if (!(unitStr.equals("0"))) {
+                if (i > 0) {
+                    strBuf.append("+");
+                }
+                strBuf.append(unitStr);
+            }
+        }
+        if (strBuf.toString().isEmpty()) {
+            strBuf.append("0");
         }
         return strBuf.toString();
     }

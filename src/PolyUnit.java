@@ -89,10 +89,9 @@ public class PolyUnit {
      */
     private String unitSimpleGenerate(BigInteger coe, BigInteger index) {
         StringBuffer strBuf = new StringBuffer();
-        strBuf.append("+");
         // if ignore total unit
         if (coe.equals(BigInteger.ZERO)) {
-            return "";
+            return "0";
         } else {
             // if constant
             if (index.equals(BigInteger.ZERO)) {
@@ -103,7 +102,7 @@ public class PolyUnit {
             else {
                 // coefficient and x without index
                 if (coe.equals(new BigInteger("1"))) {
-                    strBuf.append("+x");
+                    strBuf.append("x");
                 } else if (coe.equals(new BigInteger("-1"))) {
                     strBuf.append("-x");
                 } else {
@@ -156,4 +155,26 @@ public class PolyUnit {
         this.index = index;
         this.coe = coe;
     }
+
+    /*
+    public static void main(String[] arg) {
+        ArrayList<BigInteger> list = new ArrayList<>();
+        ArrayList<BigInteger> list_index = new ArrayList<>();
+        list.add(new BigInteger("1"));
+        list.add(new BigInteger("-1"));
+        list.add(new BigInteger("0"));
+        list.add(new BigInteger("-110"));
+        list_index.add(new BigInteger("0"));
+        list_index.add(new BigInteger("1"));
+        list_index.add(new BigInteger("-1"));
+        list_index.add(new BigInteger("-7"));
+        for (BigInteger coe : list) {
+            for (BigInteger index : list_index) {
+                PolyUnit unit = new PolyUnit(coe, index);
+                System.out.print(coe.toString() + " " + index.toString() + " ");
+                System.out.println(unit.unitSimpleGenerate(coe, index));
+            }
+        }
+    }
+     */
 }
