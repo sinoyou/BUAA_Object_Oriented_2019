@@ -118,3 +118,4 @@ modules.xml
 # End of https://www.gitignore.io/api/intellij+all
 /bug修复文档.txt
 /test/main_test.java
+/MainTest.txt

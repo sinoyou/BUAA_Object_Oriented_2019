@@ -7,7 +7,7 @@ import java.util.regex.Pattern;
 
 public class Poly {
 
-    // 3 states of poly units: 1) C*x(^n). 2)C. 3)[+-](x^n).
+    // 3 states of poly units: 1) C*x(^n). 2)C. 3)[+-]x^n.
     private static final String polyUnitRegex =
         "(" +
             "([+-]?\\d+\\s*\\*\\s*x(\\s*\\^\\s*[+-]?\\d+)?)|" +
