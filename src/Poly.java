@@ -7,7 +7,7 @@ import java.util.regex.Pattern;
 
 public class Poly {
 
-    // 3 states of poly units: 1) C*x^n. 2)C. 3)[+-]x^n
+    // 3 states of poly units: 1) C*x(^n). 2)C. 3)[+-](x^n).
     private static final String polyUnitRegex =
         "(" +
             "([+-]?\\d+\\s*\\*\\s*x(\\s*\\^\\s*[+-]?\\d+)?)|" +
@@ -146,8 +146,7 @@ public class Poly {
 
 
     /**
-     * delete empty space and replace double operation
-     * Applied for number with 000123
+     * delete empty space and replace double operation with single operation.
      *
      * @param str original str
      */
@@ -182,6 +181,7 @@ public class Poly {
                 strBuf.append(unitStr);
             }
         }
+        // no non-zero unit added, then it must be 0.
         if (strBuf.toString().isEmpty()) {
             strBuf.append("0");
         }

@@ -24,7 +24,7 @@ public class PolyUnit {
      * @param newCoe
      */
     public void updateCoe(BigInteger newCoe) {
-        this.coe = this.coe.add(newCoe);
+        coe = coe.add(newCoe);
     }
 
     public BigInteger getCoe() {
@@ -36,7 +36,7 @@ public class PolyUnit {
     }
 
     public String getUnit() {
-        return unitSimpleGenerate(this.coe, this.index);
+        return unitSimpleGenerate(coe, index);
     }
 
     public String getDerivation(int derivationNum) {
@@ -79,13 +79,13 @@ public class PolyUnit {
      * unit's expression.
      * Simplification Rule:
      * 1. +1*x, -1*x ---> +x, -x
-     * 2. x^0 ---> none
+     * 2. x^0 ---> ""
      * 3. x^1 ---> x
-     * 4. coe = 0 ---> empty
+     * 4. coe = 0 ---> ""
      *
      * @param coe   coefficient
      * @param index index
-     * @return
+     * @return simplified string of poly unit.
      */
     private String unitSimpleGenerate(BigInteger coe, BigInteger index) {
         StringBuffer strBuf = new StringBuffer();
