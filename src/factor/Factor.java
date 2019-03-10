@@ -6,18 +6,24 @@ import java.math.BigInteger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public abstract class Factor {
-
-    public Factor(){}
+public class Factor implements Cloneable{
+    protected String base;
+    public Factor(String str){
+        base = str;
+    }
 
     @Override
-    public abstract boolean equals(Object obj);
+    public boolean equals(Object obj){
+        if(this.getClass()!=obj.getClass()){
+            return false;
+        }
+        Factor temp = (Factor)obj;
+        return this.base.equals(temp.base);
+    }
 
     @Override
-    public abstract int hashCode();
-
-    protected boolean classCheck(Object factor){
-        return (factor.getClass()==this.getClass());
+    public int hashCode(){
+        return base.hashCode();
     }
 
     public static BigInteger getIndex(String str){
@@ -48,4 +54,18 @@ public abstract class Factor {
         return index;
     }
 
+    @Override
+    public Object clone() {
+        Object obj=null;
+        try {
+            obj= super.clone();
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+        }
+        return obj;
+    }
+
+    public String getBase() {
+        return base;
+    }
 }

@@ -1,8 +1,10 @@
 package factor;
 
 public class PowerFactor extends Factor {
-    protected String base;
-
+    // protected String base;
+    public PowerFactor(String base) {
+        super(base);
+    }
     /*
     // given power factor's string, generate factor instance.
     public PowerFactor(String str) {
@@ -18,28 +20,4 @@ public class PowerFactor extends Factor {
     }
     */
 
-    public PowerFactor(String base) {
-        this.base = base;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        Boolean flag = classCheck(obj);
-        if(flag){
-            PowerFactor temp = (PowerFactor) obj;
-            if(!temp.base.equals(this.base)){
-                flag = false;
-            }
-        }
-        return flag;
-    }
-
-    @Override
-    public int hashCode() {
-        return base.hashCode();
-    }
-
-    public String getBase() {
-        return base;
-    }
 }

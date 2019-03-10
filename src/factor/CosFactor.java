@@ -1,13 +1,11 @@
 package factor;
 
-public class CosFactor extends Factor{
-    protected String base;
+public class CosFactor extends Factor {
+    // protected String base;
     // given power factor's string, generate factor instance.
-    public CosFactor(String base) {
-        this.base = base;
-    }
+    public CosFactor(String base) { super(base);}
 
-    @Override
+    /*@Override
     public boolean equals(Object obj) {
         Boolean flag = classCheck(obj);
         if(flag){
@@ -22,9 +20,6 @@ public class CosFactor extends Factor{
     @Override
     public int hashCode() {
         return base.hashCode();
-    }
+    }*/
 
-    public String getBase() {
-        return base;
-    }
 }

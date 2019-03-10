@@ -1,24 +1,22 @@
 import constant.RegexConst;
+import factor.Factor;
+import factor.PowerFactor;
 
+import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Try {
-    public void find(String str){
-        Matcher mTemp = Pattern.compile(RegexConst.powerRegex).matcher(str);
-        if(mTemp.find()){
-            System.out.println(mTemp.groupCount());
-            if(mTemp.groupCount()>=2){
-                System.out.println(mTemp.group(2));
-            }
-        }
+    public void find(HashMap<Factor,Integer> i){
+        i.replace(new PowerFactor("x"),10);
     }
 
     public static void main(String[] args){
+        HashMap<Factor,Integer> a = new HashMap<>();
+        a.put(new PowerFactor("x"),1);
+        System.out.println(a.get(new PowerFactor("x")));
         Try t = new Try();
-        t.find("x^+100");
-        t.find("x^-100");
-        t.find("x^100");
-        t.find("x");
+        t.find(a);
+        System.out.println(a.get(new PowerFactor("x")));
     }
 }

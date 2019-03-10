@@ -1,13 +1,13 @@
 package factor;
 
 public class SinFactor extends Factor{
-    protected String base;
+    // protected String base;
     // given power factor's string, generate factor instance.
     public SinFactor(String base) {
-        this.base = base;
+        super(base);
     }
 
-    @Override
+    /*@Override
     public boolean equals(Object obj) {
         Boolean flag = classCheck(obj);
         if(flag){
@@ -22,9 +22,6 @@ public class SinFactor extends Factor{
     @Override
     public int hashCode() {
         return base.hashCode();
-    }
+    }*/
 
-    public String getBase() {
-        return base;
-    }
 }
