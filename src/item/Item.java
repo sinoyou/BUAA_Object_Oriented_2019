@@ -5,9 +5,11 @@ import factor.CosFactor;
 import factor.Factor;
 import factor.PowerFactor;
 import factor.SinFactor;
+import sun.plugin.viewer.context.IExplorerAppletContext;
 
 import java.math.BigInteger;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Set;
 
 public class Item implements Cloneable {
@@ -66,6 +68,7 @@ public class Item implements Cloneable {
         return this.factorMap.getOrDefault(i, null);
     }
 
+    /*
     @Override
     public Object clone() {
         Item item = new Item();
@@ -75,12 +78,16 @@ public class Item implements Cloneable {
         }
         return item;
     }
+    */
 
-    public Item itemMultiply(Item a) {
-        Item newItem = (Item) this.clone();
-        newItem.coe = newItem.coe.multiply(a.getCoe());
+    public static Item itemMultiply(Item a, Item b) {
+        Item newItem = new Item();
+        newItem.coe = b.coe.multiply(a.coe);
         for (Factor i : a.factorMap.keySet()) {
             newItem.addFactor(i, a.factorMap.get(i));
+        }
+        for (Factor i : b.factorMap.keySet()) {
+            newItem.addFactor(i, b.factorMap.get(i));
         }
         return newItem;
     }

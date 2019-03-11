@@ -48,13 +48,18 @@ public class DerivateMethod {
         Set<Factor> factorSet = item.getMapSet();
 
         for (Factor i : factorSet) {
-            // create a deep clone of hashMap
-            Item oriItem = (Item) item.clone();
-            oriItem.removeFactor(i);
+            // create a original item in which factor i is removed.
+            Item oriItem = new Item();
+            oriItem.setCoe(item.getCoe());
+            for (Factor j : factorSet) {
+                if (!i.equals(j)) {
+                    oriItem.addFactor(j, item.getIndex(j));
+                }
+            }
             // derivation present factor
             Item newItem = factorDer(i, item.getIndex(i));
             // multiply two item
-            itemList.add(newItem.itemMultiply(oriItem));
+            itemList.add(Item.itemMultiply(newItem, oriItem));
         }
 
         return itemList;
