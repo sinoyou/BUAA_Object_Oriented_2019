@@ -42,12 +42,6 @@ public class Item implements Cloneable {
         factorMerge(factor, index);
     }
 
-    /*
-    public HashMap<Factor, BigInteger> getFactorMap() {
-        return factorMap;
-    }
-    */
-
     public Set<Factor> getMapSet() {
         return factorMap.keySet();
     }
@@ -123,16 +117,23 @@ public class Item implements Cloneable {
         }
         // item is with function(index is non-zero)
         else {
+            // define flag for skip * output when the coefficient is 1/-1.
+            boolean flag = false;
             // coefficient
             if (this.getCoe().equals(BigInteger.ONE)) {
-                str.append("+");
+                flag = true;
             } else if (this.getCoe().equals(new BigInteger("-1"))) {
                 str.append("-");
+                flag = true;
             } else {
                 str.append(this.getCoe());
             }
             for (Factor factor : set) {
-                str.append("*");
+                if (!flag) {
+                    str.append("*");
+                } else {
+                    flag = false;
+                }
                 if (factor.getClass() == PowerFactor.class) {
                     str.append(factor.getBase());
                 } else if (factor.getClass() == SinFactor.class) {

@@ -76,11 +76,11 @@ public class Poly {
         }
         String strStd = str.toString();
         // format simplification
+        strStd = strStd.replaceAll("\\+\\+|--", "+");
+        strStd = strStd.replaceAll("-\\+|\\+-", "-");
         if (strStd.charAt(0) == '+') {
             strStd = strStd.substring(1);
         }
-        strStd = strStd.replaceAll("\\+\\+|--", "+");
-        strStd = strStd.replaceAll("-\\+|\\+-", "-");
         return strStd;
     }
 
