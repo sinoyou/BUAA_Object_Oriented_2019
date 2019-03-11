@@ -119,6 +119,10 @@ public class Poly {
         }
         // case 2: check first and following poly unit
         else {
+            String forbidRegex = "[^0-9+-^*x \\t]";
+            if (Pattern.compile(forbidRegex).matcher(str).find()) {
+                return false;
+            }
             // trim string and replace >=2 empty space with 1 space which don't
             // influence string's validation.
             String strTrim = str.trim();
