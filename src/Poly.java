@@ -1,8 +1,11 @@
 import item.Item;
 import constant.RegexConst;
 import method.DerivateMethod;
+import method.ItemComparator;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -27,7 +30,7 @@ public class Poly {
             Matcher m = Pattern.compile(RegexConst.itemRegex).matcher(simple);
             while (m.find()) {
                 Item unit = new Item(m.group());
-                itemAdd(unit);
+                itemMerge(unit);
             }
         }
     }
@@ -49,7 +52,7 @@ public class Poly {
         for (Item item : itemList) {
             ArrayList<Item> itemDer = DerivateMethod.itemDer(item);
             for (Item newItem : itemDer) {
-                newPoly.itemAdd(newItem);
+                newPoly.itemMerge(newItem);
             }
             // newPoly.itemList.addAll(DerivateMethod.itemDer(item));
         }
@@ -57,6 +60,8 @@ public class Poly {
     }
 
     public String toString() {
+        // sort poly's item by item's coefficient
+        itemList.sort(new ItemComparator());
         StringBuilder str = new StringBuilder();
         Iterator<Item> itr = this.itemList.iterator();
         // empty
@@ -112,19 +117,22 @@ public class Poly {
         return (head == temp.length());
     }
 
-    private void itemAdd(Item item) {
+    private void itemMerge(Item item) {
         boolean flag = false;
         for (Item i : itemList) {
             // a include b && b include a -> a = b
             if (i.include(item) && item.include(i)) {
                 i.setCoe(i.getCoe().add(item.getCoe()));
+                // clear if it's zero
+                if (i.getCoe().equals(BigInteger.ZERO)) {
+                    itemList.remove(i);
+                }
                 flag = true;
                 break;
             }
         }
-        if (!flag) {
+        if (!flag && !item.getCoe().equals(BigInteger.ZERO)) {
             itemList.add(item);
         }
     }
-
 }

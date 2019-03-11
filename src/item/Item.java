@@ -5,11 +5,11 @@ import factor.CosFactor;
 import factor.Factor;
 import factor.PowerFactor;
 import factor.SinFactor;
-import sun.plugin.viewer.context.IExplorerAppletContext;
+import method.FactorComparator;
 
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Set;
 
 public class Item implements Cloneable {
@@ -111,15 +111,21 @@ public class Item implements Cloneable {
     }
 
     public String toString() {
+        // sort factor in item
         StringBuilder str = new StringBuilder();
-        Set<Factor> set = this.getMapSet();
+        ArrayList<Factor> arraySet = new ArrayList<>(this.getMapSet());
+        arraySet.sort(new FactorComparator());
+
+        // special occasion
         // coefficient is zero.
         if (this.getCoe().equals(BigInteger.ZERO)) {
             str.append("0");
             return str.toString();
         }
+
+        // normal occasion
         // item is only a number.
-        if (set.size() == 0) {
+        if (arraySet.size() == 0) {
             str.append(this.getCoe());
         }
         // item is with function(index is non-zero)
@@ -135,7 +141,7 @@ public class Item implements Cloneable {
             } else {
                 str.append(this.getCoe());
             }
-            for (Factor factor : set) {
+            for (Factor factor : arraySet) {
                 if (!flag) {
                     str.append("*");
                 } else {
@@ -165,6 +171,8 @@ public class Item implements Cloneable {
             oriIndex = oriIndex.add(index);
             if (!oriIndex.equals(BigInteger.ZERO)) {
                 factorMap.replace(temp, oriIndex);
+            } else {
+                factorMap.remove(temp);
             }
         } else {
             if (!index.equals(BigInteger.ZERO)) {
