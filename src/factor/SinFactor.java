@@ -1,6 +1,6 @@
 package factor;
 
-public class SinFactor extends Factor{
+public class SinFactor extends Factor {
     // protected String base;
     // given power factor's string, generate factor instance.
     public SinFactor(String base) {

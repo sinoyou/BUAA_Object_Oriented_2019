@@ -1,17 +1,21 @@
-package Item;
+package item;
 
 import constant.RegexConst;
-import factor.*;
+import factor.CosFactor;
+import factor.Factor;
+import factor.PowerFactor;
+import factor.SinFactor;
 
 import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.Set;
 
 public class Item implements Cloneable {
-    // define a map to store all kinds of basic factors(except const) and its index.
-    // basic factors definition: function(const) factor with index = 1.
-    HashMap<Factor, BigInteger> factorMap = new HashMap<>();
-    BigInteger coe = BigInteger.ONE;
+    // define a map to store all kinds of basic factors(except const)
+    // and its index.basic factors definition: function(const)
+    // factor with index = 1.
+    private HashMap<Factor, BigInteger> factorMap = new HashMap<>();
+    private BigInteger coe = BigInteger.ONE;
 
     public Item() {
 
@@ -44,10 +48,12 @@ public class Item implements Cloneable {
     }
     */
 
-    public Set<Factor> getMapSet(){ return factorMap.keySet();}
+    public Set<Factor> getMapSet() {
+        return factorMap.keySet();
+    }
 
-    public BigInteger getIndex(Factor i){
-        return factorMap.getOrDefault(i,null);
+    public BigInteger getIndex(Factor i) {
+        return factorMap.getOrDefault(i, null);
     }
 
     public BigInteger getCoe() {
@@ -62,12 +68,16 @@ public class Item implements Cloneable {
         this.factorMap.remove(i);
     }
 
+    public BigInteger getMapIndex(Factor i) {
+        return this.factorMap.getOrDefault(i, null);
+    }
+
     @Override
     public Object clone() {
         Item item = new Item();
         item.coe = this.coe;
-        for(Factor i:this.factorMap.keySet()){
-            item.factorMap.put((Factor)i.clone(),this.factorMap.get(i));
+        for (Factor i : this.factorMap.keySet()) {
+            item.factorMap.put((Factor) i.clone(), this.factorMap.get(i));
         }
         return item;
     }
@@ -99,16 +109,59 @@ public class Item implements Cloneable {
         return true;
     }
 
+    public String toString() {
+        StringBuilder str = new StringBuilder();
+        Set<Factor> set = this.getMapSet();
+        // coefficient is zero.
+        if (this.getCoe().equals(BigInteger.ZERO)) {
+            str.append("0");
+            return str.toString();
+        }
+        // item is only a number.
+        if (set.size() == 0) {
+            str.append(this.getCoe());
+        }
+        // item is with function(index is non-zero)
+        else {
+            // coefficient
+            if (this.getCoe().equals(BigInteger.ONE)) {
+                str.append("+");
+            } else if (this.getCoe().equals(new BigInteger("-1"))) {
+                str.append("-");
+            } else {
+                str.append(this.getCoe());
+            }
+            for (Factor factor : set) {
+                str.append("*");
+                if (factor.getClass() == PowerFactor.class) {
+                    str.append(factor.getBase());
+                } else if (factor.getClass() == SinFactor.class) {
+                    str.append("sin(" + factor.getBase() + ")");
+                } else if (factor.getClass() == CosFactor.class) {
+                    str.append("cos(" + factor.getBase() + ")");
+                }
+                // add index
+                if (!this.getIndex(factor).equals(BigInteger.ONE)) {
+                    str.append("^");
+                    str.append(this.getIndex(factor));
+                }
+            }
+        }
+        return str.toString();
+    }
+
     private void factorMerge(Factor temp, BigInteger index) {
         // merge into present map, add or update
         if (factorMap.containsKey(temp)) {
             BigInteger oriIndex = factorMap.get(temp);
             oriIndex = oriIndex.add(index);
-            if(!oriIndex.equals(BigInteger.ZERO))
+            if (!oriIndex.equals(BigInteger.ZERO)) {
                 factorMap.replace(temp, oriIndex);
+            }
         } else {
-            if(!index.equals(BigInteger.ZERO))
+            if (!index.equals(BigInteger.ZERO)) {
                 factorMap.put(temp, index);
+            }
         }
     }
 
