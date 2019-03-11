@@ -49,7 +49,7 @@ public class Item implements Cloneable {
     }
 
     public BigInteger getIndex(Factor i) {
-        return factorMap.getOrDefault(i, null);
+        return factorMap.getOrDefault(i, BigInteger.ZERO);
     }
 
     public BigInteger getCoe() {
