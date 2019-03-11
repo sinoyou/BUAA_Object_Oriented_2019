@@ -1,3 +1,6 @@
+import poly.Poly;
+import poly.PolyTrigoSimple;
+
 import java.util.Scanner;
 
 public class Main {
@@ -5,7 +8,7 @@ public class Main {
         try {
             Scanner scan = new Scanner(System.in);
             if (scan.hasNextLine()) {
-                Poly poly = new Poly(scan.nextLine());
+                Poly poly = new PolyTrigoSimple(scan.nextLine());
                 if (poly.getValid()) {
                     System.out.println(poly.getDerivate().toString());
                 } else {

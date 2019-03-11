@@ -1,3 +1,5 @@
+package poly;
+
 import item.Item;
 import constant.RegexConst;
 import method.DerivateMethod;
@@ -5,15 +7,14 @@ import method.ItemComparator;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.Iterator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Poly {
 
-    private boolean valid = true;
-    private ArrayList<Item> itemList = new ArrayList<>();
+    protected boolean valid = true;
+    protected ArrayList<Item> itemList = new ArrayList<>();
 
     public Poly() {
         super();
@@ -57,6 +58,10 @@ public class Poly {
             // newPoly.itemList.addAll(DerivateMethod.itemDer(item));
         }
         return newPoly;
+    }
+
+    public void addItem(Item item) {
+        itemMerge(item);
     }
 
     public String toString() {
@@ -119,13 +124,15 @@ public class Poly {
 
     private void itemMerge(Item item) {
         boolean flag = false;
-        for (Item i : itemList) {
+        Iterator<Item> ite = itemList.iterator();
+        while(ite.hasNext()) {
+            Item i = ite.next();
             // a include b && b include a -> a = b
             if (i.include(item) && item.include(i)) {
                 i.setCoe(i.getCoe().add(item.getCoe()));
                 // clear if it's zero
                 if (i.getCoe().equals(BigInteger.ZERO)) {
-                    itemList.remove(i);
+                    ite.remove();
                 }
                 flag = true;
                 break;

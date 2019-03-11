@@ -52,6 +52,10 @@ public class Item implements Cloneable {
         return factorMap.getOrDefault(i, BigInteger.ZERO);
     }
 
+    public BigInteger getIndexNull(Factor i) {
+        return this.factorMap.getOrDefault(i, null);
+    }
+
     public BigInteger getCoe() {
         return coe;
     }
@@ -64,9 +68,6 @@ public class Item implements Cloneable {
         this.factorMap.remove(i);
     }
 
-    public BigInteger getMapIndex(Factor i) {
-        return this.factorMap.getOrDefault(i, null);
-    }
 
     /*
     @Override
