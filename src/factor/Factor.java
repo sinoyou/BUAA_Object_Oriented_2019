@@ -26,7 +26,7 @@ public class Factor implements Cloneable {
     public int hashCode() {
         // System.out.println((this.getClass().getName()+base).hashCode());
         // return base.hashCode();
-        return (this.getClass().getName()+base).hashCode();
+        return (this.getClass().getName() + base).hashCode();
     }
 
     public static BigInteger getIndex(String str) {
