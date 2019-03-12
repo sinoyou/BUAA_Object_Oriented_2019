@@ -165,6 +165,30 @@ public class Item implements Cloneable {
         return str.toString();
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        // class check
+        if (!(obj.getClass() == this.getClass())) {
+            return false;
+        }
+        // content check
+        if (((Item) obj).include(this)
+            && this.include((Item) obj)
+            && ((Item) obj).coe.equals(this.coe)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * perform as a more advance HashMap.put method.
+     * 1.If HashMap already contains the key, it will update.
+     * 2.If updated(put) index is zero, it will ignore or remove.
+     *
+     * @param temp
+     * @param index
+     */
     private void factorMerge(Factor temp, BigInteger index) {
         // merge into present map, add or update
         if (factorMap.containsKey(temp)) {

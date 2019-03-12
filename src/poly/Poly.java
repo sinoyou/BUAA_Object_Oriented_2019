@@ -13,8 +13,8 @@ import java.util.regex.Pattern;
 
 public class Poly {
 
-    protected boolean valid = true;
-    protected ArrayList<Item> itemList = new ArrayList<>();
+    private boolean valid = false;
+    private ArrayList<Item> itemList = new ArrayList<>();
 
     public Poly() {
         super();
@@ -48,6 +48,10 @@ public class Poly {
         return valid;
     }
 
+    public ArrayList<Item> getItemList() {
+        return itemList;
+    }
+
     public Poly getDerivate() {
         Poly newPoly = new Poly();
         for (Item item : itemList) {
@@ -78,7 +82,7 @@ public class Poly {
             while (itr.hasNext()) {
                 Item i = itr.next();
                 String itemStr = i.toString();
-                if (!itemStr.isEmpty()) {
+                if (!(itemStr.isEmpty() || itemStr.equals("0"))) {
                     str.append("+");
                     str.append(itemStr);
                 }
@@ -125,7 +129,7 @@ public class Poly {
     private void itemMerge(Item item) {
         boolean flag = false;
         Iterator<Item> ite = itemList.iterator();
-        while(ite.hasNext()) {
+        while (ite.hasNext()) {
             Item i = ite.next();
             // a include b && b include a -> a = b
             if (i.include(item) && item.include(i)) {
@@ -138,6 +142,8 @@ public class Poly {
                 break;
             }
         }
+
+        // ignore item with coefficient is zero.
         if (!flag && !item.getCoe().equals(BigInteger.ZERO)) {
             itemList.add(item);
         }

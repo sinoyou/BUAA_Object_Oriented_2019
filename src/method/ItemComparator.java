@@ -8,6 +8,6 @@ public class ItemComparator implements Comparator<Item> {
 
     @Override
     public int compare(Item o1, Item o2) {
-        return (o1.getCoe().compareTo(o2.getCoe()));
+        return (o2.getCoe().compareTo(o1.getCoe()));
     }
 }

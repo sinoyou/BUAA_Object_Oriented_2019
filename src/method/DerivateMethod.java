@@ -61,7 +61,6 @@ public class DerivateMethod {
             // multiply two item
             itemList.add(Item.itemMultiply(newItem, oriItem));
         }
-
         return itemList;
     }
 

@@ -1,24 +1,23 @@
 package poly;
 
 import factor.CosFactor;
-import factor.Factor;
 import factor.PowerFactor;
 import factor.SinFactor;
 import item.Item;
 
 import java.math.BigInteger;
-import java.util.Iterator;
+import java.util.ArrayList;
 
 public class PolyTrigoSimple extends Poly {
 
     public PolyTrigoSimple(String str) {
         super(str);
-        trigoSimpleBasic();
+        trigoSimple();
     }
 
     @Override
     public String toString() {
-        trigoSimpleBasic();
+        trigoSimple();
         return super.toString();
     }
 
@@ -27,43 +26,10 @@ public class PolyTrigoSimple extends Poly {
      * n * x^i *sin^(p+2)cos^(q) + m * x^i *sin^(p)cos^(q+2)
      * -> n * x^i * sin^p * cos^q   +  (m-n) * x^i * sin^(p) * cos^(q+2)
      */
-    public void trigoSimpleBasic() {
+    public void trigoSimple() {
         boolean flag = true;
         while (flag) {
-            flag = false;
-            Iterator<Item> iteA = itemList.iterator();
-            Iterator<Item> iteB = itemList.iterator();
-            for(Item itemA: itemList) {
-                // Item itemA = iteA.next();
-                for(Item itemB: itemList) {
-                    // Item itemB = iteB.next();
-                    if (similarJudge(itemA, itemB)) {
-                        flag = true;
-                        BigInteger pIndex = itemA.getIndex(new SinFactor("x"))
-                            .min(itemB.getIndex(new SinFactor("x")));
-                        BigInteger qIndex = itemA.getIndex(new CosFactor("x"))
-                            .min(itemB.getIndex(new CosFactor("x")));
-                        BigInteger powerIndex = itemA.getIndex(new PowerFactor("x"));
-                        BigInteger nCoe = itemA.getCoe();
-                        BigInteger mCoe = itemB.getCoe();
-                        // n * x^i * sin^p * cos^q
-                        Item newItemA = getSimpleItem(nCoe, pIndex, qIndex, powerIndex);
-                        // (m-n) * x^i * sin^(p) * cos^(q+2)
-                        Item newItemB = getSimpleItem(mCoe.subtract(nCoe),
-                            pIndex, qIndex.add(new BigInteger("2")), powerIndex);
-                        itemList.remove(itemA);
-                        itemList.remove(itemB);
-                        // iteA.remove();
-                        // iteB.remove();
-                        addItem(newItemA);
-                        addItem(newItemB);
-                        break;
-                    }
-                }
-                if (flag) {
-                    break;
-                }
-            }
+            flag =  trigoSimplify();
         }
     }
 
@@ -82,7 +48,7 @@ public class PolyTrigoSimple extends Poly {
 
             // sinSub + cosSub == 0 && |sinSub|==|cosSub|==2
             return (sinSub.add(cosSub).equals(BigInteger.ZERO) &&
-                sinSub.abs().equals(new BigInteger("2")));
+                sinSub.equals(new BigInteger("2")));
         }
     }
 
@@ -94,5 +60,38 @@ public class PolyTrigoSimple extends Poly {
         newItem.addFactor(new CosFactor("x"), cos);
         newItem.addFactor(new PowerFactor("x"), power);
         return newItem;
+    }
+
+    private boolean trigoSimplify() {
+        ArrayList<Item> itemList = super.getItemList();
+        for (Item itemA : itemList) {
+            for (Item itemB : itemList) {
+                // index of itemA's sin(x) must be the bigger one, or it can't
+                // work well.
+                if (similarJudge(itemA, itemB)) {
+                    BigInteger indexP = itemA.getIndex(new SinFactor("x"))
+                        .min(itemB.getIndex(new SinFactor("x")));
+                    BigInteger indexQ = itemA.getIndex(new CosFactor("x"))
+                        .min(itemB.getIndex(new CosFactor("x")));
+                    BigInteger powerIndex = itemA.getIndex(
+                        new PowerFactor("x"));
+                    BigInteger nnCoe = itemA.getCoe();
+                    BigInteger mmCoe = itemB.getCoe();
+                    itemList.remove(itemA);
+                    itemList.remove(itemB);
+                    // n * x^i * sin^p * cos^q
+                    Item newItemA = getSimpleItem(
+                        nnCoe, indexP, indexQ, powerIndex);
+                    // (m-n) * x^i * sin^(p) * cos^(q+2)
+                    Item newItemB = getSimpleItem(mmCoe.subtract(nnCoe),
+                        indexP, indexQ.add(new BigInteger("2")),
+                        powerIndex);
+                    addItem(newItemA);
+                    addItem(newItemB);
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }

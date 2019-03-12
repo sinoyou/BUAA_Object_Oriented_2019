@@ -1,7 +1,6 @@
 package method;
 
 import factor.Factor;
-import org.omg.Messaging.SYNC_WITH_TRANSPORT;
 
 import java.util.Comparator;
 

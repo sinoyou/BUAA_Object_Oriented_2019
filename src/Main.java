@@ -8,9 +8,18 @@ public class Main {
         try {
             Scanner scan = new Scanner(System.in);
             if (scan.hasNextLine()) {
-                Poly poly = new PolyTrigoSimple(scan.nextLine());
+                String str = scan.nextLine();
+                Poly poly = new Poly(str);
+                Poly polySimple = new PolyTrigoSimple(str);
                 if (poly.getValid()) {
-                    System.out.println(poly.getDerivate().toString());
+                    String strStd = poly.getDerivate().toString();
+                    String strSimple = polySimple.getDerivate().toString();
+                    if (strSimple.length() < strStd.length()) {
+                        System.out.println(strSimple);
+                    } else {
+                        System.out.println(strStd);
+                    }
+
                 } else {
                     System.out.println("WRONG FORMAT!");
                 }
