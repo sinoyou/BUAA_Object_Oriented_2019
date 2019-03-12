@@ -8,7 +8,7 @@ public interface RegexConst {
     // num following * or ^. 3.space in cos/sin. 4.three [+-] op [space] number
     String illegalSpaceRegex = "(\\d+\\s+\\d+)|" +
         "([\\^\\*]\\s*[+-]\\s+\\d+)|" +
-        "((s\\s+in)|(si\\s+n)|(c\\s+os)|(co\\s+s))|" +
+        "((s\\s+i\\s*n)|(s\\s*i\\s+)|(c\\s+o\\s*s)|(c\\s*o\\s+s))|" +
         "[+-]\\s*[+-]\\s*[+-]\\s+\\d";
     String constRegex = "[+-]?\\d+";
     String powerRegex = "x(\\^([+-]?\\d+))?";
