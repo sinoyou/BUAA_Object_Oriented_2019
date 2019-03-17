@@ -1,17 +1,23 @@
 package parse;
 
 import Const.RegexConst;
+import node.Node;
 
 import java.util.regex.Pattern;
 
 public class Parse {
     private boolean primaryValid;
+    recurParse recur = null;
     public Parse(String str){
         primaryValid = primaryCheck(str);
         if(primaryValid){
             String simpleStr = simplify(str);
-            recurParse recur = new recurParse(simpleStr);
+            recur = new recurParse(simpleStr);
         }
+    }
+
+    public Node getRoot(){
+        return recur.getRoot();
     }
 
     public boolean isValid() {

@@ -1,6 +1,14 @@
 package parse;
 
 import Const.RegexConst;
+import node.ConstNode;
+import node.Node;
+import node.func.CosNode;
+import node.func.PowerNode;
+import node.func.SinNode;
+import node.operation.AddNode;
+import node.operation.MulNode;
+import node.operation.SubNode;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -10,10 +18,11 @@ import java.util.regex.Pattern;
 public class recurParse {
     private ArrayList<String> recurRecord = new ArrayList<>();
     private String exp = null;
+    private Node root = null;
 
     recurParse(String str) {
         this.exp = str;
-        expr(false,false);
+        root = expr(false, false);
         printTrack();
     }
 
@@ -41,15 +50,27 @@ public class recurParse {
         return (c == '*');
     }
 
+    private void emptyJugde(String place) {
+        // empty judge
+        if (exp.isEmpty()) {
+            errorExit("empty string in " + place);
+        }
+    }
+
+    public Node getRoot() {
+        return root;
+    }
+
     // <Num> = [+-]?[0-9]+
     public BigInteger getNumber() {
+        recurRecord.add("<Number>");
+        emptyJugde("number");
         Matcher match = Pattern.compile(RegexConst.constRegex).matcher(exp);
         if (match.lookingAt()) {
             BigInteger num = new BigInteger(exp.substring(0, match.end()));
             exp = exp.substring(match.end());
             return num;
-        }
-        else {
+        } else {
             errorExit("Error in Number");
             return null;
         }
@@ -57,124 +78,145 @@ public class recurParse {
 
     // <Factor> = <Num> | x(^<Num>)? | sin(<Factor>)(^<Num>)? |
     // cos(<Factor>)(^<Num>)? | (Expr)
-    public void factor() {
+    public Node factor() {
         recurRecord.add("<Factor>");
+        emptyJugde("factor");
         Matcher sinMatch = Pattern.compile(RegexConst.sinHeadRegex).matcher(exp);
         Matcher cosMatch = Pattern.compile(RegexConst.cosHeadRegex).matcher(exp);
-        // empty judge
-        if(exp.isEmpty()){
-            errorExit("empty string in factor.");
-        }
         // number
-        if (isDigit(exp.charAt(0))) {
-            getNumber();
+        if (isDigit(exp.charAt(0)) | isSign(exp.charAt(0))) {
+            BigInteger num = getNumber();
+            return new ConstNode(num);
         }
         // power function
         else if (isUnit(exp.charAt(0))) {
             exp = exp.substring(1);
             BigInteger power = BigInteger.ONE;
             // check power description
-            if (!exp.isEmpty() & exp.charAt(0) == '^') {
+            if (!exp.isEmpty() && exp.charAt(0) == '^') {
                 exp = exp.substring(1);
                 power = getNumber();
             }
+            return new PowerNode(power);
         }
         // sin function
         else if (sinMatch.lookingAt()) {
             exp = exp.substring(sinMatch.end());
             BigInteger power = BigInteger.ONE;
-            factor();
+            Node inner = factor();
             if (isRightParen(exp.charAt(0))) {
                 exp = exp.substring(1);
-                if(!exp.isEmpty() & exp.charAt(0) == '^'){
+                if (!exp.isEmpty() && exp.charAt(0) == '^') {
                     exp = exp.substring(1);
                     power = getNumber();
                 }
-            }else {
+            } else {
                 errorExit("no right paren match in sin.");
             }
+            return new SinNode(inner, power);
         }
         // cos function
         else if (cosMatch.lookingAt()) {
             exp = exp.substring(cosMatch.end());
             BigInteger power = BigInteger.ONE;
-            factor();
+            Node inner = factor();
             if (isRightParen(exp.charAt(0))) {
                 exp = exp.substring(1);
-                if(!exp.isEmpty() & exp.charAt(0) == '^'){
+                if (!exp.isEmpty() && exp.charAt(0) == '^') {
                     exp = exp.substring(1);
                     power = getNumber();
                 }
-            }else {
+            } else {
                 errorExit("no right paren match in cos.");
             }
+            return new CosNode(inner, power);
         }
         // sub expression
         else if (isLeftParen(exp.charAt(0))) {
-            expr(false,true);
+            exp = exp.substring(1);
+            Node inner = expr(false, true);
             if (isRightParen(exp.charAt(0))) {
                 exp = exp.substring(1);
-            }else {
+            } else {
                 errorExit("no right paren match in inner exp.");
             }
+            return inner;
         }
         // no available factor -> false
         else {
             errorExit("unknown type in factor.");
+            return null;
         }
     }
 
     // <Item> = [+-]?<Factor>(*<SubItem>)?
     // <subItem> = <Factor>(*<subItem>)?
-    public void item(boolean sub) {
+    public Node item(boolean sub) {
         recurRecord.add("<Item>");
+        emptyJugde("item");
         char c = '+';
-        if(!sub){
+        if (!sub) {
             if (isSign(exp.charAt(0))) {
                 c = exp.charAt(0);
                 exp = exp.substring(1);
             }
         }
-        factor();
+        Node factorNode = factor();
+        // 首个项的省略
+        if (c == '-') {
+            factorNode = new MulNode(new ConstNode(new BigInteger("-1")), factorNode);
+        }
         // 继承情况：接下来是乘号运算符。
-        if (!exp.isEmpty() & isMul(exp.charAt(0))) {
+        if (!exp.isEmpty() && isMul(exp.charAt(0))) {
             exp = exp.substring(1);
-            item(true);
+            Node itemNode = item(true);
+            return new MulNode(factorNode, itemNode);
         }
         // 结束情况：交由上级处理。
         else {
-            // return
+            return factorNode;
         }
     }
 
 
     // 当确认第一个Item后的其他情况：1-继承，2-结束，3-错误
     // <Expr> = [+-]?<Item>([+-]<Expr>)?
-    public void expr(boolean sub, boolean factor) {
+    public Node expr(boolean sub, boolean factor) {
         recurRecord.add("<Expression>");
+        emptyJugde("expression");
         char c = '+';
-        if(isSign(exp.charAt(0))){
+        if (!sub && isSign(exp.charAt(0))) {
             c = exp.charAt(0);
             exp = exp.substring(1);
         }
-        item(false);
+        Node itemNode = item(false);
+        // 特殊情况：首个表达式且为负数
+        if (c == '-') {
+            itemNode = new MulNode(new ConstNode(new BigInteger("-1")), itemNode);
+        }
         // 结束判断1:非因子串，结束符：字符串结束
-        if(!factor & exp.isEmpty()){
-            return;
+        if (!factor && exp.isEmpty()) {
+            return itemNode;
         }
         // 结束判断2：因子表达式，结束符：)
-        else if(factor & isRightParen(exp.charAt(0))){
-            return;
+        else if (factor && !exp.isEmpty() && isRightParen(exp.charAt(0))) {
+            return itemNode;
         }
         // 继承判断：接下来是运算符号
-        else if(isSign(exp.charAt(0))){
+        else if (!exp.isEmpty() && isSign(exp.charAt(0))) {
             char op = exp.charAt(0);
             exp = exp.substring(1);
-            expr(true,factor);
+            Node ExprNode = expr(true, factor);
+            if (op == '+') {
+                return new AddNode(itemNode, ExprNode);
+            } else {
+                return new SubNode(itemNode, ExprNode);
+            }
         }
         // 非语法情况：错误
-        else{
+        else {
             errorExit("unknown type in expression.");
+            return null;
         }
     }
 
@@ -189,7 +231,7 @@ public class recurParse {
     // print visit track
     private void printTrack() {
         for (String step : recurRecord) {
-            System.out.println(step);
+            System.err.println(step);
         }
     }
 }
