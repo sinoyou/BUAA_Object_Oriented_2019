@@ -1,9 +1,9 @@
-package regex;
+package constant;
 
 public interface RegexConst {
     // allowed char
     String forbidRegex = "[^0-9+-^*sincos()x \\t]";
-    // illegal space regex: 1.space in number. 2.space bettwen +- and
+    // illegal space constant: 1.space in number. 2.space bettwen +- and
     // num following * or ^. 3.space in cos/sin. 4.three [+-] op [space] number
     String illegalSpaceRegex = "(\\d+\\s+\\d+)|" +
         "([\\^\\*]\\s*[+-]\\s+\\d+)|" +

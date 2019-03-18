@@ -1,6 +1,7 @@
 package parse;
 
-import regex.RegexConst;
+import constant.RangeConst;
+import constant.RegexConst;
 import node.ConstNode;
 import node.Node;
 import node.func.CosNode;
@@ -60,7 +61,13 @@ public class RecurParse {
     private BigInteger power() {
         if (!exp.isEmpty() && exp.charAt(0) == '^') {
             exp = exp.substring(1);
-            return number();
+            BigInteger power = power();
+            if (power.compareTo(RangeConst.power) > 0) {
+                errorExit("power index out of range.");
+                return null;
+            } else {
+                return power;
+            }
         } else {
             return BigInteger.ONE;
         }

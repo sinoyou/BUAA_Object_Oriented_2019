@@ -1,6 +1,6 @@
 package parse;
 
-import regex.RegexConst;
+import constant.RegexConst;
 import node.Node;
 
 import java.util.regex.Pattern;
