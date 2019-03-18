@@ -9,6 +9,8 @@ public class MulNode extends OpNode {
         super(left, right);
         if (left.isZero() || right.isZero()) {
             setZero(true);
+        } else if (left.isOne() && right.isOne()) {
+            setOne(true);
         }
     }
 

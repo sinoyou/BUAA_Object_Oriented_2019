@@ -13,12 +13,10 @@ public class FuncToString implements ToString {
     public String print(Node node) {
         StringBuilder strBild = new StringBuilder();
         // special occasion
-        if (node instanceof FuncNode) {
-            if (((FuncNode) node).getPower().equals(BigInteger.ZERO)) {
-                return "1";
-            } else if (node.isZero()) {
-                return "0";
-            }
+        if (node.isOne()) {
+            return "1";
+        } else if (node.isZero()) {
+            return "0";
         }
         // judge type: sin, cos, power
         if (node instanceof SinNode) {

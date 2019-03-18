@@ -16,12 +16,18 @@ public abstract class FuncNode extends Node {
         this.son = node;
         this.power = power;
         this.unit = false;
+        if (power.equals(BigInteger.ZERO)) {
+            setOne(true);
+        }
     }
 
     FuncNode(BigInteger power) {
         this.son = null;
         this.power = power;
         this.unit = true;
+        if (power.equals(BigInteger.ZERO)) {
+            setOne(true);
+        }
     }
 
     public Node getSon() {

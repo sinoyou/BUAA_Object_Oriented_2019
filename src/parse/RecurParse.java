@@ -9,7 +9,6 @@ import node.func.PowerNode;
 import node.func.SinNode;
 import node.operation.AddNode;
 import node.operation.MulNode;
-import node.operation.SubNode;
 
 import java.math.BigInteger;
 import java.util.ArrayList;

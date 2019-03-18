@@ -10,6 +10,8 @@ public class ConstNode extends Node {
         this.value = value;
         if (value.equals(BigInteger.ZERO)) {
             setZero(true);
+        } else if (value.equals(BigInteger.ONE)) {
+            setOne(true);
         }
     }
 

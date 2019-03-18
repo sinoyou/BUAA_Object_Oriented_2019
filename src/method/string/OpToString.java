@@ -11,6 +11,12 @@ public class OpToString implements ToString {
     @Override
     public String print(Node node) {
         StringBuilder strBild = new StringBuilder();
+        // special occasion
+        if (node.isOne()) {
+            return "1";
+        } else if (node.isZero()) {
+            return "0";
+        }
         Node left;
         Node right;
         // 1: add left surround
@@ -29,8 +35,7 @@ public class OpToString implements ToString {
             } else {
                 strBild.append(left.toString());
             }
-        }
-        else if(node instanceof SubNode){
+        } else if (node instanceof SubNode) {
             if (!left.isZero() && !right.isZero()) {
                 strBild.append(left.toString());
                 strBild.append("-");
@@ -38,12 +43,15 @@ public class OpToString implements ToString {
             } else if (right.isZero()) {
                 strBild.append(left.toString());
             } else {
-                strBild.append("-"+right.toString());
+                strBild.append("-" + right.toString());
             }
-        }
-        else if (node instanceof MulNode) {
+        } else if (node instanceof MulNode) {
             if (left.isZero() || right.isZero()) {
                 strBild.append("0");
+            } else if (left.isOne()) {
+                strBild.append(right.toString());
+            } else if (right.isOne()) {
+                strBild.append(left.toString());
             } else {
                 strBild.append(left.toString());
                 strBild.append("*");

@@ -9,6 +9,8 @@ public class SubNode extends OpNode {
         super(left, right);
         if (left.isZero() && right.isZero()) {
             setZero(true);
+        } else if (left.isOne() && right.isZero()) {
+            setOne(true);
         }
     }
 

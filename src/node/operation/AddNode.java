@@ -9,6 +9,10 @@ public class AddNode extends OpNode {
         super(left, right);
         if (left.isZero() && right.isZero()) {
             setZero(true);
+        } else if (left.isZero() && right.isOne()) {
+            setOne(true);
+        } else if (left.isOne() && right.isZero()) {
+            setOne(true);
         }
     }
 

@@ -9,6 +9,9 @@ import java.math.BigInteger;
 public class CosNode extends FuncNode {
     public CosNode(Node node, BigInteger power) {
         super(node, power);
+        if (node.isZero()) {
+            setOne(true);
+        }
     }
 
     public CosNode(BigInteger power) {
