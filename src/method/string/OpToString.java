@@ -12,25 +12,40 @@ public class OpToString implements ToString {
     @Override
     public String print(Node node) {
         StringBuilder strBild = new StringBuilder();
+        Node left;
+        Node right;
         // 1: add left surround
         strBild.append("(");
-        // 2: first node
-        if(node instanceof OpNode){
-            strBild.append(((OpNode) node).getLeft().toString());
-        }
+        // 2: get node
+        left = ((OpNode) node).getLeft();
+        right = ((OpNode) node).getRight();
         // 3:operation
-        if(node instanceof AddNode){
-            strBild.append("+");
-        }else if(node instanceof SubNode){
-            strBild.append("-");
-        }else if(node instanceof MulNode){
-            strBild.append("*");
+        if(node instanceof AddNode || node instanceof SubNode){
+            if(!left.isZero() && !right.isZero()){
+                strBild.append(left.toString());
+                if(node instanceof AddNode){
+                    strBild.append("+");
+                }else {
+                    strBild.append("-");
+                }
+                strBild.append(right.toString());
+            }
+            else if(left.isZero()){
+                strBild.append(right.toString());
+            }else {
+                strBild.append(left.toString());
+            }
         }
-        // 4:second node
-        if(node instanceof OpNode){
-            strBild.append(((OpNode) node).getRight().toString());
+        else if(node instanceof MulNode){
+            if(left.isZero() || right.isZero()){
+                strBild.append("0");
+            }else {
+                strBild.append(left.toString());
+                strBild.append("*");
+                strBild.append(right.toString());
+            }
         }
-        // 5: add right surround
+        // 4: add right surround
         strBild.append(")");
         return strBild.toString();
     }
