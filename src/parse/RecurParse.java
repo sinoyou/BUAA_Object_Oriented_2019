@@ -23,7 +23,7 @@ public class RecurParse {
 
     RecurParse(String str) {
         this.exp = str;
-        root = expr(false, false);
+        root = expr(false, false, false);
         printTrack();
     }
 
@@ -146,7 +146,7 @@ public class RecurParse {
         else if (isLeftParen(exp.charAt(0))) {
             recurRecord.add("<Factor:SubExpr>");
             exp = exp.substring(1);
-            Node inner = expr(false, true);
+            Node inner = expr(false, true,false);
             if (!exp.isEmpty() && isRightParen(exp.charAt(0))) {
                 exp = exp.substring(1);
             } else {
@@ -194,7 +194,7 @@ public class RecurParse {
 
     // 当确认第一个Item后的其他情况：1-继承，2-结束，3-错误
     // <Expr> = [+-]?<Item>([+-]<Expr>)?
-    public Node expr(boolean sub, boolean factor) {
+    public Node expr(boolean sub, boolean factor, boolean neg) {
         recurRecord.add("<Expression>");
         emptyJugde("expression");
         char c = '+';
@@ -203,8 +203,8 @@ public class RecurParse {
             exp = exp.substring(1);
         }
         Node itemNode = item(false);
-        // 特殊情况：首个表达式且为负数
-        if (c == '-') {
+        // 特别情况：首个表达式且为负数 | 继任expression的运算符是符号
+        if (c == '-' || neg) {
             itemNode = new MulNode(new ConstNode(new BigInteger("-1")),
                 itemNode);
         }
@@ -220,12 +220,13 @@ public class RecurParse {
         else if (!exp.isEmpty() && isSign(exp.charAt(0))) {
             char op = exp.charAt(0);
             exp = exp.substring(1);
-            Node exprNode = expr(true, factor);
+            Node exprNode;
             if (op == '+') {
-                return new AddNode(itemNode, exprNode);
+                exprNode = expr(true, factor,false);
             } else {
-                return new SubNode(itemNode, exprNode);
+                exprNode = expr(true, factor,true);
             }
+            return new AddNode(itemNode, exprNode);
         }
         // 非语法情况：错误
         else {

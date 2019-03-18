@@ -9,7 +9,7 @@ import java.math.BigInteger;
 public class SinNode extends FuncNode {
     public SinNode(Node node, BigInteger power) {
         super(node, power);
-        if (node.isZero()) {
+        if (node.isZero() && !power.equals(BigInteger.ZERO)) {
             setZero(true);
         }
     }

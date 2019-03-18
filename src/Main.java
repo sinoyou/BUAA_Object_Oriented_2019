@@ -12,6 +12,7 @@ public class Main {
                 System.out.println(parse.getRoot().getDerivate().toString());
             } else {
                 System.out.println("WRONG FORMAT!");
+                System.err.println("Can't meet primary request.");
             }
         } else {
             System.out.println("WRONG FORMAT!");
