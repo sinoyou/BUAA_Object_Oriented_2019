@@ -17,20 +17,21 @@ public class CosDerivate implements Derivate {
         BigInteger power = cosNode.getPower();
 
         // special occasion: power is 0
-        if(power.equals(BigInteger.ZERO)){
+        if (power.equals(BigInteger.ZERO)) {
             return new ConstNode(BigInteger.ZERO);
-        }else {
+        } else {
             // part1: m*cos(factor)^(m-1)
-            CosNode temp1 = new CosNode(inner,power.subtract(BigInteger.ONE));
+            CosNode temp1 = new CosNode(inner, power.subtract(BigInteger.ONE));
             ConstNode temp2 = new ConstNode(power);
-            MulNode mul1 = new MulNode(temp1,temp2);
+            MulNode mul1 = new MulNode(temp1, temp2);
             // part2: sin(factor)*(factor)'
-            SinNode temp3 = new SinNode(inner,BigInteger.ONE);
+            SinNode temp3 = new SinNode(inner, BigInteger.ONE);
             Node temp4 = inner.getDerivate();
-            MulNode mul2 = new MulNode(temp3,temp4);
+            MulNode mul2 = new MulNode(temp3, temp4);
 
             BigInteger negOne = new BigInteger("-1");
-            MulNode cosDer = new MulNode(new ConstNode(negOne),new MulNode(mul1,mul2));
+            MulNode cosDer = new MulNode(new ConstNode(negOne),
+                new MulNode(mul1, mul2));
             return cosDer;
         }
     }

@@ -7,7 +7,6 @@ import node.operation.MulNode;
 import node.operation.OpNode;
 import node.operation.SubNode;
 
-
 public class OpToString implements ToString {
     @Override
     public String print(Node node) {
@@ -20,26 +19,24 @@ public class OpToString implements ToString {
         left = ((OpNode) node).getLeft();
         right = ((OpNode) node).getRight();
         // 3:operation
-        if(node instanceof AddNode || node instanceof SubNode){
-            if(!left.isZero() && !right.isZero()){
+        if (node instanceof AddNode || node instanceof SubNode) {
+            if (!left.isZero() && !right.isZero()) {
                 strBild.append(left.toString());
-                if(node instanceof AddNode){
+                if (node instanceof AddNode) {
                     strBild.append("+");
-                }else {
+                } else {
                     strBild.append("-");
                 }
                 strBild.append(right.toString());
-            }
-            else if(left.isZero()){
+            } else if (left.isZero()) {
                 strBild.append(right.toString());
-            }else {
+            } else {
                 strBild.append(left.toString());
             }
-        }
-        else if(node instanceof MulNode){
-            if(left.isZero() || right.isZero()){
+        } else if (node instanceof MulNode) {
+            if (left.isZero() || right.isZero()) {
                 strBild.append("0");
-            }else {
+            } else {
                 strBild.append(left.toString());
                 strBild.append("*");
                 strBild.append(right.toString());

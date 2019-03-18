@@ -6,15 +6,15 @@ import node.Node;
 
 import java.math.BigInteger;
 
-public class SinNode extends FuncNode{
-    public SinNode(Node node, BigInteger power){
-        super(node,power);
-        if(node.isZero()){
+public class SinNode extends FuncNode {
+    public SinNode(Node node, BigInteger power) {
+        super(node, power);
+        if (node.isZero()) {
             setZero(true);
         }
     }
 
-    public SinNode(BigInteger power){
+    public SinNode(BigInteger power) {
         super(power);
     }
 

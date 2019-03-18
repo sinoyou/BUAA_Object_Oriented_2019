@@ -8,11 +8,11 @@ import java.math.BigInteger;
 
 public class PowerNode extends FuncNode {
 
-    public PowerNode(Node node, BigInteger power){
-        super(node,power);
+    public PowerNode(Node node, BigInteger power) {
+        super(node, power);
     }
 
-    public PowerNode(BigInteger power){
+    public PowerNode(BigInteger power) {
         super(power);
     }
 

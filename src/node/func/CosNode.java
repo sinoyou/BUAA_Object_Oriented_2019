@@ -7,11 +7,11 @@ import node.Node;
 import java.math.BigInteger;
 
 public class CosNode extends FuncNode {
-    public CosNode(Node node, BigInteger power){
-        super(node,power);
+    public CosNode(Node node, BigInteger power) {
+        super(node, power);
     }
 
-    public CosNode(BigInteger power){
+    public CosNode(BigInteger power) {
         super(power);
     }
 

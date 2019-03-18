@@ -1,4 +1,4 @@
-package Const;
+package regex;
 
 public interface RegexConst {
     // allowed char

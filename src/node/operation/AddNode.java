@@ -5,9 +5,9 @@ import method.derivate.AddDerivate;
 import node.Node;
 
 public class AddNode extends OpNode {
-    public AddNode(Node left, Node right){
-        super(left,right);
-        if(left.isZero()&&right.isZero()){
+    public AddNode(Node left, Node right) {
+        super(left, right);
+        if (left.isZero() && right.isZero()) {
             setZero(true);
         }
     }

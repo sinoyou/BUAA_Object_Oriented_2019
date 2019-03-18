@@ -1,6 +1,6 @@
 package parse;
 
-import Const.RegexConst;
+import regex.RegexConst;
 import node.ConstNode;
 import node.Node;
 import node.func.CosNode;
@@ -15,12 +15,12 @@ import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class recurParse {
+public class RecurParse {
     private ArrayList<String> recurRecord = new ArrayList<>();
     private String exp = null;
     private Node root = null;
 
-    recurParse(String str) {
+    RecurParse(String str) {
         this.exp = str;
         root = expr(false, false);
         printTrack();
@@ -57,12 +57,21 @@ public class recurParse {
         }
     }
 
+    private BigInteger power() {
+        if (!exp.isEmpty() && exp.charAt(0) == '^') {
+            exp = exp.substring(1);
+            return number();
+        } else {
+            return BigInteger.ONE;
+        }
+    }
+
     public Node getRoot() {
         return root;
     }
 
     // <Num> = [+-]?[0-9]+
-    public BigInteger getNumber() {
+    public BigInteger number() {
         recurRecord.add("<Number>");
         emptyJugde("number");
         Matcher match = Pattern.compile(RegexConst.constRegex).matcher(exp);
@@ -81,55 +90,47 @@ public class recurParse {
     public Node factor() {
         recurRecord.add("<Factor>");
         emptyJugde("factor");
-        Matcher sinMatch = Pattern.compile(RegexConst.sinHeadRegex).matcher(exp);
-        Matcher cosMatch = Pattern.compile(RegexConst.cosHeadRegex).matcher(exp);
+        Matcher sinMatch = Pattern.compile(RegexConst.sinHeadRegex)
+            .matcher(exp);
+        Matcher cosMatch = Pattern.compile(RegexConst.cosHeadRegex)
+            .matcher(exp);
         // number
         if (isDigit(exp.charAt(0)) | isSign(exp.charAt(0))) {
-            BigInteger num = getNumber();
+            BigInteger num = number();
             return new ConstNode(num);
         }
         // power function
         else if (isUnit(exp.charAt(0))) {
             exp = exp.substring(1);
-            BigInteger power = BigInteger.ONE;
-            // check power description
-            if (!exp.isEmpty() && exp.charAt(0) == '^') {
-                exp = exp.substring(1);
-                power = getNumber();
-            }
+            // get power
+            BigInteger power = power();
             return new PowerNode(power);
         }
         // sin function
         else if (sinMatch.lookingAt()) {
             exp = exp.substring(sinMatch.end());
-            BigInteger power = BigInteger.ONE;
             Node inner = factor();
             if (isRightParen(exp.charAt(0))) {
                 exp = exp.substring(1);
-                if (!exp.isEmpty() && exp.charAt(0) == '^') {
-                    exp = exp.substring(1);
-                    power = getNumber();
-                }
+                BigInteger power = power();
+                return new SinNode(inner, power);
             } else {
                 errorExit("no right paren match in sin.");
+                return null;
             }
-            return new SinNode(inner, power);
         }
         // cos function
         else if (cosMatch.lookingAt()) {
             exp = exp.substring(cosMatch.end());
-            BigInteger power = BigInteger.ONE;
             Node inner = factor();
             if (isRightParen(exp.charAt(0))) {
                 exp = exp.substring(1);
-                if (!exp.isEmpty() && exp.charAt(0) == '^') {
-                    exp = exp.substring(1);
-                    power = getNumber();
-                }
+                BigInteger power = power();
+                return new CosNode(inner, power);
             } else {
                 errorExit("no right paren match in cos.");
+                return null;
             }
-            return new CosNode(inner, power);
         }
         // sub expression
         else if (isLeftParen(exp.charAt(0))) {
@@ -164,7 +165,8 @@ public class recurParse {
         Node factorNode = factor();
         // 首个项的省略
         if (c == '-') {
-            factorNode = new MulNode(new ConstNode(new BigInteger("-1")), factorNode);
+            factorNode = new MulNode(new ConstNode(new BigInteger("-1")),
+                factorNode);
         }
         // 继承情况：接下来是乘号运算符。
         if (!exp.isEmpty() && isMul(exp.charAt(0))) {
@@ -192,7 +194,8 @@ public class recurParse {
         Node itemNode = item(false);
         // 特殊情况：首个表达式且为负数
         if (c == '-') {
-            itemNode = new MulNode(new ConstNode(new BigInteger("-1")), itemNode);
+            itemNode = new MulNode(new ConstNode(new BigInteger("-1")),
+                itemNode);
         }
         // 结束判断1:非因子串，结束符：字符串结束
         if (!factor && exp.isEmpty()) {
@@ -206,11 +209,11 @@ public class recurParse {
         else if (!exp.isEmpty() && isSign(exp.charAt(0))) {
             char op = exp.charAt(0);
             exp = exp.substring(1);
-            Node ExprNode = expr(true, factor);
+            Node exprNode = expr(true, factor);
             if (op == '+') {
-                return new AddNode(itemNode, ExprNode);
+                return new AddNode(itemNode, exprNode);
             } else {
-                return new SubNode(itemNode, ExprNode);
+                return new SubNode(itemNode, exprNode);
             }
         }
         // 非语法情况：错误

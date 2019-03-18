@@ -4,10 +4,10 @@ import method.Derivate;
 import method.derivate.SubDerivate;
 import node.Node;
 
-public class SubNode extends OpNode{
-    public SubNode(Node left, Node right){
-        super(left,right);
-        if(left.isZero() && right.isZero()){
+public class SubNode extends OpNode {
+    public SubNode(Node left, Node right) {
+        super(left, right);
+        if (left.isZero() && right.isZero()) {
             setZero(true);
         }
     }

@@ -7,7 +7,8 @@ import node.Node;
 public abstract class OpNode extends Node {
     private Node left;
     private Node right;
-    OpNode(Node left,Node right){
+
+    OpNode(Node left, Node right) {
         super();
         this.left = left;
         this.right = right;

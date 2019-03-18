@@ -11,15 +11,14 @@ public abstract class FuncNode extends Node {
     private Node son;
     private boolean unit;
 
-
-    FuncNode(Node node,BigInteger power){
+    FuncNode(Node node, BigInteger power) {
         super();
         this.son = node;
         this.power = power;
         this.unit = false;
     }
 
-    FuncNode(BigInteger power){
+    FuncNode(BigInteger power) {
         this.son = null;
         this.power = power;
         this.unit = true;

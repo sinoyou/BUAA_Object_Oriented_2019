@@ -2,13 +2,13 @@ package node;
 
 import java.math.BigInteger;
 
-public class ConstNode extends Node{
+public class ConstNode extends Node {
     private BigInteger value;
 
-    public ConstNode(BigInteger value){
+    public ConstNode(BigInteger value) {
         super();
         this.value = value;
-        if(value.equals(BigInteger.ZERO)){
+        if (value.equals(BigInteger.ZERO)) {
             setZero(true);
         }
     }
