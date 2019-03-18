@@ -61,7 +61,7 @@ public class RecurParse {
     private BigInteger power() {
         if (!exp.isEmpty() && exp.charAt(0) == '^') {
             exp = exp.substring(1);
-            BigInteger power = power();
+            BigInteger power = number();
             if (power.compareTo(RangeConst.power) > 0) {
                 errorExit("power index out of range.");
                 return null;
@@ -95,7 +95,6 @@ public class RecurParse {
     // <Factor> = <Num> | x(^<Num>)? | sin(<Factor>)(^<Num>)? |
     // cos(<Factor>)(^<Num>)? | (Expr)
     public Node factor() {
-        recurRecord.add("<Factor>");
         emptyJugde("factor");
         Matcher sinMatch = Pattern.compile(RegexConst.sinHeadRegex)
             .matcher(exp);
@@ -103,11 +102,13 @@ public class RecurParse {
             .matcher(exp);
         // number
         if (isDigit(exp.charAt(0)) | isSign(exp.charAt(0))) {
+            recurRecord.add("<Factor:Num>");
             BigInteger num = number();
             return new ConstNode(num);
         }
         // power function
         else if (isUnit(exp.charAt(0))) {
+            recurRecord.add("<Factor:Power>");
             exp = exp.substring(1);
             // get power
             BigInteger power = power();
@@ -115,35 +116,38 @@ public class RecurParse {
         }
         // sin function
         else if (sinMatch.lookingAt()) {
+            recurRecord.add("<Factor:Sin>");
             exp = exp.substring(sinMatch.end());
             Node inner = factor();
-            if (isRightParen(exp.charAt(0))) {
+            if (!exp.isEmpty() && isRightParen(exp.charAt(0))) {
                 exp = exp.substring(1);
                 BigInteger power = power();
                 return new SinNode(inner, power);
             } else {
-                errorExit("no right paren match in sin.");
+                errorExit("wrong format of sin()");
                 return null;
             }
         }
         // cos function
         else if (cosMatch.lookingAt()) {
+            recurRecord.add("<Factor:Cos>");
             exp = exp.substring(cosMatch.end());
             Node inner = factor();
-            if (isRightParen(exp.charAt(0))) {
+            if (!exp.isEmpty() && isRightParen(exp.charAt(0))) {
                 exp = exp.substring(1);
                 BigInteger power = power();
                 return new CosNode(inner, power);
             } else {
-                errorExit("no right paren match in cos.");
+                errorExit("wrong format of cos()");
                 return null;
             }
         }
         // sub expression
         else if (isLeftParen(exp.charAt(0))) {
+            recurRecord.add("<Factor:SubExpr>");
             exp = exp.substring(1);
             Node inner = expr(false, true);
-            if (isRightParen(exp.charAt(0))) {
+            if (!exp.isEmpty() && isRightParen(exp.charAt(0))) {
                 exp = exp.substring(1);
             } else {
                 errorExit("no right paren match in inner exp.");

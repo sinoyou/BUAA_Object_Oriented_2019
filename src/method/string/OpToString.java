@@ -19,21 +19,29 @@ public class OpToString implements ToString {
         left = ((OpNode) node).getLeft();
         right = ((OpNode) node).getRight();
         // 3:operation
-        if (node instanceof AddNode || node instanceof SubNode) {
+        if (node instanceof AddNode) {
             if (!left.isZero() && !right.isZero()) {
                 strBild.append(left.toString());
-                if (node instanceof AddNode) {
-                    strBild.append("+");
-                } else {
-                    strBild.append("-");
-                }
+                strBild.append("+");
                 strBild.append(right.toString());
             } else if (left.isZero()) {
                 strBild.append(right.toString());
             } else {
                 strBild.append(left.toString());
             }
-        } else if (node instanceof MulNode) {
+        }
+        else if(node instanceof SubNode){
+            if (!left.isZero() && !right.isZero()) {
+                strBild.append(left.toString());
+                strBild.append("-");
+                strBild.append(right.toString());
+            } else if (right.isZero()) {
+                strBild.append(left.toString());
+            } else {
+                strBild.append("-"+right.toString());
+            }
+        }
+        else if (node instanceof MulNode) {
             if (left.isZero() || right.isZero()) {
                 strBild.append("0");
             } else {
