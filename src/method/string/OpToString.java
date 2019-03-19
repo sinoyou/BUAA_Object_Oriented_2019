@@ -46,9 +46,7 @@ public class OpToString implements ToString {
                 strBild.append("-" + right.toString());
             }
         } else if (node instanceof MulNode) {
-            if (left.isZero() || right.isZero()) {
-                strBild.append("0");
-            } else if (left.isOne()) {
+            if (left.isOne()) {
                 strBild.append(right.toString());
             } else if (right.isOne()) {
                 strBild.append(left.toString());

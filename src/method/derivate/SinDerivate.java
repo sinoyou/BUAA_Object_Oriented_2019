@@ -15,8 +15,8 @@ public class SinDerivate implements Derivate {
         SinNode sinNode = (SinNode) node;
         Node inner = sinNode.getSon();
         BigInteger power = sinNode.getPower();
-        // special occasion: power is 1
-        if (power.equals(BigInteger.ZERO)) {
+        // const
+        if (node.isConst()) {
             return new ConstNode(BigInteger.ZERO);
         } else {
             // part1: m*sin(factor)^m-1

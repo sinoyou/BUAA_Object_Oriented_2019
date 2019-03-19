@@ -11,6 +11,7 @@ public class CosNode extends FuncNode {
         super(node, power);
         if (node.isZero()) {
             setOne(true);
+            setConst(true);
         }
     }
 

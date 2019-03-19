@@ -11,6 +11,7 @@ public class SinNode extends FuncNode {
         super(node, power);
         if (node.isZero() && !power.equals(BigInteger.ZERO)) {
             setZero(true);
+            setConst(true);
         }
     }
 

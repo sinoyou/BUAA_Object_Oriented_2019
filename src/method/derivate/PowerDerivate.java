@@ -13,8 +13,8 @@ public class PowerDerivate implements Derivate {
     public Node getDerivate(Node node) {
         PowerNode powerNode = (PowerNode) node;
         BigInteger power = powerNode.getPower();
-        // special occasion: power is 0
-        if (power.equals(BigInteger.ZERO)) {
+        // special occasion: const
+        if (node.isConst()) {
             return new ConstNode(BigInteger.ZERO);
         }
         // special occasion: power is 1

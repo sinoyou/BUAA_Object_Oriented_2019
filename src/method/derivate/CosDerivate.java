@@ -16,8 +16,8 @@ public class CosDerivate implements Derivate {
         Node inner = cosNode.getSon();
         BigInteger power = cosNode.getPower();
 
-        // special occasion: power is 0
-        if (power.equals(BigInteger.ZERO)) {
+        // special occasion: const
+        if (node.isConst()) {
             return new ConstNode(BigInteger.ZERO);
         } else {
             // part1: m*cos(factor)^(m-1)

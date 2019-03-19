@@ -18,6 +18,7 @@ public abstract class FuncNode extends Node {
         this.unit = false;
         if (power.equals(BigInteger.ZERO)) {
             setOne(true);
+            setConst(true);
         }
     }
 
@@ -27,6 +28,7 @@ public abstract class FuncNode extends Node {
         this.unit = true;
         if (power.equals(BigInteger.ZERO)) {
             setOne(true);
+            setConst(true);
         }
     }
 

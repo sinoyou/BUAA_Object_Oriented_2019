@@ -7,6 +7,11 @@ import node.Node;
 public class AddNode extends OpNode {
     public AddNode(Node left, Node right) {
         super(left, right);
+        // const judge
+        if (left.isConst() && right.isConst()) {
+            setConst(true);
+        }
+        // one/zero judge
         if (left.isZero() && right.isZero()) {
             setZero(true);
         } else if (left.isZero() && right.isOne()) {

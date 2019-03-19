@@ -5,11 +5,21 @@ public abstract class Node {
     private Node father;
     private boolean zero;
     private boolean one;
+    private boolean cst;
 
     public Node() {
         father = null;
         zero = false;
         one = false;
+        cst = false;
+    }
+
+    public boolean isConst() {
+        return cst;
+    }
+
+    public void setConst(boolean cst) {
+        this.cst = cst;
     }
 
     public void setFather(Node father) {
