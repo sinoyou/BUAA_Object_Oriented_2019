@@ -9,7 +9,7 @@ public class Parse {
     private boolean primaryValid;
     private RecurParse recur = null;
 
-    public Parse(String str) {
+    public Parse(String str) throws Exception {
         primaryValid = primaryCheck(str);
         if (primaryValid) {
             String simpleStr = simplify(str);

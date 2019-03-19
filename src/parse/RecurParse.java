@@ -20,7 +20,7 @@ public class RecurParse {
     private String exp = null;
     private Node root = null;
 
-    RecurParse(String str) {
+    RecurParse(String str) throws Exception {
         this.exp = str;
         root = expr(false, false, false);
         printTrack();
@@ -50,14 +50,14 @@ public class RecurParse {
         return (c == '*');
     }
 
-    private void emptyJugde(String place) {
+    private void emptyJugde(String place) throws Exception {
         // empty judge
         if (exp.isEmpty()) {
             errorExit("empty string in " + place);
         }
     }
 
-    private BigInteger power() {
+    private BigInteger power() throws Exception {
         if (!exp.isEmpty() && exp.charAt(0) == '^') {
             exp = exp.substring(1);
             BigInteger power = number();
@@ -77,7 +77,7 @@ public class RecurParse {
     }
 
     // <Num> = [+-]?[0-9]+
-    public BigInteger number() {
+    public BigInteger number() throws Exception {
         recurRecord.add("<Number>");
         emptyJugde("number");
         Matcher match = Pattern.compile(RegexConst.constRegex).matcher(exp);
@@ -93,7 +93,7 @@ public class RecurParse {
 
     // <Factor> = <Num> | x(^<Num>)? | sin(<Factor>)(^<Num>)? |
     // cos(<Factor>)(^<Num>)? | (Expr)
-    public Node factor() {
+    public Node factor() throws Exception {
         emptyJugde("factor");
         Matcher sinMatch = Pattern.compile(RegexConst.sinHeadRegex)
             .matcher(exp);
@@ -162,7 +162,7 @@ public class RecurParse {
 
     // <Item> = [+-]?<Factor>(*<SubItem>)?
     // <subItem> = <Factor>(*<subItem>)?
-    public Node item(boolean sub) {
+    public Node item(boolean sub) throws Exception {
         recurRecord.add("<Item>");
         emptyJugde("item");
         char c = '+';
@@ -193,7 +193,8 @@ public class RecurParse {
 
     // 当确认第一个Item后的其他情况：1-继承，2-结束，3-错误
     // <Expr> = [+-]?<Item>([+-]<Expr>)?
-    public Node expr(boolean sub, boolean factor, boolean neg) {
+    public Node expr(boolean sub, boolean factor, boolean neg)
+        throws Exception {
         recurRecord.add("<Expression>");
         emptyJugde("expression");
         char c = '+';
@@ -202,7 +203,7 @@ public class RecurParse {
             exp = exp.substring(1);
         }
         Node itemNode = item(false);
-        // 特别情况：首个表达式且为负数 | 继任expression的运算符是符号
+        // 特别情况：首个表达式且为负数 | 继任expression前的运算符是负号.
         if (c == '-' || neg) {
             itemNode = new MulNode(new ConstNode(new BigInteger("-1")),
                 itemNode);
@@ -235,11 +236,12 @@ public class RecurParse {
     }
 
     // if unexpected situation happen -> wrong format and exit.
-    private void errorExit(String reason) {
-        System.out.println("WRONG FORMAT!");
-        System.err.println(reason);
+    private void errorExit(String reason) throws Exception {
+        // System.out.println("WRONG FORMAT!");
+        // System.err.println(reason);
         printTrack();
-        System.exit(0);
+        throw new Exception(reason);
+        // System.exit(0);
     }
 
     // print visit track
