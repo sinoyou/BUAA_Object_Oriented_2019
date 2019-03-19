@@ -61,7 +61,7 @@ public class RecurParse {
         if (!exp.isEmpty() && exp.charAt(0) == '^') {
             exp = exp.substring(1);
             BigInteger power = number();
-            if (power.compareTo(RangeConst.power) > 0) {
+            if (power.abs().compareTo(RangeConst.power) > 0) {
                 errorExit("power index out of range.");
                 return null;
             } else {
