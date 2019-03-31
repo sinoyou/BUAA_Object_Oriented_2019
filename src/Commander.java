@@ -34,13 +34,14 @@ public class Commander {
         while (list.isEmpty() && !noMoreRequest) {
             System.err.println(String.format("<Reader>:begin to rest."));
             wait();
+            System.err.println("<Reader>:recover.");
         }
         if (list.isEmpty()) {
-            System.err.println(String.format("<Reader>:Recover but get none."));
+            System.err.println(String.format("<Reader>:get none."));
             return null;
         } else {
             PersonRequest i = list.removeFirst();
-            System.err.println(String.format("<Reader>:Recover and get" +
+            System.err.println(String.format("<Reader>:get" +
                 " request:'%s'.", i.toString()));
             return i;
         }

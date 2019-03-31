@@ -29,6 +29,7 @@ public class Main {
         command.noMoreRequest();
         try {
             elevator.join();
+            System.err.println("Main Thread Ended With Normal State.");
         } catch (InterruptedException e) {
             System.err.println("Main Thread Ended With Blocked State.");
             // e.printStackTrace();
