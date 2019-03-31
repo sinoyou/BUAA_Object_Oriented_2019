@@ -7,21 +7,22 @@ public class Commander {
     private static Commander uniInstance = new Commander();
     private boolean noMoreRequest;
 
-    private Commander(){
+    private Commander() {
         list = new LinkedList<>();
         noMoreRequest = false;
     }
 
     // single item mode
-    public static Commander getInstance(){
+    public static Commander getInstance() {
         return uniInstance;
     }
 
-    public synchronized void noMoreRequest(){
+    public synchronized void noMoreRequest() {
         noMoreRequest = true;
-        System.err.println(String.format("<Writer>:input has been terminated."));
+        System.err.println(String.format("<Writer>:input has terminated."));
         notifyAll();
     }
+
     public synchronized void putRequest(PersonRequest i) {
         list.addLast(i);
         System.err.println(String.format("<Writer>:request '%s' is put.",
@@ -30,18 +31,17 @@ public class Commander {
     }
 
     public synchronized PersonRequest getRequest() throws InterruptedException {
-        while(list.isEmpty() && !noMoreRequest){
+        while (list.isEmpty() && !noMoreRequest) {
             System.err.println(String.format("<Reader>:begin to rest."));
             wait();
         }
-        if(list.isEmpty()){
-            System.err.println(String.format("<Reader>:Recover but get nothing."));
+        if (list.isEmpty()) {
+            System.err.println(String.format("<Reader>:Recover but get none."));
             return null;
-        }
-        else {
+        } else {
             PersonRequest i = list.removeFirst();
-            System.err.println(String.format("<Reader>:Recover and get request: " +
-                "'%s'.",i.toString()));
+            System.err.println(String.format("<Reader>:Recover and get" +
+                " request:'%s'.", i.toString()));
             return i;
         }
     }

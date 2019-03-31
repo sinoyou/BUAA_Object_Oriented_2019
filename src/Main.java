@@ -3,7 +3,8 @@ import com.oocourse.elevator1.ElevatorInput;
 import com.oocourse.elevator1.PersonRequest;
 
 public class Main {
-    public static void main(String[] agrs) throws Exception{
+    public static void main(String[] agrs) throws Exception {
+
         ElevatorInput input = new ElevatorInput(System.in);
         Commander command = Commander.getInstance();
         TimableOutput.initStartTimestamp();
@@ -16,10 +17,10 @@ public class Main {
         // get request
         while (true) {
             request = input.nextPersonRequest();
-            if(request==null){
+            if (request == null) {
                 input.close();
                 break;
-            }else {
+            } else {
                 command.putRequest(request);
             }
         }
