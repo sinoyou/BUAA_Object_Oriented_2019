@@ -29,8 +29,10 @@ public class Elevator extends Thread {
                 int to = oneRequest.getToFloor();
                 dispatch(id, from, to);
             }
+
             // final state must be closed.
             makeSureDoorClose();
+
             System.err.println("Elevator Shutdown With Normal State.");
         } catch (InterruptedException e) {
             System.err.println("Elevator Shutdown With Blocked State.");
@@ -40,9 +42,9 @@ public class Elevator extends Thread {
     private void dispatch(int id, int start, int end)
         throws InterruptedException {
         move(this.floor, start);
-        pullIn(id, start);
+        pullIn(id);
         move(start, end);
-        kickOut(id, end);
+        kickOut(id);
     }
 
     // action of elevator
@@ -56,18 +58,18 @@ public class Elevator extends Thread {
 
     private void makeSureDoorClose() throws InterruptedException {
         if (isDoorOpen) {
-            isDoorOpen = false;
             sleep(TimeConst.doorClose);
             TimableOutput.println(String.format("CLOSE-%d", floor));
+            isDoorOpen = false;
         }
     }
 
-    private void kickOut(int id, int floor) throws InterruptedException {
+    private void kickOut(int id) throws InterruptedException {
         makeSureDoorOpen();
         TimableOutput.println(String.format("OUT-%d-%d", id, floor));
     }
 
-    private void pullIn(int id, int floor) throws InterruptedException {
+    private void pullIn(int id) throws InterruptedException {
         makeSureDoorOpen();
         TimableOutput.println(String.format("IN-%d-%d", id, floor));
     }
