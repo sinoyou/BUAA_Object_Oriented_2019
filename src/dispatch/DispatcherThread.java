@@ -23,13 +23,15 @@ public class DispatcherThread extends Thread{
                 if (oneRequest == null) {
                     break;
                 }
+                System.err.println(String.format("<Dispatcher>:Get a New Request" +
+                    " '%s'",oneRequest.toString()));
                 dispatch(oneRequest);
             }
             // 炒鱿鱼
             squidAll();
-            System.err.println("DispatcherThread Shutdown With Normal State.");
+            System.err.println("@Dispatcher Shutdown With Normal State.");
         } catch (InterruptedException e) {
-            System.err.println("DispatcherThread Shutdown With Error State.");
+            System.err.println("@Dispatcher Shutdown With Error State.");
         }
     }
 

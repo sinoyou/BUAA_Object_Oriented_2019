@@ -1,8 +1,7 @@
 package constant;
 
-public class Const {
-    int doorOpen = 200;
-    int doorClose = 200;
-    int moveOneFloor = 400;
-    
+public interface TimeConst {
+    public int doorOpen = 200;
+    public int doorClose = 200;
+    public int moveOneFloor = 400;
 }
