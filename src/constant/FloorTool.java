@@ -1,12 +1,12 @@
 package constant;
 
 public class FloorTool {
-    final private static int[] floor =
+    private static final int[] floor =
         {-3, -2, -1, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16};
-    final private static int floorAmount = 19;
-    final private static int down = 1;
-    final private static int up = 2;
-    final private static int still = 0;
+    private static final int floorAmount = 19;
+    private static final int down = 1;
+    private static final int up = 2;
+    private static final int still = 0;
     private static String downStr = "DOWN";
     private static String upStr = "UP";
     private static String stillStr = "STILL";
@@ -30,10 +30,6 @@ public class FloorTool {
 
     public static int index2Floor(int index) {
         return floor[index];
-    }
-
-    public static int[] getFloor() {
-        return floor;
     }
 
     // ---------- direction set and judge ----------
@@ -61,8 +57,8 @@ public class FloorTool {
         return dir == still;
     }
 
-    public static String getDirectionName(int dir){
-        switch (dir){
+    public static String getDirectionName(int dir) {
+        switch (dir) {
             case down:
                 return downStr;
             case up:

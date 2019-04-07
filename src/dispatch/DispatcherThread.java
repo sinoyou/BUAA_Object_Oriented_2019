@@ -5,11 +5,11 @@ import elevator.ElevatorThread;
 
 import java.util.ArrayList;
 
-public class DispatcherThread extends Thread{
+public class DispatcherThread extends Thread {
     private RequestList requestList;
     private ArrayList<ElevatorThread> registers;
 
-    public DispatcherThread(RequestList list){
+    public DispatcherThread(RequestList list) {
         this.requestList = list;
         registers = new ArrayList<>();
     }
@@ -23,8 +23,8 @@ public class DispatcherThread extends Thread{
                 if (oneRequest == null) {
                     break;
                 }
-                System.err.println(String.format("<Dispatcher>:Get a New Request" +
-                    " '%s'",oneRequest.toString()));
+                System.err.println(String.format("<Dispatcher>:Get a New " +
+                    "Request '%s'", oneRequest.toString()));
                 dispatch(oneRequest);
             }
             // 炒鱿鱼
@@ -39,12 +39,12 @@ public class DispatcherThread extends Thread{
     private void dispatch(PersonRequest oneRequest) {
         // have only one elevator, so give it directly
         ElevatorThread elevator = registers.get(0);
-        notifyElevator(elevator,oneRequest);
+        notifyElevator(elevator, oneRequest);
     }
 
-    private void squidAll(){
-        for(ElevatorThread elevator:registers){
-            notifyElevator(elevator,true);
+    private void squidAll() {
+        for (ElevatorThread elevator : registers) {
+            notifyElevator(elevator, true);
         }
     }
 
@@ -53,11 +53,12 @@ public class DispatcherThread extends Thread{
         registers.add(elevatorThread);
     }
 
-    private void notifyElevator(ElevatorThread elevator,PersonRequest personRequest){
+    private void notifyElevator(ElevatorThread elevator,
+                                PersonRequest personRequest) {
         elevator.getNotified(personRequest);
     }
 
-    private void notifyElevator(ElevatorThread elevator,Boolean terminate){
+    private void notifyElevator(ElevatorThread elevator, Boolean terminate) {
         elevator.getNotified(terminate);
     }
 }

@@ -70,33 +70,35 @@ public class PassengerList {
         }
     }
 
-    protected synchronized int directionCheck(int moveDirection, int floorIndex) {
-        boolean upTaskState = hasTask(floorIndex,FloorTool.setDirectionUp());
-        boolean downTaskState = hasTask(floorIndex,FloorTool.setDirectionDown());
+    protected synchronized int directionCheck(
+        int moveDirection, int floorIndex) {
+        boolean upTaskState = hasTask(floorIndex, FloorTool.setDirectionUp());
+        boolean downTaskState =
+            hasTask(floorIndex, FloorTool.setDirectionDown());
         // condition [上有下有，上有下无，上无下有，上无下无] * [up,down,still]
         // still 组
-        if(FloorTool.isStill(moveDirection)){
-            if(upTaskState && !downTaskState){
+        if (FloorTool.isStill(moveDirection)) {
+            if (upTaskState && !downTaskState) {
                 return FloorTool.setDirectionUp();
-            }else if(!upTaskState && downTaskState){
+            } else if (!upTaskState && downTaskState) {
                 return FloorTool.setDirectionDown();
-            }else if(upTaskState && downTaskState){
+            } else if (upTaskState && downTaskState) {
                 return FloorTool.setDirectionUp();
             }
         }
         // up 组
-        else if(FloorTool.isUp(moveDirection)){
-            if(!upTaskState && downTaskState){
+        else if (FloorTool.isUp(moveDirection)) {
+            if (!upTaskState && downTaskState) {
                 return FloorTool.setDirectionDown();
-            }else if(!upTaskState && !downTaskState){
+            } else if (!upTaskState && !downTaskState) {
                 return FloorTool.setDirectionStill();
             }
         }
         // down 组
-        else if(FloorTool.isDown(moveDirection)){
-            if(upTaskState && !downTaskState){
+        else if (FloorTool.isDown(moveDirection)) {
+            if (upTaskState && !downTaskState) {
                 return FloorTool.setDirectionUp();
-            }else if(!upTaskState && !downTaskState){
+            } else if (!upTaskState && !downTaskState) {
                 return FloorTool.setDirectionStill();
             }
         }
@@ -180,7 +182,7 @@ public class PassengerList {
         // putList.get(toFloor).remove(new Integer(id));
         runningTask--;
         System.err.println(String.format("<Elevator>:ID of Task: %d Finished."
-            ,id));
+            , id));
     }
 
 

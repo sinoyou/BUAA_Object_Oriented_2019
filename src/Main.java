@@ -22,7 +22,7 @@ public class Main {
         // Main thread is used for read
         ElevatorInput input = new ElevatorInput(System.in);
         PersonRequest request;
-        while(true){
+        while (true) {
             request = input.nextPersonRequest();
             // tell dispatcher no more request.
             if (request == null) {
