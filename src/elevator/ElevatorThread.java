@@ -48,13 +48,13 @@ public class ElevatorThread extends Thread {
         // check if need to open door for passenger exchange.
         // However, dispatcher can put new request after this, so door state
         // must be checked later. (this action is to save time in passList.)
-        if (passList.taskNow(floorIndex,moveDirection)) {
+        if (passList.taskNow(floorIndex, moveDirection)) {
             makeSureDoorOpen();
         }
 
         // check-in and check-out passenger (passenger with wrong direction can
         // be ignored to save door time.)
-        passList.passengerMove(floorIndex,moveDirection);
+        passList.passengerMove(floorIndex, moveDirection);
 
         // check if need to change direction
         int dir = moveDirection;
@@ -113,6 +113,8 @@ public class ElevatorThread extends Thread {
             floorIndex--;
             TimableOutput.println(String.format("ARRIVE-%d",
                 FloorTool.index2Floor(floorIndex)));
+        } else if (FloorTool.isStill(moveDirection)) {
+            sleep(3);
         }
     }
 
