@@ -7,10 +7,10 @@ import constant.TimeConst;
 import dispatch.DispatcherThread;
 
 public class ElevatorThread extends Thread {
-    private final PassengerList passList;
-    private int floorIndex;
-    private int moveDirection;
-    private boolean isDoorOpen;
+    private final PassengerList passList;         // sub ctrl list
+    private int floorIndex;                       // use Index to ignore neg num
+    private int moveDirection;                    // Up, Down, Still
+    private boolean isDoorOpen;                   // Door state
 
     public ElevatorThread(DispatcherThread dispatcherThread) {
         passList = new PassengerList(this);
@@ -53,7 +53,8 @@ public class ElevatorThread extends Thread {
             makeSureDoorOpen();
         }
 
-        // check-in and check-out passenger
+        // check-in and check-out passenger (passenger with wrong direction can
+        // be ignored to save door time.)
         passList.passengerMove(floorIndex,moveDirection);
 
         // check if need to change direction
@@ -99,6 +100,7 @@ public class ElevatorThread extends Thread {
             id, FloorTool.index2Floor(floorIndex)));
     }
 
+    // move elevator in right direction. when STILL state, no action performed.
     private void move() throws InterruptedException {
         if (FloorTool.isUp(moveDirection)) {
             makeSureDoorClose();

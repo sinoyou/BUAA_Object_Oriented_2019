@@ -25,11 +25,11 @@ public class PassengerList {
     public PassengerList(ElevatorThread elevator) {
         noMoreTask = false;
         runningTask = 0;
-        // initial upPickList and putList
-        int indexLength = FloorTool.getFloorAmount();
         upPickList = new ArrayList<>();
         downPickList = new ArrayList<>();
         putList = new ArrayList<>();
+        // initial upPickList and putList
+        int indexLength = FloorTool.getFloorAmount();
         for (int i = 0; i < indexLength; i++) {
             upPickList.add(i, new ArrayList<>());
             downPickList.add(i, new ArrayList<>());
@@ -49,7 +49,8 @@ public class PassengerList {
         boolean upPass = !upPickList.get(floorIndex).isEmpty();
         boolean downPass = !downPickList.get(floorIndex).isEmpty();
         boolean putPass = !putList.get(floorIndex).isEmpty();
-        if (FloorTool.isStill(moveDirection) && (upPass || downPass || putPass)) {
+        if (FloorTool.isStill(moveDirection) &&
+            (upPass || downPass || putPass)) {
             return true;
         } else if (FloorTool.isDown(moveDirection) && (downPass || putPass)) {
             return true;
@@ -57,12 +58,12 @@ public class PassengerList {
             return true;
         }
         return false;
-//        if (!upPickList.get(floorIndex).isEmpty() ||
-//            !putList.get(floorIndex).isEmpty()) {
-//            return true;
-//        } else {
-//            return false;
-//        }
+        //        if (!upPickList.get(floorIndex).isEmpty() ||
+        //            !putList.get(floorIndex).isEmpty()) {
+        //            return true;
+        //        } else {
+        //            return false;
+        //        }
     }
 
     // to tell elevator if need to continue move in the same direction.
@@ -171,7 +172,7 @@ public class PassengerList {
     // 当讨论沿路接乘客时，只有同方向乘客（稳定时双向均可）才可以, 送乘客不影响。
     protected synchronized void passengerMove(int floorIndex, int moveDirection)
         throws InterruptedException {
-        if(taskNow(floorIndex,moveDirection)){
+        if (taskNow(floorIndex, moveDirection)) {
             // pick passenger
             Iterator<Integer> upPickIt =
                 upPickList.get(floorIndex).iterator();
@@ -185,7 +186,7 @@ public class PassengerList {
                 havePickedPassenger(id);
             }
             // pick up DOWN passenger
-            while(downPickIt.hasNext()){
+            while (downPickIt.hasNext()) {
                 int id = downPickIt.next();
                 elevator.pullIn(id);
                 downPickIt.remove();
@@ -205,14 +206,14 @@ public class PassengerList {
         }
     }
 
-    // delete from upPickList and add to putList <--- elevator.runMethod
+    // add new sub mission to putList <--- elevator.runMethod
     protected synchronized void havePickedPassenger(int id) {
         fromMap.remove(id);
         int toFloor = toMap.get(id);
         putList.get(toFloor).add(id);
     }
 
-    // delete from putList == Task Finished
+    // runningTaskCount-- == Task Finished
     protected synchronized void havePutPassenger(int id) {
         toMap.remove(id);
         runningTask--;
