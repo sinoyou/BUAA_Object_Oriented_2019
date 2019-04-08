@@ -49,18 +49,18 @@ public class ElevatorThread extends Thread {
         // check if need to open door for passenger exchange.
         // However, dispatcher can put new request after this, so door state
         // must be checked later. (this action is to save time in passList.)
-        if (passList.taskNow(floorIndex)) {
+        if (passList.taskNow(floorIndex,moveDirection)) {
             makeSureDoorOpen();
         }
 
         // check-in and check-out passenger
-        passList.passengerMove(floorIndex);
+        passList.passengerMove(floorIndex,moveDirection);
 
         // check if need to change direction
         int dir = moveDirection;
         moveDirection = passList.directionCheck(moveDirection, floorIndex);
         if (dir != moveDirection) {
-            System.err.println(String.format("<Elevator> Direction Change:" +
+            System.err.println(String.format("<Elevator>:Direction Change:" +
                     "'%s' ---> '%s'", FloorTool.getDirectionName(dir),
                 FloorTool.getDirectionName(moveDirection)));
         }

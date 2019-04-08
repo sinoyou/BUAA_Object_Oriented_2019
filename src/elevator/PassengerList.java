@@ -12,7 +12,8 @@ import java.util.Iterator;
 // However, not only elevator thread can execute access method of the list,
 // dispatcher and (servant) can too.
 public class PassengerList {
-    private ArrayList<ArrayList<Integer>> pickList;     // contain floor index
+    private ArrayList<ArrayList<Integer>> upPickList;     // contain floor index
+    private ArrayList<ArrayList<Integer>> downPickList;   // contain floor index
     private ArrayList<ArrayList<Integer>> putList;      // contain floor index
     private HashMap<Integer, Integer> toMap;            // <id,floor index>
     private HashMap<Integer, Integer> fromMap;          // <id,floor index>
@@ -24,12 +25,14 @@ public class PassengerList {
     public PassengerList(ElevatorThread elevator) {
         noMoreTask = false;
         runningTask = 0;
-        // initial pickList and putList
+        // initial upPickList and putList
         int indexLength = FloorTool.getFloorAmount();
-        pickList = new ArrayList<>();
+        upPickList = new ArrayList<>();
+        downPickList = new ArrayList<>();
         putList = new ArrayList<>();
         for (int i = 0; i < indexLength; i++) {
-            pickList.add(i, new ArrayList<>());
+            upPickList.add(i, new ArrayList<>());
+            downPickList.add(i, new ArrayList<>());
             putList.add(i, new ArrayList<>());
         }
         // initial target list
@@ -42,27 +45,42 @@ public class PassengerList {
     // ---------- Elevator Help and Advice Function ----------
 
     // to tell elevator if need to open door in advance.
-    protected synchronized boolean taskNow(int floorIndex) {
-        if (!pickList.get(floorIndex).isEmpty() ||
-            !putList.get(floorIndex).isEmpty()) {
+    protected synchronized boolean taskNow(int floorIndex, int moveDirection) {
+        boolean upPass = !upPickList.get(floorIndex).isEmpty();
+        boolean downPass = !downPickList.get(floorIndex).isEmpty();
+        boolean putPass = !putList.get(floorIndex).isEmpty();
+        if (FloorTool.isStill(moveDirection) && (upPass || downPass || putPass)) {
             return true;
-        } else {
-            return false;
+        } else if (FloorTool.isDown(moveDirection) && (downPass || putPass)) {
+            return true;
+        } else if (FloorTool.isUp(moveDirection) && (upPass || putPass)) {
+            return true;
         }
+        return false;
+//        if (!upPickList.get(floorIndex).isEmpty() ||
+//            !putList.get(floorIndex).isEmpty()) {
+//            return true;
+//        } else {
+//            return false;
+//        }
     }
 
     // to tell elevator if need to continue move in the same direction.
     protected synchronized boolean hasTask(int floorIndex, int direction) {
         if (FloorTool.isDown(direction)) {
             for (int i = floorIndex - 1; i >= 0; i--) {
-                if (!pickList.get(i).isEmpty() || !putList.get(i).isEmpty()) {
+                if (!upPickList.get(i).isEmpty() ||
+                    !downPickList.get(i).isEmpty() ||
+                    !putList.get(i).isEmpty()) {
                     return true;
                 }
             }
             return false;
         } else {
             for (int i = floorIndex + 1; i < FloorTool.getFloorAmount(); i++) {
-                if (!pickList.get(i).isEmpty() || !putList.get(i).isEmpty()) {
+                if (!upPickList.get(i).isEmpty() ||
+                    !downPickList.get(i).isEmpty() ||
+                    !putList.get(i).isEmpty()) {
                     return true;
                 }
             }
@@ -88,17 +106,13 @@ public class PassengerList {
         }
         // up 组
         else if (FloorTool.isUp(moveDirection)) {
-            if (!upTaskState && downTaskState) {
-                return FloorTool.setDirectionDown();
-            } else if (!upTaskState && !downTaskState) {
+            if (!upTaskState) {
                 return FloorTool.setDirectionStill();
             }
         }
         // down 组
         else if (FloorTool.isDown(moveDirection)) {
-            if (upTaskState && !downTaskState) {
-                return FloorTool.setDirectionUp();
-            } else if (!upTaskState && !downTaskState) {
+            if (!downTaskState) {
                 return FloorTool.setDirectionStill();
             }
         }
@@ -129,7 +143,12 @@ public class PassengerList {
         int id = personRequest.getPersonId();
         int from = FloorTool.floor2Index(personRequest.getFromFloor());
         int to = FloorTool.floor2Index(personRequest.getToFloor());
-        pickList.get(from).add(id);
+        // judge direction and put into correct list
+        if (from - to < 0) {
+            upPickList.get(from).add(id);
+        } else {
+            downPickList.get(from).add(id);
+        }
         toMap.put(id, to);
         fromMap.put(id, from);
         notifyAll();
@@ -138,48 +157,64 @@ public class PassengerList {
     // just for unit test.
     protected synchronized void createNewTask(int id, int from, int to) {
         runningTask++;
-        pickList.get(from).add(id);
+        if (from - to <= 0) {
+            upPickList.get(from).add(id);
+        } else {
+            downPickList.get(from).add(id);
+        }
         toMap.put(id, to);
         fromMap.put(id, from);
         notifyAll();
     }
 
     // in present floor, passList will help elevator pick and put correct pass.
-    protected synchronized void passengerMove(int floorIndex)
+    // 当讨论沿路接乘客时，只有同方向乘客（稳定时双向均可）才可以, 送乘客不影响。
+    protected synchronized void passengerMove(int floorIndex, int moveDirection)
         throws InterruptedException {
-        Iterator<Integer> pickListPiece =
-            pickList.get(floorIndex).iterator();
-        // first pick up passenger
-        while (pickListPiece.hasNext()) {
-            int id = pickListPiece.next();
-            elevator.pullIn(id);
-            pickListPiece.remove();
-            havePickedPassenger(id);
-        }
+        if(taskNow(floorIndex,moveDirection)){
+            // pick passenger
+            Iterator<Integer> upPickIt =
+                upPickList.get(floorIndex).iterator();
+            Iterator<Integer> downPickIt =
+                downPickList.get(floorIndex).iterator();
+            // pick up UP passenger
+            while (upPickIt.hasNext()) {
+                int id = upPickIt.next();
+                elevator.pullIn(id);
+                upPickIt.remove();
+                havePickedPassenger(id);
+            }
+            // pick up DOWN passenger
+            while(downPickIt.hasNext()){
+                int id = downPickIt.next();
+                elevator.pullIn(id);
+                downPickIt.remove();
+                havePickedPassenger(id);
+            }
 
-        Iterator<Integer> putListPiece =
-            putList.get(floorIndex).iterator();
-        // then put out passenger
-        while (putListPiece.hasNext()) {
-            int id = putListPiece.next();
-            elevator.kickOut(id);
-            putListPiece.remove();
-            havePutPassenger(id);
+            // then put out passenger
+            Iterator<Integer> putListPiece =
+                putList.get(floorIndex).iterator();
+
+            while (putListPiece.hasNext()) {
+                int id = putListPiece.next();
+                elevator.kickOut(id);
+                putListPiece.remove();
+                havePutPassenger(id);
+            }
         }
     }
 
-    // delete from pickList and add to putList <--- elevator.runMethod
+    // delete from upPickList and add to putList <--- elevator.runMethod
     protected synchronized void havePickedPassenger(int id) {
         fromMap.remove(id);
         int toFloor = toMap.get(id);
-        // pickList.get(fromFloor).remove(new Integer(id));
         putList.get(toFloor).add(id);
     }
 
     // delete from putList == Task Finished
     protected synchronized void havePutPassenger(int id) {
         toMap.remove(id);
-        // putList.get(toFloor).remove(new Integer(id));
         runningTask--;
         System.err.println(String.format("<Elevator>:ID of Task: %d Finished."
             , id));
