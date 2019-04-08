@@ -14,9 +14,9 @@ import java.util.Iterator;
 public class PassengerList {
     private ArrayList<ArrayList<Integer>> upPickList;     // contain floor index
     private ArrayList<ArrayList<Integer>> downPickList;   // contain floor index
-    private ArrayList<ArrayList<Integer>> putList;      // contain floor index
-    private HashMap<Integer, Integer> toMap;            // <id,floor index>
-    private HashMap<Integer, Integer> fromMap;          // <id,floor index>
+    private ArrayList<ArrayList<Integer>> putList;        // contain floor index
+    private HashMap<Integer, Integer> toMap;              // <id,floor index>
+    private HashMap<Integer, Integer> fromMap;            // <id,floor index>
     private boolean noMoreTask;
     private int runningTask;
     private ElevatorThread elevator;
@@ -44,7 +44,7 @@ public class PassengerList {
 
     // ---------- Elevator Help and Advice Function ----------
 
-    // to tell elevator if need to open door in advance.
+    // to tell elevator if need to open door.
     protected synchronized boolean taskNow(int floorIndex, int moveDirection) {
         boolean upPass = !upPickList.get(floorIndex).isEmpty();
         boolean downPass = !downPickList.get(floorIndex).isEmpty();
@@ -194,13 +194,13 @@ public class PassengerList {
             }
 
             // then put out passenger
-            Iterator<Integer> putListPiece =
+            Iterator<Integer> putIt =
                 putList.get(floorIndex).iterator();
 
-            while (putListPiece.hasNext()) {
-                int id = putListPiece.next();
+            while (putIt.hasNext()) {
+                int id = putIt.next();
                 elevator.kickOut(id);
-                putListPiece.remove();
+                putIt.remove();
                 havePutPassenger(id);
             }
         }

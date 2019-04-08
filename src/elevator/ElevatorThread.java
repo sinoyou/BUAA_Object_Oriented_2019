@@ -35,7 +35,6 @@ public class ElevatorThread extends Thread {
             }
             makeSureDoorClose();
             System.err.println("@Elevator Shutdown with Normal State.");
-
         } catch (InterruptedException e) {
             System.err.println("@Elevator Shutdown with Error State.");
         }

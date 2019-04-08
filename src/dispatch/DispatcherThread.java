@@ -7,7 +7,7 @@ import java.util.ArrayList;
 
 public class DispatcherThread extends Thread {
     private RequestList requestList;
-    private ArrayList<ElevatorThread> registers;
+    private ArrayList<ElevatorThread> registers; // 后期可能考虑线程安全
 
     public DispatcherThread(RequestList list) {
         this.requestList = list;
