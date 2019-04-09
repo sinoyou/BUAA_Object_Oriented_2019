@@ -6,6 +6,7 @@ import constant.FloorTool;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
 
 // a passenger list is unique for an elevator.
 // All methods to access passenger list must through Elevator.
@@ -17,12 +18,15 @@ public class PassengerList {
     private ArrayList<ArrayList<Integer>> putList;        // contain floor index
     private HashMap<Integer, Integer> toMap;              // <id,floor index>
     private HashMap<Integer, Integer> fromMap;            // <id,floor index>
+    private LinkedList<Integer> orderList;                // id, record order
     private boolean noMoreTask;
     private int runningTask;
     private ElevatorThread elevator;
+    boolean switchALS;
 
     // ---------- Initial Function ----------
     public PassengerList(ElevatorThread elevator) {
+        switchALS = false;
         noMoreTask = false;
         runningTask = 0;
         upPickList = new ArrayList<>();
@@ -38,6 +42,8 @@ public class PassengerList {
         // initial target list
         toMap = new HashMap<>();
         fromMap = new HashMap<>();
+        // initial orderList
+        orderList = new LinkedList<>();
         // initial thread
         this.elevator = elevator;
     }
@@ -58,12 +64,6 @@ public class PassengerList {
             return true;
         }
         return false;
-        //        if (!upPickList.get(floorIndex).isEmpty() ||
-        //            !putList.get(floorIndex).isEmpty()) {
-        //            return true;
-        //        } else {
-        //            return false;
-        //        }
     }
 
     // to tell elevator if need to continue move in the same direction.
@@ -102,18 +102,27 @@ public class PassengerList {
             } else if (!upTaskState && downTaskState) {
                 return FloorTool.setDirectionDown();
             } else if (upTaskState && downTaskState) {
+                // Version 2.0 New Logic: When both dir is ok, choose priority.
+                if(switchALS){
+                    int priorityFloor = orderList.getFirst();
+                    if(floorIndex - priorityFloor>0){
+                        return FloorTool.setDirectionDown();
+                    }else {
+                        return FloorTool.setDirectionUp();
+                    }
+                }
                 return FloorTool.setDirectionUp();
             }
         }
         // up 组
         else if (FloorTool.isUp(moveDirection)) {
-            if (!upTaskState) {
+            if (!upTaskState || (elevator.getPassIn()==0 && switchALS)) {
                 return FloorTool.setDirectionStill();
             }
         }
         // down 组
         else if (FloorTool.isDown(moveDirection)) {
-            if (!downTaskState) {
+            if (!downTaskState || (elevator.getPassIn()==0 && switchALS)) {
                 return FloorTool.setDirectionStill();
             }
         }
@@ -158,6 +167,7 @@ public class PassengerList {
     // just for unit test.
     protected synchronized void createNewTask(int id, int from, int to) {
         runningTask++;
+        orderList.addLast(id);
         if (from - to <= 0) {
             upPickList.get(from).add(id);
         } else {
@@ -217,6 +227,7 @@ public class PassengerList {
     protected synchronized void havePutPassenger(int id) {
         toMap.remove(id);
         runningTask--;
+        orderList.remove(new Integer(id));
         System.err.println(String.format("<Elevator>:ID of Task: %d Finished."
             , id));
     }

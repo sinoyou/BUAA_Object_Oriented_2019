@@ -11,12 +11,14 @@ public class ElevatorThread extends Thread {
     private int floorIndex;                       // use Index to ignore neg num
     private int moveDirection;                    // Up, Down, Still
     private boolean isDoorOpen;                   // Door state
+    private int passIn;                           // number of pass in elevator
 
     public ElevatorThread(DispatcherThread dispatcherThread) {
         passList = new PassengerList(this);
         floorIndex = FloorTool.floor2Index(1);
         moveDirection = FloorTool.setDirectionStill();
         isDoorOpen = false;
+        passIn = 0;
         // 观察者模式构建
         dispatcherThread.register(this);
     }
@@ -89,12 +91,14 @@ public class ElevatorThread extends Thread {
 
     protected void kickOut(int id) throws InterruptedException {
         makeSureDoorOpen();
+        passIn--;
         TimableOutput.println(String.format("OUT-%d-%d",
             id, FloorTool.index2Floor(floorIndex)));
     }
 
     protected void pullIn(int id) throws InterruptedException {
         makeSureDoorOpen();
+        passIn++;
         TimableOutput.println(String.format("IN-%d-%d",
             id, FloorTool.index2Floor(floorIndex)));
     }
@@ -137,5 +141,10 @@ public class ElevatorThread extends Thread {
 
     private void noMoreRequest() {
         passList.setNoMoreTask();
+    }
+
+    // ---------- Elevator State Get Function ----------
+    public int getPassIn() {
+        return passIn;
     }
 }
