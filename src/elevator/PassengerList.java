@@ -26,7 +26,7 @@ public class PassengerList {
 
     // ---------- Initial Function ----------
     public PassengerList(ElevatorThread elevator) {
-        alsSwitch = false;
+        alsSwitch = true;
         noMoreTask = false;
         runningTask = 0;
         upPickList = new ArrayList<>();
@@ -149,10 +149,11 @@ public class PassengerList {
     protected synchronized void createNewTask(PersonRequest personRequest) {
         System.err.println(String.format("<Elevator>: A new Task '%s' Have " +
             "Received", personRequest.toString()));
-        runningTask++;
         int id = personRequest.getPersonId();
         int from = FloorTool.floor2Index(personRequest.getFromFloor());
         int to = FloorTool.floor2Index(personRequest.getToFloor());
+        runningTask++;
+        orderList.addLast(id);
         // judge direction and put into correct list
         if (from - to < 0) {
             upPickList.get(from).add(id);
