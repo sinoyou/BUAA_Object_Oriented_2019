@@ -26,7 +26,7 @@ public class PassengerList {
 
     // ---------- Initial Function ----------
     public PassengerList(ElevatorThread elevator) {
-        alsSwitch = true;
+        alsSwitch = false;
         noMoreTask = false;
         runningTask = 0;
         upPickList = new ArrayList<>();
@@ -104,7 +104,7 @@ public class PassengerList {
             } else if (upTaskState && downTaskState) {
                 // Version 2.0 New Logic: When both dir is ok, choose priority.
                 if (alsSwitch) {
-                    int priorityFloor = orderList.getFirst();
+                    int priorityFloor = fromMap.get(orderList.getFirst());
                     if (floorIndex - priorityFloor > 0) {
                         return FloorTool.setDirectionDown();
                     } else {
