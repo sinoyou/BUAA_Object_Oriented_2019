@@ -22,11 +22,11 @@ public class PassengerList {
     private boolean noMoreTask;
     private int runningTask;
     private ElevatorThread elevator;
-    boolean switchALS;
+    private boolean alsSwitch;
 
     // ---------- Initial Function ----------
     public PassengerList(ElevatorThread elevator) {
-        switchALS = false;
+        alsSwitch = false;
         noMoreTask = false;
         runningTask = 0;
         upPickList = new ArrayList<>();
@@ -103,11 +103,11 @@ public class PassengerList {
                 return FloorTool.setDirectionDown();
             } else if (upTaskState && downTaskState) {
                 // Version 2.0 New Logic: When both dir is ok, choose priority.
-                if(switchALS){
+                if (alsSwitch) {
                     int priorityFloor = orderList.getFirst();
-                    if(floorIndex - priorityFloor>0){
+                    if (floorIndex - priorityFloor > 0) {
                         return FloorTool.setDirectionDown();
-                    }else {
+                    } else {
                         return FloorTool.setDirectionUp();
                     }
                 }
@@ -116,13 +116,13 @@ public class PassengerList {
         }
         // up 组
         else if (FloorTool.isUp(moveDirection)) {
-            if (!upTaskState || (elevator.getPassIn()==0 && switchALS)) {
+            if (!upTaskState || (elevator.getPassIn() == 0 && alsSwitch)) {
                 return FloorTool.setDirectionStill();
             }
         }
         // down 组
         else if (FloorTool.isDown(moveDirection)) {
-            if (!downTaskState || (elevator.getPassIn()==0 && switchALS)) {
+            if (!downTaskState || (elevator.getPassIn() == 0 && alsSwitch)) {
                 return FloorTool.setDirectionStill();
             }
         }
