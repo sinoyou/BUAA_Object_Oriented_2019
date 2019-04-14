@@ -67,4 +67,9 @@ public class DispatcherThread extends Thread {
     private void notifyElevator(ElevatorThread elevator, Boolean terminate) {
         elevator.getNotified(terminate);
     }
+
+    // ---------- Task Feedback Function ----------
+    public void taskFeedback(int id,int floor){
+        requestList.taskFeedback(id,floor);
+    }
 }

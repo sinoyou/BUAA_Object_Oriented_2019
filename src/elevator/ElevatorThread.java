@@ -18,6 +18,7 @@ public class ElevatorThread extends Thread {
     private String name;                          // elevator's name
     private String type = "Elevator";
     private int maxAmount;                           // max passenger
+    private DispatcherThread dispatcher;
 
     public ElevatorThread(DispatcherThread dispatcherThread,
                           String name,
@@ -30,14 +31,15 @@ public class ElevatorThread extends Thread {
         moveDirection = FloorTool.setDirectionStill();
         isDoorOpen = false;
         passIn = 0;
-        // 观察者模式构建
-        dispatcherThread.register(this);
         // 速度和合法楼层构建
         this.moveSpeed = moveSpeed;
         this.doorSpeed = doorSpeed;
         this.legalFloor = legalFloor;
         this.name = name;
         this.maxAmount = maxAmount;
+        // 观察者模式构建
+        dispatcher = dispatcherThread;
+        dispatcherThread.register(this);
     }
 
     @Override
@@ -53,9 +55,9 @@ public class ElevatorThread extends Thread {
                 }
             }
             makeSureDoorClose();
-            DebugPrint.threadStatePrint(type,name,"Normal ShutDown");
+            DebugPrint.threadStatePrint(type, name, "Normal ShutDown");
         } catch (InterruptedException e) {
-            DebugPrint.threadStatePrint(type,name,"Error ShutDown");
+            DebugPrint.threadStatePrint(type, name, "Error ShutDown");
         }
     }
 
@@ -64,11 +66,14 @@ public class ElevatorThread extends Thread {
         // basic location movement
         move();
 
+        // update task
+        passList.taskValidate();
+
         // check if need to open door for passenger exchange.
         // However, dispatcher can put new request after this, so door state
         // must be checked later. (this action is to save time in passList.)
         boolean taskNow = passList.taskNow(floorIndex, moveDirection);
-        if(FloorTool.legalFloor(floorIndex,legalFloor)){
+        if (FloorTool.legalFloor(floorIndex, legalFloor)) {
             if (taskNow) {
                 makeSureDoorOpen();
             }
@@ -76,9 +81,9 @@ public class ElevatorThread extends Thread {
             // check-in and check-out passenger
             // passenger with wrong direction can be ignored to save door time.
             passList.passengerMove(floorIndex, moveDirection);
-        
-        }else {
-            if(taskNow){
+
+        } else {
+            if (taskNow) {
                 try {
                     throw new Exception("Unaccepted Mission.");
                 } catch (Exception e) {
@@ -91,11 +96,12 @@ public class ElevatorThread extends Thread {
         int dir = moveDirection;
         moveDirection = passList.directionCheck(moveDirection, floorIndex);
         if (dir != moveDirection) {
-            DebugPrint.errPrint(type,name,
+            DebugPrint.errPrint(type, name,
                 String.format("Direction Change: %s -> %s",
                     FloorTool.getDirectionName(dir),
                     FloorTool.getDirectionName(moveDirection)));
         }
+
     }
 
 
@@ -105,7 +111,7 @@ public class ElevatorThread extends Thread {
         if (!isDoorOpen) {
             isDoorOpen = true;
             TimableOutput.println(String.format("OPEN-%d-%s",
-                FloorTool.index2Floor(floorIndex),name));
+                FloorTool.index2Floor(floorIndex), name));
             sleep(this.doorSpeed);
         }
     }
@@ -114,7 +120,7 @@ public class ElevatorThread extends Thread {
         if (isDoorOpen) {
             sleep(this.doorSpeed);
             TimableOutput.println(String.format("CLOSE-%d-%s",
-                FloorTool.index2Floor(floorIndex),name));
+                FloorTool.index2Floor(floorIndex), name));
             isDoorOpen = false;
         }
     }
@@ -122,15 +128,16 @@ public class ElevatorThread extends Thread {
     protected void kickOut(int id) throws InterruptedException {
         makeSureDoorOpen();
         passIn--;
+        dispatcher.taskFeedback(id,FloorTool.index2Floor(floorIndex));
         TimableOutput.println(String.format("OUT-%d-%d-%s",
-            id, FloorTool.index2Floor(floorIndex),name));
+            id, FloorTool.index2Floor(floorIndex), name));
     }
 
     protected void pullIn(int id) throws InterruptedException {
         makeSureDoorOpen();
         passIn++;
         TimableOutput.println(String.format("IN-%d-%d-%s",
-            id, FloorTool.index2Floor(floorIndex),name));
+            id, FloorTool.index2Floor(floorIndex), name));
     }
 
     // move elevator in right direction. when STILL state, no action performed.
@@ -140,13 +147,13 @@ public class ElevatorThread extends Thread {
             sleep(this.moveSpeed);
             floorIndex++;
             TimableOutput.println(String.format("ARRIVE-%d-%s",
-                FloorTool.index2Floor(floorIndex),name));
+                FloorTool.index2Floor(floorIndex), name));
         } else if (FloorTool.isDown(moveDirection)) {
             makeSureDoorClose();
             sleep(this.moveSpeed);
             floorIndex--;
             TimableOutput.println(String.format("ARRIVE-%d-%s",
-                FloorTool.index2Floor(floorIndex),name));
+                FloorTool.index2Floor(floorIndex), name));
         } else if (FloorTool.isStill(moveDirection)) {
             sleep(3);
         }
@@ -156,7 +163,7 @@ public class ElevatorThread extends Thread {
     // ---------- DispatcherThread Helper Function ----------
 
     public void getNotified(PersonRequest personRequest) {
-        addNewTask(personRequest);
+        passList.addNewTask(personRequest);
     }
 
     public void getNotified(Boolean isTerminate) {
@@ -165,17 +172,13 @@ public class ElevatorThread extends Thread {
         }
     }
 
-    private void addNewTask(PersonRequest personRequest) {
-        passList.createNewTask(personRequest);
-    }
-
     private void noMoreRequest() {
         passList.setNoMoreTask();
     }
 
     // ---------- Elevator State Get Function ----------
     // 辨析Running task, Passin, maxAmount：电梯任务数、电梯内乘客数、电梯限载人数
-    public int getRunningtask(){
+    public int getRunningtask() {
         return passList.getRunningTask();
     }
 
@@ -199,7 +202,11 @@ public class ElevatorThread extends Thread {
         return legalFloor.clone();
     }
 
-    public boolean isFloorLegal(int floor){
-        return FloorTool.legalFloor(FloorTool.floor2Index(floor),legalFloor);
+    public boolean isFloorLegal(int floor) {
+        return FloorTool.legalFloor(FloorTool.floor2Index(floor), legalFloor);
+    }
+
+    public boolean isFull() {
+        return passIn == maxAmount;
     }
 }

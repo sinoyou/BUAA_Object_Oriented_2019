@@ -23,6 +23,7 @@ public class PassengerList {
     private boolean noMoreTask;
     private int runningTask;
     private ElevatorThread elevator;
+    private ArrayList<PersonRequest> taskCache;           // tasks to be added.
 
     // ---------- Initial Function ----------
     public PassengerList(ElevatorThread elevator) {
@@ -43,6 +44,8 @@ public class PassengerList {
         fromMap = new HashMap<>();
         // initial orderList
         orderList = new LinkedList<>();
+        // initial taskList
+        taskCache = new ArrayList<>();
         // initial thread
         this.elevator = elevator;
     }
@@ -54,6 +57,10 @@ public class PassengerList {
         boolean upPass = !upPickList.get(floorIndex).isEmpty();
         boolean downPass = !downPickList.get(floorIndex).isEmpty();
         boolean putPass = !putList.get(floorIndex).isEmpty();
+        // check passenger limit
+        if (!putPass && elevator.isFull()) {
+            return false;
+        }
         if (FloorTool.isStill(moveDirection) &&
             (upPass || downPass || putPass)) {
             return true;
@@ -124,21 +131,38 @@ public class PassengerList {
     // elevator a vacation(wait) or give out terminate signal.
     protected synchronized boolean terminateQuery()
         throws InterruptedException {
-        while (runningTask == 0) {
+        while (runningTask == 0 && taskCache.isEmpty()) {
             if (noMoreTask) {
                 return true;
             }
-            DebugPrint.threadStatePrint(elevator.getType(),elevator.getname(),"Rest");
+            DebugPrint.threadStatePrint(elevator.getType(), elevator.getname(), "Rest");
             wait();
-            DebugPrint.threadStatePrint(elevator.getType(),elevator.getname(),"Recover");
+            DebugPrint.threadStatePrint(elevator.getType(), elevator.getname(), "Recover");
         }
         return false;
     }
 
     // ---------- PassengerList Maintain Function ----------
-    // add to pick list and target list <--- elevator.static <--- dispatcher
-    protected synchronized void createNewTask(PersonRequest personRequest) {
-        DebugPrint.errPrint(elevator.getType(),elevator.getname(),
+    // add new request to taskCache (not running yet.)
+    protected synchronized void addNewTask(PersonRequest personRequest) {
+        taskCache.add(personRequest);
+        notifyAll();
+    }
+
+    // validate requests in cache to run state.
+    // 此处的策略可改变，例如可根据电梯当前运行任务数来新增任务
+    protected synchronized void taskValidate() {
+        Iterator<PersonRequest> it = taskCache.iterator();
+        // -------- strategy can vary --------
+        while (it.hasNext()) {
+            runTask(it.next());
+            it.remove();
+        }
+    }
+
+    // add to pick list and target list
+    protected synchronized void runTask(PersonRequest personRequest) {
+        DebugPrint.errPrint(elevator.getType(), elevator.getname(),
             String.format("A new Task '%s' Have Received",
                 personRequest.toString()));
         int id = personRequest.getPersonId();
@@ -163,36 +187,46 @@ public class PassengerList {
     protected synchronized void passengerMove(int floorIndex, int moveDirection)
         throws InterruptedException {
         if (taskNow(floorIndex, moveDirection)) {
-            // pick passenger
+
+            // put
+            Iterator<Integer> putIt =
+                putList.get(floorIndex).iterator();
+            putPassenger(putIt);
+
+            // pick
             Iterator<Integer> upPickIt =
                 upPickList.get(floorIndex).iterator();
             Iterator<Integer> downPickIt =
                 downPickList.get(floorIndex).iterator();
-            // pick up UP passenger
-            while (upPickIt.hasNext()) {
-                int id = upPickIt.next();
-                elevator.pullIn(id);
-                upPickIt.remove();
-                havePickedPassenger(id);
+            if (FloorTool.isUp(moveDirection)) {
+                pickPassenger(upPickIt);
+                pickPassenger(downPickIt);
+            } else {
+                pickPassenger(downPickIt);
+                pickPassenger(upPickIt);
             }
-            // pick up DOWN passenger
-            while (downPickIt.hasNext()) {
-                int id = downPickIt.next();
-                elevator.pullIn(id);
-                downPickIt.remove();
-                havePickedPassenger(id);
-            }
+        }
+    }
 
-            // then put out passenger
-            Iterator<Integer> putIt =
-                putList.get(floorIndex).iterator();
+    // put passenger action function
+    private synchronized void putPassenger(Iterator<Integer> it)
+        throws InterruptedException {
+        while(it.hasNext()){
+            int id = it.next();
+            elevator.kickOut(id);
+            it.remove();
+            havePutPassenger(id);
+        }
+    }
 
-            while (putIt.hasNext()) {
-                int id = putIt.next();
-                elevator.kickOut(id);
-                putIt.remove();
-                havePutPassenger(id);
-            }
+    // pick passenger action function
+    private synchronized void pickPassenger(Iterator<Integer> it)
+        throws InterruptedException {
+        while (it.hasNext() && !elevator.isFull()) {
+            int id = it.next();
+            elevator.pullIn(id);
+            it.remove();
+            havePickedPassenger(id);
         }
     }
 
@@ -208,15 +242,13 @@ public class PassengerList {
         toMap.remove(id);
         runningTask--;
         orderList.remove(new Integer(id));
-        DebugPrint.errPrint(elevator.getType(),elevator.getname(),
-            String.format("ID of Task: %d Finished",id));
     }
 
 
     // ---------- Terminate State Function ----------
     protected synchronized void setNoMoreTask() {
         noMoreTask = true;
-        DebugPrint.errPrint(elevator.getType(),elevator.getname(),
+        DebugPrint.errPrint(elevator.getType(), elevator.getname(),
             "Have Received Input Terminate Signal.");
         notifyAll();
     }

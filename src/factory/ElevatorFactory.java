@@ -30,7 +30,7 @@ public class ElevatorFactory {
         } else if (tag.equals("Caster")) {
             int[] legalList = {1, 3, 5, 7, 9, 11, 13, 15};
             return new ElevatorThread(dispatcherThread,
-                "c",
+                "C",
                 600,
                 200,
                 legalList,

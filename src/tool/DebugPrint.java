@@ -17,14 +17,14 @@ public class DebugPrint {
 
     public static void threadStatePrint(String type, String name, String state) {
         if (debugMode) {
-            System.err.println(String.format("@<%s %s>:State Change To %s"
+            System.err.println(String.format("@<%s %s>:State -> %s"
                 , type, name, state));
         }
     }
 
     public static void threadStatePrint(String type, String state) {
         if (debugMode) {
-            System.err.println(String.format("@<%s>:State Change To %s"
+            System.err.println(String.format("@<%s>:State -> %s"
                 , type, state));
         }
     }
