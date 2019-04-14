@@ -1,7 +1,6 @@
 package dispatch;
 
 import com.oocourse.elevator3.PersonRequest;
-import sun.security.ssl.Debug;
 import tool.DebugPrint;
 
 import java.util.HashMap;
@@ -45,9 +44,7 @@ public class RequestList {
             if(noMoreRequest && destinationMap.isEmpty()){
                 return null;
             }
-            DebugPrint.threadStatePrint("Dispatcher", "Rest");
             wait();
-            DebugPrint.threadStatePrint("Dispatcher", "Recover");
         }
         /*
         if (list.isEmpty()) {

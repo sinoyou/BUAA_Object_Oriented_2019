@@ -73,7 +73,7 @@ public class ElevatorThread extends Thread {
         // However, dispatcher can put new request after this, so door state
         // must be checked later. (this action is to save time in passList.)
         boolean taskNow = passList.taskNow(floorIndex, moveDirection);
-        if (FloorTool.legalFloor(floorIndex, legalFloor)) {
+        if (FloorTool.isLegalFloor(floorIndex, legalFloor)) {
             if (taskNow) {
                 makeSureDoorOpen();
             }
@@ -81,15 +81,6 @@ public class ElevatorThread extends Thread {
             // check-in and check-out passenger
             // passenger with wrong direction can be ignored to save door time.
             passList.passengerMove(floorIndex, moveDirection);
-
-        } else {
-            if (taskNow) {
-                try {
-                    throw new Exception("Unaccepted Mission.");
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
         }
 
         // check if need to change direction
@@ -176,10 +167,44 @@ public class ElevatorThread extends Thread {
         passList.setNoMoreTask();
     }
 
+    public int timeEstimate(int floor,int direction){
+        int timeCount = 0;
+        int presentIndex = floorIndex;
+        int tarIndex = FloorTool.floor2Index(floor);
+        int presentDirection = moveDirection;
+        // still mode
+        if(FloorTool.isStill(presentDirection)){
+            presentDirection = FloorTool.getDirection(presentIndex,tarIndex);
+            while(presentIndex!=tarIndex){
+                if(passList.taskNow(presentIndex,presentDirection)){
+                    timeCount += doorSpeed*2;
+                }
+                presentIndex = FloorTool.directionMove(presentDirection,presentIndex);
+                timeCount += moveSpeed;
+            }
+        }
+        // direction mode
+        else {
+            while(presentIndex!=tarIndex){
+                if(passList.taskNow(presentIndex,presentDirection)){
+                    timeCount += doorSpeed*2;
+                }
+                if(!passList.hasTask(presentIndex,presentDirection) &&
+                    FloorTool.isOnTheWay(presentIndex,tarIndex,presentDirection)){
+                    presentDirection = FloorTool.getOppDirection(presentDirection);
+                }
+                presentIndex = FloorTool.directionMove(presentDirection,presentIndex);
+                timeCount += moveSpeed;
+            }
+        }
+        return timeCount;
+    }
+
+
     // ---------- Elevator State Get Function ----------
     // 辨析Running task, Passin, maxAmount：电梯任务数、电梯内乘客数、电梯限载人数
-    public int getRunningtask() {
-        return passList.getRunningTask();
+    public int getTotalTask() {
+        return passList.getTotalTask();
     }
 
     public int getPassIn() {
@@ -203,7 +228,7 @@ public class ElevatorThread extends Thread {
     }
 
     public boolean isFloorLegal(int floor) {
-        return FloorTool.legalFloor(FloorTool.floor2Index(floor), legalFloor);
+        return FloorTool.isLegalFloor(FloorTool.floor2Index(floor), legalFloor);
     }
 
     public boolean isFull() {

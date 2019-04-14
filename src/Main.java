@@ -18,9 +18,13 @@ public class Main {
         DispatcherThread dispatcher = new DispatcherThread(requestList);
         ElevatorFactory factory = new ElevatorFactory(dispatcher); // factory
         ElevatorThread elevator1 = factory.create("Archer");
+        ElevatorThread elevator2 = factory.create("Berserker");
+        ElevatorThread elevator3 = factory.create("Caster");
         // start thread
         dispatcher.start();
         elevator1.start();
+        elevator2.start();
+        elevator3.start();
 
         // Main thread is used for read
         ElevatorInput input = new ElevatorInput(System.in);

@@ -145,7 +145,20 @@ public class PassengerList {
     // ---------- PassengerList Maintain Function ----------
     // add new request to taskCache (not running yet.)
     protected synchronized void addNewTask(PersonRequest personRequest) {
-        taskCache.add(personRequest);
+        int from = personRequest.getFromFloor();
+        int to = personRequest.getToFloor();
+        int[] legalList = elevator.getLegalFloor();
+        if(!FloorTool.isLegalFloor(FloorTool.floor2Index(from),legalList)
+        || !FloorTool.isLegalFloor(FloorTool.floor2Index(to),legalList)){
+            try {
+                throw new Exception(String.format("Impossible Task <%s> For %s",
+                    personRequest.toString(), elevator.getname()));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }else {
+            taskCache.add(personRequest);
+        }
         notifyAll();
     }
 
@@ -158,12 +171,13 @@ public class PassengerList {
             runTask(it.next());
             it.remove();
         }
+        notifyAll();
     }
 
     // add to pick list and target list
     protected synchronized void runTask(PersonRequest personRequest) {
         DebugPrint.errPrint(elevator.getType(), elevator.getname(),
-            String.format("A new Task '%s' Have Received",
+            String.format("A new Task '%s' Have Been Validated",
                 personRequest.toString()));
         int id = personRequest.getPersonId();
         int from = FloorTool.floor2Index(personRequest.getFromFloor());
@@ -254,7 +268,7 @@ public class PassengerList {
     }
 
     // ---------- State Query Function ----------
-    public synchronized int getRunningTask() {
-        return runningTask;
+    public synchronized int getTotalTask() {
+        return runningTask+taskCache.size();
     }
 }

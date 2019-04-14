@@ -68,11 +68,55 @@ public class FloorTool {
     }
 
     // debug: legal list contains floor, must transform to index.
-    public static boolean legalFloor(int floorIndex, int[] legalList) {
+    public static boolean isLegalFloor(int floorIndex, int[] legalList) {
         for (int i = 0; i < legalList.length; i++) {
             if (floor2Index(legalList[i]) == floorIndex) {
                 return true;
             }
+        }
+        return false;
+    }
+
+    public static boolean isDirectTransport(int from, int to, int[] legalList) {
+        return (isLegalFloor(floor2Index(from), legalList)
+            && isLegalFloor(floor2Index(to), legalList));
+    }
+
+    public static int directionMove(int direction, int floorIndex) {
+        if (isUp(direction)) {
+            return floorIndex + 1;
+        } else if (isDown(direction)) {
+            return floorIndex - 1;
+        } else {
+            return floorIndex;
+        }
+    }
+
+    public static int getOppDirection(int direction) {
+        if (isUp(direction)) {
+            return setDirectionUp();
+        } else if (isDown(direction)) {
+            return setDirectionUp();
+        } else {
+            return direction;
+        }
+    }
+
+    public static int getDirection(int from, int to) {
+        if (from > to) {
+            return setDirectionDown();
+        } else if (from < to) {
+            return setDirectionUp();
+        } else {
+            return setDirectionStill();
+        }
+    }
+
+    public static boolean isOnTheWay(int from, int to, int direction) {
+        if (isDown(direction) && from - to > 0) {
+            return true;
+        } else if (isUp(direction) && from - to < 0) {
+            return true;
         }
         return false;
     }

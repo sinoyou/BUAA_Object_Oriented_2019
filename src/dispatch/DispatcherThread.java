@@ -3,6 +3,7 @@ package dispatch;
 import com.oocourse.elevator3.PersonRequest;
 import elevator.ElevatorThread;
 import tool.DebugPrint;
+import tool.FloorTool;
 
 import java.util.ArrayList;
 
@@ -39,9 +40,28 @@ public class DispatcherThread extends Thread {
 
     // ---------- Dispatch and Ctrl Function ----------
     private void dispatch(PersonRequest oneRequest) {
-        // have only one elevator, so give it directly
-        ElevatorThread elevator = registers.get(0);
-        notifyElevator(elevator, oneRequest);
+        int from = oneRequest.getFromFloor();
+        int to = oneRequest.getToFloor();
+        // can go there directly
+        boolean flag = false;
+        for(ElevatorThread register:registers){
+            if(FloorTool.isDirectTransport(from,to,register.getLegalFloor())){
+                flag = true;
+                notifyElevator(register, oneRequest);
+                break;
+            }
+        }
+        // can not go there directly
+        if(!flag){
+            PersonRequest newOne = new PersonRequest(from,1,oneRequest.getPersonId());
+            for(ElevatorThread register:registers){
+                if(FloorTool.isDirectTransport(from,1,register.getLegalFloor()))
+                {
+                    notifyElevator(register, newOne);
+                    break;
+                }
+            }
+        }
     }
 
     private void squidAll() {
