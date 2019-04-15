@@ -5,7 +5,8 @@ public class DebugPrint {
 
     public static void errPrint(String type, String name, String content) {
         if (debugMode) {
-            System.err.println(String.format("<%s %s>:%s", type, name, content));
+            System.err.println(String.format("<%s %s>:%s",
+                type, name, content));
         }
     }
 
@@ -15,7 +16,9 @@ public class DebugPrint {
         }
     }
 
-    public static void threadStatePrint(String type, String name, String state) {
+    public static void threadStatePrint(String type,
+                                        String name,
+                                        String state) {
         if (debugMode) {
             System.err.println(String.format("@<%s %s>:State -> %s"
                 , type, name, state));

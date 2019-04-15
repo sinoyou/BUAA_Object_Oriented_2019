@@ -20,7 +20,8 @@ public class ElevatorFactory {
                 legalList,
                 6);
         } else if (tag.equals("Berserker")) {
-            int[] legalList = {-2, -1, 1, 2, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
+            int[] legalList = {-2, -1, 1, 2, 4, 5, 6, 7, 8, 9,
+                10, 11, 12, 13, 14, 15};
             return new ElevatorThread(dispatcherThread,
                 "B",
                 500,

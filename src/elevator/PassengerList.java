@@ -135,9 +135,11 @@ public class PassengerList {
             if (noMoreTask) {
                 return true;
             }
-            DebugPrint.threadStatePrint(elevator.getType(), elevator.getname(), "Rest");
+            DebugPrint.threadStatePrint(elevator.getType(),
+                elevator.getname(), "Rest");
             wait();
-            DebugPrint.threadStatePrint(elevator.getType(), elevator.getname(), "Recover");
+            DebugPrint.threadStatePrint(elevator.getType(),
+                elevator.getname(), "Recover");
         }
         return false;
     }
@@ -148,15 +150,17 @@ public class PassengerList {
         int from = personRequest.getFromFloor();
         int to = personRequest.getToFloor();
         int[] legalList = elevator.getLegalFloor();
-        if(!FloorTool.isLegalFloor(FloorTool.floor2Index(from),legalList)
-        || !FloorTool.isLegalFloor(FloorTool.floor2Index(to),legalList)){
+        if (!FloorTool.isLegalFloorIndex(FloorTool.floor2Index(from),
+            legalList)
+            || !FloorTool.isLegalFloorIndex(FloorTool.floor2Index(to),
+            legalList)) {
             try {
                 throw new Exception(String.format("Impossible Task <%s> For %s",
                     personRequest.toString(), elevator.getname()));
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        }else {
+        } else {
             taskCache.add(personRequest);
         }
         notifyAll();
@@ -168,8 +172,19 @@ public class PassengerList {
         Iterator<PersonRequest> it = taskCache.iterator();
         // -------- strategy can vary --------
         while (it.hasNext()) {
-            runTask(it.next());
-            it.remove();
+            PersonRequest next = it.next();
+            // 通过增加规则的限制，让繁忙的A电梯不主动地去低层接乘客。
+            if (elevator.getname().equals("AA") && next.getFromFloor() <= 1) {
+                if ((elevator.getFloorIndex() <= 3 &&
+                    FloorTool.isDown(elevator.getMoveDirection()))
+                    || runningTask == 0) {
+                    runTask(next);
+                    it.remove();
+                }
+            } else {
+                runTask(next);
+                it.remove();
+            }
         }
         notifyAll();
     }
@@ -225,7 +240,7 @@ public class PassengerList {
     // put passenger action function
     private synchronized void putPassenger(Iterator<Integer> it)
         throws InterruptedException {
-        while(it.hasNext()){
+        while (it.hasNext()) {
             int id = it.next();
             elevator.kickOut(id);
             it.remove();
@@ -269,6 +284,6 @@ public class PassengerList {
 
     // ---------- State Query Function ----------
     public synchronized int getTotalTask() {
-        return runningTask+taskCache.size();
+        return runningTask + taskCache.size();
     }
 }

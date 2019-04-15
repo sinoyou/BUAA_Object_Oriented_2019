@@ -68,7 +68,7 @@ public class FloorTool {
     }
 
     // debug: legal list contains floor, must transform to index.
-    public static boolean isLegalFloor(int floorIndex, int[] legalList) {
+    public static boolean isLegalFloorIndex(int floorIndex, int[] legalList) {
         for (int i = 0; i < legalList.length; i++) {
             if (floor2Index(legalList[i]) == floorIndex) {
                 return true;
@@ -78,8 +78,8 @@ public class FloorTool {
     }
 
     public static boolean isDirectTransport(int from, int to, int[] legalList) {
-        return (isLegalFloor(floor2Index(from), legalList)
-            && isLegalFloor(floor2Index(to), legalList));
+        return (isLegalFloorIndex(floor2Index(from), legalList)
+            && isLegalFloorIndex(floor2Index(to), legalList));
     }
 
     public static int directionMove(int direction, int floorIndex) {

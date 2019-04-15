@@ -9,7 +9,7 @@ import java.util.ArrayList;
 
 public class DispatcherThread extends Thread {
     private RequestList requestList;
-    final private ArrayList<ElevatorThread> registers; // 考虑线程安全
+    private final ArrayList<ElevatorThread> registers; // 考虑线程安全
     private String type = "Dispatcher";
 
     public DispatcherThread(RequestList list) {
@@ -26,46 +26,57 @@ public class DispatcherThread extends Thread {
                 if (oneRequest == null) {
                     break;
                 }
-                DebugPrint.errPrint(type,String.format("Get a New Request '%s'",
-                    oneRequest.toString()));
+                DebugPrint.errPrint(type,
+                    String.format("Get a New Request '%s'",
+                        oneRequest.toString()));
                 dispatch(oneRequest);
             }
             // 炒鱿鱼
             squidAll();
-            DebugPrint.threadStatePrint(type,"Normal ShutDown");
+            DebugPrint.threadStatePrint(type, "Normal ShutDown");
         } catch (InterruptedException e) {
-            DebugPrint.threadStatePrint(type,"Error ShutDown");
+            DebugPrint.threadStatePrint(type, "Error ShutDown");
         }
     }
 
     // ---------- Dispatch and Ctrl Function ----------
     private void dispatch(PersonRequest oneRequest) {
+        ArtificialDecision artificial =
+            new ArtificialDecision(oneRequest, registers);
+        notifyElevator(artificial.getTaskElevator(), artificial.getTarTask());
+        /*
         int from = oneRequest.getFromFloor();
         int to = oneRequest.getToFloor();
         // can go there directly
         boolean flag = false;
-        for(ElevatorThread register:registers){
-            if(FloorTool.isDirectTransport(from,to,register.getLegalFloor())){
+        for (ElevatorThread register : registers) {
+            if (FloorTool.isDirectTransport(from,
+                to,
+                register.getLegalFloor())) {
                 flag = true;
                 notifyElevator(register, oneRequest);
                 break;
             }
         }
         // can not go there directly
-        if(!flag){
-            PersonRequest newOne = new PersonRequest(from,1,oneRequest.getPersonId());
-            for(ElevatorThread register:registers){
-                if(FloorTool.isDirectTransport(from,1,register.getLegalFloor()))
-                {
+        if (!flag) {
+            PersonRequest newOne = new PersonRequest(from,
+                1,
+                oneRequest.getPersonId());
+            for (ElevatorThread register : registers) {
+                if (FloorTool.isDirectTransport(from,
+                    1,
+                    register.getLegalFloor())) {
                     notifyElevator(register, newOne);
                     break;
                 }
             }
         }
+        */
     }
 
     private void squidAll() {
-        synchronized (registers){
+        synchronized (registers) {
             for (ElevatorThread elevator : registers) {
                 notifyElevator(elevator, true);
             }
@@ -74,13 +85,15 @@ public class DispatcherThread extends Thread {
 
     // ---------- Message and Notify Function ----------
     public void register(ElevatorThread elevatorThread) {
-        synchronized (registers){
+        synchronized (registers) {
             registers.add(elevatorThread);
         }
     }
 
     private void notifyElevator(ElevatorThread elevator,
                                 PersonRequest personRequest) {
+        DebugPrint.errPrint(type, String.format("Task <%s> dispatched to %s",
+            personRequest.toString(), elevator.getname()));
         elevator.getNotified(personRequest);
     }
 
@@ -89,7 +102,7 @@ public class DispatcherThread extends Thread {
     }
 
     // ---------- Task Feedback Function ----------
-    public void taskFeedback(int id,int floor){
-        requestList.taskFeedback(id,floor);
+    public void taskFeedback(int id, int floor) {
+        requestList.taskFeedback(id, floor);
     }
 }

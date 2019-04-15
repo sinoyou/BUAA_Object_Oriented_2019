@@ -17,13 +17,13 @@ public class Main {
         RequestList requestList = RequestList.getInstance();
         DispatcherThread dispatcher = new DispatcherThread(requestList);
         ElevatorFactory factory = new ElevatorFactory(dispatcher); // factory
-        ElevatorThread elevator1 = factory.create("Archer");
-        ElevatorThread elevator2 = factory.create("Berserker");
-        ElevatorThread elevator3 = factory.create("Caster");
         // start thread
         dispatcher.start();
+        ElevatorThread elevator1 = factory.create("Archer");
         elevator1.start();
+        ElevatorThread elevator2 = factory.create("Berserker");
         elevator2.start();
+        ElevatorThread elevator3 = factory.create("Caster");
         elevator3.start();
 
         // Main thread is used for read
@@ -45,10 +45,12 @@ public class Main {
         try {
             dispatcher.join();
             elevator1.join();
-            DebugPrint.threadStatePrint("Main","Normal ShutDown");
+            elevator2.join();
+            elevator3.join();
+            DebugPrint.threadStatePrint("Main", "Normal ShutDown");
         } catch (InterruptedException e) {
             e.printStackTrace();
-            DebugPrint.threadStatePrint("Main","Error ShutDown");
+            DebugPrint.threadStatePrint("Main", "Error ShutDown");
         }
     }
 }

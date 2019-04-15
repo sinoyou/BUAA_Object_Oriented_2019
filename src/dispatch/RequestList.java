@@ -41,7 +41,7 @@ public class RequestList {
     // executed by dispatcher thread
     public synchronized PersonRequest getRequest() throws InterruptedException {
         while (list.isEmpty()) {
-            if(noMoreRequest && destinationMap.isEmpty()){
+            if (noMoreRequest && destinationMap.isEmpty()) {
                 return null;
             }
             wait();
@@ -60,7 +60,7 @@ public class RequestList {
         int des = destinationMap.get(id);
         if (des == floor) {
             DebugPrint.errPrint("Dispatcher",
-                String.format("ID %d Task Finished",id));
+                String.format("ID %d Task Finished", id));
             destinationMap.remove(id);
         } else {
             PersonRequest subTask = new PersonRequest(floor, des, id);
