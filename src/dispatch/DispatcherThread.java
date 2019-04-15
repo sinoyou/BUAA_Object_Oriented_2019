@@ -3,7 +3,6 @@ package dispatch;
 import com.oocourse.elevator3.PersonRequest;
 import elevator.ElevatorThread;
 import tool.DebugPrint;
-import tool.FloorTool;
 
 import java.util.ArrayList;
 

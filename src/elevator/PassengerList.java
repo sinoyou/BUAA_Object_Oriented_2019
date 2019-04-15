@@ -173,18 +173,8 @@ public class PassengerList {
         // -------- strategy can vary --------
         while (it.hasNext()) {
             PersonRequest next = it.next();
-            // 通过增加规则的限制，让繁忙的A电梯不主动地去低层接乘客。
-            if (elevator.getname().equals("AA") && next.getFromFloor() <= 1) {
-                if ((elevator.getFloorIndex() <= 3 &&
-                    FloorTool.isDown(elevator.getMoveDirection()))
-                    || runningTask == 0) {
-                    runTask(next);
-                    it.remove();
-                }
-            } else {
-                runTask(next);
-                it.remove();
-            }
+            runTask(next);
+            it.remove();
         }
         notifyAll();
     }
