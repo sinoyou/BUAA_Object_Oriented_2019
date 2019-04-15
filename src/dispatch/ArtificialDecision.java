@@ -34,11 +34,11 @@ public class ArtificialDecision {
         boolean isDirectTask = isDirectTask();
         // if direct task, then split as strategy.
         if (isDirectTask) {
-            taskElevator = getDirectTaskElevator(oriRequest.getFromFloor(),
+            taskElevator = getDirectTaskElevator2(oriRequest.getFromFloor(),
                 oriRequest.getToFloor());
             tarTask = oriRequest;
         } else {
-            setSubTask();
+            setSubTask2();
         }
     }
 
@@ -78,7 +78,7 @@ public class ArtificialDecision {
         }
         tarTask = new PersonRequest(oriRequest.getFromFloor(),
             subTaskToFloor, oriRequest.getPersonId());
-        taskElevator = getDirectTaskElevator(oriRequest.getFromFloor(),
+        taskElevator = getDirectTaskElevator2(oriRequest.getFromFloor(),
             subTaskToFloor);
     }
 
@@ -95,7 +95,7 @@ public class ArtificialDecision {
         }
         tarTask = new PersonRequest(oriRequest.getFromFloor(),
             subTaskToFloor, oriRequest.getPersonId());
-        taskElevator = getDirectTaskElevator(oriRequest.getFromFloor(),
+        taskElevator = getDirectTaskElevator2(oriRequest.getFromFloor(),
             subTaskToFloor);
     }
 

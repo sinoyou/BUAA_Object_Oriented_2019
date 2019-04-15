@@ -149,11 +149,7 @@ public class PassengerList {
     protected synchronized void addNewTask(PersonRequest personRequest) {
         int from = personRequest.getFromFloor();
         int to = personRequest.getToFloor();
-        int[] legalList = elevator.getLegalFloor();
-        if (!FloorTool.isLegalFloorIndex(FloorTool.floor2Index(from),
-            legalList)
-            || !FloorTool.isLegalFloorIndex(FloorTool.floor2Index(to),
-            legalList)) {
+        if (!elevator.isFloorLegal(from) || !elevator.isFloorLegal(to)) {
             try {
                 throw new Exception(String.format("Impossible Task <%s> For %s",
                     personRequest.toString(), elevator.getname()));
@@ -220,6 +216,9 @@ public class PassengerList {
             if (FloorTool.isUp(moveDirection)) {
                 pickPassenger(upPickIt);
                 pickPassenger(downPickIt);
+            } else if (FloorTool.isDown(moveDirection)) {
+                pickPassenger(downPickIt);
+                pickPassenger(upPickIt);
             } else {
                 pickPassenger(downPickIt);
                 pickPassenger(upPickIt);

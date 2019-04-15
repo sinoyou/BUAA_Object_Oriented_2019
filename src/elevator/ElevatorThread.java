@@ -73,11 +73,11 @@ public class ElevatorThread extends Thread {
         // update task
         passList.taskValidate();
 
-        // check if need to open door for passenger exchange.
-        // However, dispatcher can put new request after this, so door state
-        // must be checked later. (this action is to save time in passList.)
         boolean taskNow = passList.taskNow(floorIndex, moveDirection);
-        if (FloorTool.isLegalFloorIndex(floorIndex, legalFloor)) {
+        if (isFloorLegal(FloorTool.index2Floor(floorIndex))) {
+            // check if need to open door for passenger exchange.
+            // However, dispatcher can put new request after this, so door state
+            // must be checked later. (this action is to save time in passList.)
             if (taskNow) {
                 makeSureDoorOpen();
             }
