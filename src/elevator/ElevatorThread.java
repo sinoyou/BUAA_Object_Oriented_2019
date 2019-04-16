@@ -189,6 +189,13 @@ public class ElevatorThread extends Thread {
         return FloorTool.isDirectTransport(from, to, legalFloor);
     }
 
+    public int targetFloorEstimate(int targetFloor) {
+        return passList.targetFloorIndexEstimate(
+            moveDirection,
+            floorIndex,
+            FloorTool.floor2Index(targetFloor));
+    }
+
 
     // ---------- Elevator State Get Function ----------
     // 辨析Running task, Passin, maxAmount：电梯任务数、电梯内乘客数、电梯限载人数
@@ -210,10 +217,6 @@ public class ElevatorThread extends Thread {
 
     public String getType() {
         return type;
-    }
-
-    public int[] getLegalFloor() {
-        return legalFloor.clone();
     }
 
     public boolean isFloorLegal(int floor) {

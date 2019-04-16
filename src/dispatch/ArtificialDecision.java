@@ -132,22 +132,29 @@ public class ArtificialDecision {
             return elevatorB;
         }
         // a b c = 001, 011, 101, 111
-        {
-            if (directTaskC) {
-                return elevatorC;
-            }
-            // a b c = 010
-            else if (!directTaskA && directTaskB && !directTaskC) {
+        if (directTaskC) {
+            if (directTaskB && !elevatorB.isFull() &&
+                (elevatorB.targetFloorEstimate(from) * 5
+                    <= elevatorC.targetFloorEstimate(from) * 6)) {
                 return elevatorB;
             }
-            // a b c = 110
-            else if (directTaskA && directTaskB && !directTaskC) {
-                return elevatorB;
-            }
-            // a b c = 100
-            else if (directTaskA && !directTaskB && !directTaskC) {
+            return elevatorC;
+        }
+        // a b c = 010
+        else if (!directTaskA && directTaskB && !directTaskC) {
+            return elevatorB;
+        }
+        // a b c = 110
+        else if (directTaskA && directTaskB && !directTaskC) {
+            if (elevatorA.targetFloorEstimate(from) * 4 <=
+                elevatorB.targetFloorEstimate(from) * 5) {
                 return elevatorA;
             }
+            return elevatorB;
+        }
+        // a b c = 100
+        else if (directTaskA && !directTaskB && !directTaskC) {
+            return elevatorA;
         }
         try {
             throw new Exception("Impossible Direct Transform");

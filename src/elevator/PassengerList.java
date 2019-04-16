@@ -144,6 +144,33 @@ public class PassengerList {
         return false;
     }
 
+    public synchronized int targetFloorIndexEstimate(int direction,
+                                                     int oriIndex,
+                                                     int tarIndex) {
+        // still mode
+        if (FloorTool.isStill(direction)) {
+            return Math.abs(oriIndex - tarIndex);
+        }
+        // in the same direction
+        else if (FloorTool.getDirection(oriIndex, tarIndex) == direction) {
+            return Math.abs(oriIndex - tarIndex);
+        }
+        // in the opposite direction
+        else {
+            int i = 0;
+            if (FloorTool.isDown(direction)) {
+                i = -1;
+            } else {
+                i = 1;
+            }
+            int findIndex = oriIndex;
+            while (hasTask(findIndex, direction)) {
+                findIndex = findIndex + i;
+            }
+            return i * 2 + Math.abs(oriIndex - tarIndex);
+        }
+    }
+
     // ---------- PassengerList Maintain Function ----------
     // add new request to taskCache (not running yet.)
     protected synchronized void addNewTask(PersonRequest personRequest) {
@@ -275,4 +302,5 @@ public class PassengerList {
     public synchronized int getTotalTask() {
         return runningTask + taskCache.size();
     }
+
 }
