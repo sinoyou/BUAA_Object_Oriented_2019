@@ -20,6 +20,7 @@ public class ElevatorThread extends Thread {
     private int maxAmount;                           // max passenger
     private DispatcherThread dispatcher;
     private int taskCount;
+    private static final Object writeLock = new Object();
 
     public ElevatorThread(DispatcherThread dispatcherThread,
                           String name,
@@ -105,8 +106,10 @@ public class ElevatorThread extends Thread {
     private void makeSureDoorOpen() throws InterruptedException {
         if (!isDoorOpen) {
             isDoorOpen = true;
-            TimableOutput.println(String.format("OPEN-%d-%s",
-                FloorTool.index2Floor(floorIndex), name));
+            synchronized (writeLock) {
+                TimableOutput.println(String.format("OPEN-%d-%s",
+                    FloorTool.index2Floor(floorIndex), name));
+            }
             sleep(this.doorSpeed);
         }
     }
@@ -114,8 +117,10 @@ public class ElevatorThread extends Thread {
     private void makeSureDoorClose() throws InterruptedException {
         if (isDoorOpen) {
             sleep(this.doorSpeed);
-            TimableOutput.println(String.format("CLOSE-%d-%s",
-                FloorTool.index2Floor(floorIndex), name));
+            synchronized (writeLock) {
+                TimableOutput.println(String.format("CLOSE-%d-%s",
+                    FloorTool.index2Floor(floorIndex), name));
+            }
             isDoorOpen = false;
         }
     }
@@ -124,15 +129,19 @@ public class ElevatorThread extends Thread {
         makeSureDoorOpen();
         passIn--;
         dispatcher.taskFeedback(id, FloorTool.index2Floor(floorIndex));
-        TimableOutput.println(String.format("OUT-%d-%d-%s",
-            id, FloorTool.index2Floor(floorIndex), name));
+        synchronized (writeLock) {
+            TimableOutput.println(String.format("OUT-%d-%d-%s",
+                id, FloorTool.index2Floor(floorIndex), name));
+        }
     }
 
     protected void pullIn(int id) throws InterruptedException {
         makeSureDoorOpen();
         passIn++;
-        TimableOutput.println(String.format("IN-%d-%d-%s",
-            id, FloorTool.index2Floor(floorIndex), name));
+        synchronized (writeLock) {
+            TimableOutput.println(String.format("IN-%d-%d-%s",
+                id, FloorTool.index2Floor(floorIndex), name));
+        }
     }
 
     // move elevator in right direction. when STILL state, no action performed.
@@ -141,14 +150,18 @@ public class ElevatorThread extends Thread {
             makeSureDoorClose();
             sleep(this.moveSpeed);
             floorIndex++;
-            TimableOutput.println(String.format("ARRIVE-%d-%s",
-                FloorTool.index2Floor(floorIndex), name));
+            synchronized (writeLock) {
+                TimableOutput.println(String.format("ARRIVE-%d-%s",
+                    FloorTool.index2Floor(floorIndex), name));
+            }
         } else if (FloorTool.isDown(moveDirection)) {
             makeSureDoorClose();
             sleep(this.moveSpeed);
             floorIndex--;
-            TimableOutput.println(String.format("ARRIVE-%d-%s",
-                FloorTool.index2Floor(floorIndex), name));
+            synchronized (writeLock) {
+                TimableOutput.println(String.format("ARRIVE-%d-%s",
+                    FloorTool.index2Floor(floorIndex), name));
+            }
         } else if (FloorTool.isStill(moveDirection)) {
             sleep(3);
         }
