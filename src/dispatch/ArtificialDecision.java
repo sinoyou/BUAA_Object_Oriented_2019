@@ -55,14 +55,11 @@ public class ArtificialDecision {
         boolean toLegalC = elevatorC.isFloorLegal(to);
         // A独占目的地到达 -3 / 15-20
         if (toLegalA && !toLegalB && !toLegalC) {
-            /*
             if (to == -3) {
                 subTaskToFloor = 1;
             } else {
                 subTaskToFloor = 15;
             }
-            */
-            subTaskToFloor = 15;
         }
         // B独占目的地到达 2 4 6 8 10 12 14。from楼层肯定在B片区之外
         else if (!toLegalA && toLegalB && !toLegalC) {
@@ -118,7 +115,6 @@ public class ArtificialDecision {
         boolean directTaskA = elevatorA.isDirectTask(from, to);
         boolean directTaskB = elevatorB.isDirectTask(from, to);
         boolean directTaskC = elevatorC.isDirectTask(from, to);
-        // todo 在此增加加一些插队型特判
         // A电梯： 空间未满 + 处在5楼以下 + 运动方向顺势
         // B电梯： 空间未满 + 运动方向顺势 + 楼层间隔<=2
         if (directTaskA && !elevatorA.isFull() && elevatorA.getFloor() <= 5 &&
