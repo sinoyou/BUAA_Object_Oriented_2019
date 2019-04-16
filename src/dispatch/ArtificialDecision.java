@@ -129,11 +129,11 @@ public class ArtificialDecision {
         }
         // a b c = 001, 011, 101, 111
         if (directTaskC) {
-            if (directTaskB && !elevatorB.isFull() &&
+            /* if (directTaskB && !elevatorB.isFull() &&
                 (elevatorB.targetFloorEstimate(from) * 5
                     <= elevatorC.targetFloorEstimate(from) * 6)) {
                 return elevatorB;
-            }
+            }*/
             return elevatorC;
         }
         // a b c = 010
@@ -142,10 +142,10 @@ public class ArtificialDecision {
         }
         // a b c = 110
         else if (directTaskA && directTaskB && !directTaskC) {
-            if (elevatorA.targetFloorEstimate(from) * 4 <=
+            /*if (elevatorA.targetFloorEstimate(from) * 4 <=
                 elevatorB.targetFloorEstimate(from) * 5) {
                 return elevatorA;
-            }
+            }*/
             return elevatorB;
         }
         // a b c = 100
