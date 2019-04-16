@@ -2,6 +2,7 @@ package dispatch;
 
 import com.oocourse.elevator3.PersonRequest;
 import elevator.ElevatorThread;
+import tool.FloorTool;
 
 import java.util.ArrayList;
 
@@ -34,11 +35,11 @@ public class ArtificialDecision {
         boolean isDirectTask = isDirectTask();
         // if direct task, then split as strategy.
         if (isDirectTask) {
-            taskElevator = getDirectTaskElevator2(oriRequest.getFromFloor(),
+            taskElevator = getDirectTaskElevator(oriRequest.getFromFloor(),
                 oriRequest.getToFloor());
             tarTask = oriRequest;
         } else {
-            setSubTask2();
+            setSubTask();
         }
     }
 
@@ -54,11 +55,14 @@ public class ArtificialDecision {
         boolean toLegalC = elevatorC.isFloorLegal(to);
         // A独占目的地到达 -3 / 15-20
         if (toLegalA && !toLegalB && !toLegalC) {
+            /*
             if (to == -3) {
                 subTaskToFloor = 1;
             } else {
                 subTaskToFloor = 15;
             }
+            */
+            subTaskToFloor = 15;
         }
         // B独占目的地到达 2 4 6 8 10 12 14。from楼层肯定在B片区之外
         else if (!toLegalA && toLegalB && !toLegalC) {
@@ -78,7 +82,7 @@ public class ArtificialDecision {
         }
         tarTask = new PersonRequest(oriRequest.getFromFloor(),
             subTaskToFloor, oriRequest.getPersonId());
-        taskElevator = getDirectTaskElevator2(oriRequest.getFromFloor(),
+        taskElevator = getDirectTaskElevator(oriRequest.getFromFloor(),
             subTaskToFloor);
     }
 
@@ -95,7 +99,7 @@ public class ArtificialDecision {
         }
         tarTask = new PersonRequest(oriRequest.getFromFloor(),
             subTaskToFloor, oriRequest.getPersonId());
-        taskElevator = getDirectTaskElevator2(oriRequest.getFromFloor(),
+        taskElevator = getDirectTaskElevator(oriRequest.getFromFloor(),
             subTaskToFloor);
     }
 
@@ -114,21 +118,36 @@ public class ArtificialDecision {
         boolean directTaskA = elevatorA.isDirectTask(from, to);
         boolean directTaskB = elevatorB.isDirectTask(from, to);
         boolean directTaskC = elevatorC.isDirectTask(from, to);
-        // a b c = 001, 011, 101, 111
-        if (directTaskC) {
-            return elevatorC;
-        }
-        // a b c = 010
-        else if (!directTaskA && directTaskB && !directTaskC) {
-            return elevatorB;
-        }
-        // a b c = 110
-        else if (directTaskA && directTaskB && !directTaskC) {
-            return elevatorB;
-        }
-        // a b c = 100
-        else if (directTaskA && !directTaskB && !directTaskC) {
+        // todo 在此增加加一些插队型特判
+        // A电梯： 空间未满 + 处在5楼以下 + 运动方向顺势
+        // B电梯： 空间未满 + 运动方向顺势 + 楼层间隔<=2
+        if (directTaskA && !elevatorA.isFull() && elevatorA.getFloor() <= 5 &&
+            FloorTool.isOnTheWay(from, to,
+                elevatorA.getMoveDirection(), elevatorA.getFloor())) {
             return elevatorA;
+        }
+        if (directTaskB && !elevatorB.isFull() &&
+            Math.abs(from - elevatorB.getFloor()) <= 2 && FloorTool.isOnTheWay(
+            from, to, elevatorB.getMoveDirection(), elevatorB.getFloor())) {
+            return elevatorB;
+        }
+        // a b c = 001, 011, 101, 111
+        {
+            if (directTaskC) {
+                return elevatorC;
+            }
+            // a b c = 010
+            else if (!directTaskA && directTaskB && !directTaskC) {
+                return elevatorB;
+            }
+            // a b c = 110
+            else if (directTaskA && directTaskB && !directTaskC) {
+                return elevatorB;
+            }
+            // a b c = 100
+            else if (directTaskA && !directTaskB && !directTaskC) {
+                return elevatorA;
+            }
         }
         try {
             throw new Exception("Impossible Direct Transform");

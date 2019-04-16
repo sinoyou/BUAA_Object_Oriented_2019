@@ -216,7 +216,7 @@ public class ElevatorThread extends Thread {
         return moveDirection;
     }
 
-    public int getFloorIndex() {
-        return floorIndex;
+    public int getFloor() {
+        return FloorTool.index2Floor(floorIndex);
     }
 }

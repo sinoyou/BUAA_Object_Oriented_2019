@@ -82,26 +82,6 @@ public class FloorTool {
             && isLegalFloorIndex(floor2Index(to), legalList));
     }
 
-    public static int directionMove(int direction, int floorIndex) {
-        if (isUp(direction)) {
-            return floorIndex + 1;
-        } else if (isDown(direction)) {
-            return floorIndex - 1;
-        } else {
-            return floorIndex;
-        }
-    }
-
-    public static int getOppDirection(int direction) {
-        if (isUp(direction)) {
-            return setDirectionUp();
-        } else if (isDown(direction)) {
-            return setDirectionUp();
-        } else {
-            return direction;
-        }
-    }
-
     public static int getDirection(int from, int to) {
         if (from > to) {
             return setDirectionDown();
@@ -112,10 +92,11 @@ public class FloorTool {
         }
     }
 
-    public static boolean isOnTheWay(int from, int to, int direction) {
-        if (isDown(direction) && from - to > 0) {
+    public static boolean isOnTheWay(int from, int to,
+                                     int direction, int floor) {
+        if (isDown(direction) && from - to > 0 && floor > from) {
             return true;
-        } else if (isUp(direction) && from - to < 0) {
+        } else if (isUp(direction) && from - to < 0 && floor < from) {
             return true;
         }
         return false;
