@@ -6,7 +6,7 @@ import java.util.Iterator;
 
 public class MyPath implements Path {
 
-    final private int[] nodes;
+    private final int[] nodes;
     private Integer distinctCount;
     private Integer hashSave;
 

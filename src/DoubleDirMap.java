@@ -33,31 +33,31 @@ public class DoubleDirMap {
     }
 
     /* ---------- Pure Method ---------- */
-    public int size(){
+    public int size() {
         assert (id2Path.size() == path2Id.size());
         return id2Path.size();
     }
 
-    public boolean containsId(int id){
+    public boolean containsId(int id) {
         assert (path2Id.containsValue(id) ^ id2Path.containsKey(id));
         return id2Path.containsKey(id);
     }
 
-    public boolean containsPath(Path path){
-        if(path == null){
+    public boolean containsPath(Path path) {
+        if (path == null) {
             return false;
-        }else{
+        } else {
             assert (path2Id.containsKey(path) && id2Path.containsValue(path));
             return path2Id.containsKey(path);
         }
     }
 
-    public Path getPathById(int id){
+    public Path getPathById(int id) {
         assert (containsId(id));
         return id2Path.get(id);
     }
 
-    public int getIdByPath(Path path){
+    public int getIdByPath(Path path) {
         assert (containsPath(path));
         return path2Id.get(path);
     }
