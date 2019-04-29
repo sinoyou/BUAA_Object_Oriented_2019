@@ -1,3 +1,5 @@
+package homework;
+
 import com.oocourse.specs1.models.Path;
 
 import java.util.HashMap;

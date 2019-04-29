@@ -1,3 +1,4 @@
+package homework;
 
 import com.oocourse.specs1.models.Path;
 
@@ -73,9 +74,8 @@ public class MyPath implements Path {
         } else {
             Iterator it = this.iterator();
             int hash = 0;
-            while (it.hasNext()) {
-                int num = (int) it.next();
-                hash += num;
+            for (int i = 0; i < this.size(); i++) {
+                hash += getNode(i) * i;
             }
             hashSave = hash;
             return hash;

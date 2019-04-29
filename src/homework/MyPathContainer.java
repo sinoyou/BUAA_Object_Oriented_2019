@@ -1,3 +1,5 @@
+package homework;
+
 import com.oocourse.specs1.models.Path;
 import com.oocourse.specs1.models.PathContainer;
 import com.oocourse.specs1.models.PathIdNotFoundException;
