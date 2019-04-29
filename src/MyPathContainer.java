@@ -7,12 +7,13 @@ import java.util.HashMap;
 import java.util.Iterator;
 
 public class MyPathContainer implements PathContainer {
-    private HashMap<Integer, Path> map;
+    // private HashMap<Integer, Path> map;
+    private DoubleDirMap map;
     private HashMap<Integer, Integer> countMap;
     private int idCnt;
 
     public MyPathContainer() {
-        map = new HashMap<>();
+        map = new DoubleDirMap();
         idCnt = 0;
         countMap = new HashMap<>();
     }
@@ -24,18 +25,18 @@ public class MyPathContainer implements PathContainer {
 
     @Override
     public boolean containsPath(Path path) {
-        return map.containsValue(path);
+        return map.containsPath(path);
     }
 
     @Override
     public boolean containsPathId(int pathId) {
-        return map.containsKey(pathId);
+        return map.containsId(pathId);
     }
 
     @Override
     public Path getPathById(int pathId) throws PathIdNotFoundException {
         if (containsPathId(pathId)) {
-            return map.get(pathId);
+            return map.getPathById(pathId);
         } else {
             throw new PathIdNotFoundException(pathId);
         }
@@ -50,14 +51,7 @@ public class MyPathContainer implements PathContainer {
         } else if (!containsPath(path)) {
             throw new PathNotFoundException(path);
         } else {
-            Iterator it = map.keySet().iterator();
-            while (it.hasNext()) {
-                Integer num = (Integer) it.next();
-                if (map.get(num).equals(path)) {
-                    return num;
-                }
-            }
-            throw new PathNotFoundException(path);
+            return map.getIdByPath(path);
         }
     }
 
@@ -98,8 +92,9 @@ public class MyPathContainer implements PathContainer {
         if (!containsPathId(pathId)) {
             throw new PathIdNotFoundException(pathId);
         } else {
-            countSub(map.get(pathId));
-            map.remove(pathId);
+            Path p = map.getPathById(pathId);
+            countSub(map.getPathById(pathId));
+            map.remove(pathId, p);
         }
     }
 
