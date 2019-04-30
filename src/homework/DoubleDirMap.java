@@ -49,7 +49,7 @@ public class DoubleDirMap {
         if (path == null) {
             return false;
         } else {
-            assert (path2Id.containsKey(path) && id2Path.containsValue(path));
+            assert (path2Id.containsKey(path) == id2Path.containsValue(path));
             return path2Id.containsKey(path);
         }
     }
