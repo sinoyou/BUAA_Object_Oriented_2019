@@ -17,7 +17,7 @@ public class MyPathContainer implements PathContainer {
     public MyPathContainer() {
         map = new DoubleDirMap();
         idCnt = 0;
-        countMap = new HashMap<>();
+        countMap = new HashMap<>(64, (float) 0.75);
     }
 
     @Override

@@ -9,8 +9,8 @@ public class DoubleDirMap {
     private HashMap<Path, Integer> path2Id;
 
     public DoubleDirMap() {
-        id2Path = new HashMap<>();
-        path2Id = new HashMap<>();
+        id2Path = new HashMap<>(64, (float) 0.75);
+        path2Id = new HashMap<>(64, (float) 0.75);
     }
 
     /* ---------- None Pure Method ---------- */
@@ -28,8 +28,8 @@ public class DoubleDirMap {
         if (i == null || p == null) {
             return -1;
         } else {
-            id2Path.remove(i, p);
-            path2Id.remove(p, i);
+            boolean b1 = id2Path.remove(i, p);
+            boolean b2 = path2Id.remove(p, i);
             return 0;
         }
     }
@@ -41,7 +41,7 @@ public class DoubleDirMap {
     }
 
     public boolean containsId(int id) {
-        assert (path2Id.containsValue(id) ^ id2Path.containsKey(id));
+        assert (path2Id.containsValue(id) == id2Path.containsKey(id));
         return id2Path.containsKey(id);
     }
 
