@@ -12,13 +12,16 @@ public class MyPath implements Path {
     private Integer distinctCount;
     private Integer hashSave;
     private ArrayList<Integer> nodes;
+    private HashSet<Integer> nodeSet;
 
     public MyPath(int[] array) {
         // nodes = array;
         distinctCount = null;
         nodes = new ArrayList<>(array.length);
+        nodeSet = new HashSet<>();
         for (int i = 0; i < array.length; i++) {
             nodes.add(i, array[i]);
+            nodeSet.add(array[i]);
         }
         hashSave = nodes.hashCode();
     }
@@ -45,7 +48,8 @@ public class MyPath implements Path {
         }
         return false;
         */
-        return nodes.contains(node);
+        return nodeSet.contains(node);
+        // return nodes.contains(node);
     }
 
     @Override
@@ -53,6 +57,7 @@ public class MyPath implements Path {
         if (distinctCount != null) {
             return distinctCount;
         } else {
+            /*
             HashSet<Integer> set = new HashSet<>();
             for (int i = 0; i < this.size(); i++) {
                 if (!set.contains(this.getNode(i))) {
@@ -60,6 +65,8 @@ public class MyPath implements Path {
                 }
             }
             distinctCount = set.size();
+            */
+            distinctCount = nodeSet.size();
             return distinctCount;
         }
     }
