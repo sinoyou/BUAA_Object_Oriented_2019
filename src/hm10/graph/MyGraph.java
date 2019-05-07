@@ -125,7 +125,11 @@ public class MyGraph implements Graph {
         } else if (!containsNode(i1)) {
             throw new NodeIdNotFoundException(i1);
         } else {
-            return shortestRoad.isNodesConnected(i, i1);
+            if (i == i1) {
+                return true;
+            } else {
+                return shortestRoad.isNodesConnected(i, i1);
+            }
         }
     }
 
@@ -139,7 +143,11 @@ public class MyGraph implements Graph {
         } else if (!isConnected(i, i1)) {
             throw new NodeNotConnectedException(i, i1);
         } else {
-            return shortestRoad.getShortestRoadLength(i, i1);
+            if(i == i1){
+                return 0;
+            }else {
+                return shortestRoad.getShortestRoadLength(i, i1);
+            }
         }
     }
 

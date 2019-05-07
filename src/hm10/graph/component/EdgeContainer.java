@@ -15,7 +15,7 @@ public class EdgeContainer {
         versionMark = 0;
     }
 
-    public boolean addOnePath(Path path) {
+    public void addOnePath(Path path) {
         assert (path != null && path.isValid());
         int length = path.size();
         // normal occasion
@@ -34,11 +34,9 @@ public class EdgeContainer {
         addOneEdge(tail, tailPre);
 
         versionMark++;
-
-        return true;
     }
 
-    public boolean removeOnePath(Path path) {
+    public void removeOnePath(Path path) {
         assert (path != null && path.isValid());
         int length = path.size();
         // normal occasion
@@ -57,8 +55,6 @@ public class EdgeContainer {
         removeOneEdge(tail, tailPre);
 
         versionMark++;
-
-        return true;
     }
 
     public Iterator<Integer> getConnectNodes(int node) {
@@ -78,6 +74,10 @@ public class EdgeContainer {
         } else {
             return false;
         }
+    }
+
+    public boolean containsKey(int node){
+        return edgeMap.containsKey(node);
     }
 
     /* -------- Inner Maintain Function --------*/

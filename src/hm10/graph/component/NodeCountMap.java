@@ -3,7 +3,6 @@ package hm10.graph.component;
 import com.oocourse.specs2.models.Path;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Set;
 
 public class NodeCountMap {
@@ -14,7 +13,6 @@ public class NodeCountMap {
     }
 
     public void addOnePath(Path path) {
-        Iterator<Integer> it = path.iterator();
         for (Integer num : path) {
             int cnt;
             if (countMap.containsKey(num)) {
@@ -28,7 +26,6 @@ public class NodeCountMap {
     }
 
     public void removeOnePath(Path path) {
-        Iterator<Integer> it = path.iterator();
         for (Integer num : path) {
             int cnt;
             assert (countMap.containsKey(num));
