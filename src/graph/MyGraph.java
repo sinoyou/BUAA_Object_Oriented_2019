@@ -1,10 +1,15 @@
-package hm10.graph;
+package graph;
 
-import com.oocourse.specs2.models.*;
-import hm10.graph.algorithm.ShortestRoad;
-import hm10.graph.component.DoubleDirPathMap;
-import hm10.graph.component.EdgeContainer;
-import hm10.graph.component.NodeCountMap;
+import com.oocourse.specs2.models.Graph;
+import com.oocourse.specs2.models.Path;
+import com.oocourse.specs2.models.PathIdNotFoundException;
+import com.oocourse.specs2.models.PathNotFoundException;
+import com.oocourse.specs2.models.NodeIdNotFoundException;
+import com.oocourse.specs2.models.NodeNotConnectedException;
+import graph.algorithm.ShortestRoad;
+import graph.component.DoubleDirPathMap;
+import graph.component.EdgeContainer;
+import graph.component.NodeCountMap;
 
 public class MyGraph implements Graph {
     // private HashMap<Integer, Path> doubleDirMap;
@@ -64,7 +69,6 @@ public class MyGraph implements Graph {
     public int getDistinctNodeCount() {
         return nodeCountMap.size();
     }
-
 
     public boolean containsNode(int nodeId) {
         return nodeCountMap.containsNode(nodeId);
@@ -143,9 +147,9 @@ public class MyGraph implements Graph {
         } else if (!isConnected(i, i1)) {
             throw new NodeNotConnectedException(i, i1);
         } else {
-            if(i == i1){
+            if (i == i1) {
                 return 0;
-            }else {
+            } else {
                 return shortestRoad.getShortestRoadLength(i, i1);
             }
         }

@@ -1,4 +1,4 @@
-package hm10.graph.component;
+package graph.component;
 
 import com.oocourse.specs2.models.Path;
 

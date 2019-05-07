@@ -1,7 +1,7 @@
-package hm10.graph.algorithm;
+package graph.algorithm;
 
-import hm10.graph.component.EdgeContainer;
-import hm10.graph.component.NodeCountMap;
+import graph.component.EdgeContainer;
+import graph.component.NodeCountMap;
 
 import java.util.HashMap;
 import java.util.Iterator;

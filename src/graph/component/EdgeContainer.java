@@ -1,4 +1,4 @@
-package hm10.graph.component;
+package graph.component;
 
 import com.oocourse.specs2.models.Path;
 
@@ -28,8 +28,10 @@ public class EdgeContainer {
         }
         // head & tail occasion
         MyPath myPath = (MyPath) path;
-        int head = myPath.getHead(), headNext = myPath.getHeadNext();
-        int tail = myPath.getTail(), tailPre = myPath.getTailPre();
+        int head = myPath.getHead();
+        int headNext = myPath.getHeadNext();
+        int tail = myPath.getTail();
+        int tailPre = myPath.getTailPre();
         addOneEdge(head, headNext);
         addOneEdge(tail, tailPre);
 
@@ -49,8 +51,10 @@ public class EdgeContainer {
         }
         // head & tail occasion
         MyPath myPath = (MyPath) path;
-        int head = myPath.getHead(), headNext = myPath.getHeadNext();
-        int tail = myPath.getTail(), tailPre = myPath.getTailPre();
+        int head = myPath.getHead();
+        int headNext = myPath.getHeadNext();
+        int tail = myPath.getTail();
+        int tailPre = myPath.getTailPre();
         removeOneEdge(head, headNext);
         removeOneEdge(tail, tailPre);
 
@@ -76,7 +80,7 @@ public class EdgeContainer {
         }
     }
 
-    public boolean containsKey(int node){
+    public boolean containsKey(int node) {
         return edgeMap.containsKey(node);
     }
 

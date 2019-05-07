@@ -1,4 +1,4 @@
-package hm10.graph.component;
+package graph.component;
 
 import com.oocourse.specs2.models.Path;
 
@@ -38,15 +38,15 @@ public class NodeCountMap {
         }
     }
 
-    public int size(){
+    public int size() {
         return countMap.size();
     }
 
-    public boolean containsNode(int nodeId){
+    public boolean containsNode(int nodeId) {
         return countMap.containsKey(nodeId);
     }
 
-    public Set<Integer> nodeSet(){
+    public Set<Integer> nodeSet() {
         return countMap.keySet();
     }
 }
