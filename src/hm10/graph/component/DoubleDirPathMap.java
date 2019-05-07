@@ -4,11 +4,11 @@ import com.oocourse.specs2.models.Path;
 
 import java.util.HashMap;
 
-public class DoubleDirPathMay {
+public class DoubleDirPathMap {
     private HashMap<Integer, Path> id2Path;
     private HashMap<Path, Integer> path2Id;
 
-    public DoubleDirPathMay() {
+    public DoubleDirPathMap() {
         id2Path = new HashMap<>(64, (float) 0.75);
         path2Id = new HashMap<>(64, (float) 0.75);
     }

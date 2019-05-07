@@ -138,12 +138,22 @@ public class MyPath implements Path {
             }
         }
         // non public
-        if (size1 < size2) {
-            return -1;
-        } else if (size1 > size2) {
-            return 1;
-        } else {
-            return 0;
-        }
+        return Integer.compare(size1,size2);
+    }
+
+    public int getHead() {
+        return nodes.get(0);
+    }
+
+    public int getHeadNext() {
+        return nodes.get(1);
+    }
+
+    public int getTail() {
+        return nodes.get(nodes.size() - 1);
+    }
+
+    public int getTailPre() {
+        return nodes.get(nodes.size() - 2);
     }
 }
