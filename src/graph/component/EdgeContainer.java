@@ -30,9 +30,9 @@ public class EdgeContainer {
         MyPath myPath = (MyPath) path;
         int head = myPath.getHead();
         int headNext = myPath.getHeadNext();
+        addOneEdge(head, headNext);
         int tail = myPath.getTail();
         int tailPre = myPath.getTailPre();
-        addOneEdge(head, headNext);
         addOneEdge(tail, tailPre);
 
         versionMark++;
@@ -53,9 +53,9 @@ public class EdgeContainer {
         MyPath myPath = (MyPath) path;
         int head = myPath.getHead();
         int headNext = myPath.getHeadNext();
+        removeOneEdge(head, headNext);
         int tail = myPath.getTail();
         int tailPre = myPath.getTailPre();
-        removeOneEdge(head, headNext);
         removeOneEdge(tail, tailPre);
 
         versionMark++;
