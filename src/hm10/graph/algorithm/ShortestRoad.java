@@ -78,8 +78,9 @@ public class ShortestRoad {
     private void spfa() {
         Set<Integer> nodeSet = nodeCountMap.nodeSet();
         for (Integer node : nodeSet) {
-            HashMap<Integer, Integer> lenthMap = spfaSingle(node);
-            roadMap.put(node, lenthMap);
+            assert edgeContainer.containsKey(node);
+            HashMap<Integer, Integer> lengthMap = spfaSingle(node);
+            roadMap.put(node, lengthMap);
         }
     }
 
@@ -97,15 +98,21 @@ public class ShortestRoad {
         while (!queue.isEmpty()) {
             int node = queue.removeFirst();
             int length = lengthMap.get(node);
+            // protect programming
+            assert edgeContainer.containsKey(node);
+            if (!edgeContainer.containsKey(node)) {
+                continue;
+            }
             Iterator<Integer> it = edgeContainer.getConnectNodes(node);
             while (it.hasNext()) {
                 int nodeTo = it.next();
                 // If already visited nodeTo -> check if need update.
-                if (lengthMap.containsKey(nodeTo) &&
-                    lengthMap.get(nodeTo) > length + 1) {
-                    lengthMap.replace(nodeTo, length + 1);
-                    if (!queue.contains(nodeTo)) {
-                        queue.addLast(nodeTo);
+                if (lengthMap.containsKey(nodeTo)) {
+                    if (lengthMap.get(nodeTo) > length + 1) {
+                        lengthMap.replace(nodeTo, length + 1);
+                        if (!queue.contains(nodeTo)) {
+                            queue.addLast(nodeTo);
+                        }
                     }
                 }
                 // Have not visited nodeTo yet -> update(put)
