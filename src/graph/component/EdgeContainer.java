@@ -19,21 +19,12 @@ public class EdgeContainer {
         assert (path != null && path.isValid());
         int length = path.size();
         // normal occasion
-        for (int i = 1; i <= length - 2; i++) {
-            int pre = path.getNode(i - 1);
+        for (int i = 0; i <= length - 2; i++) {
             int cur = path.getNode(i);
             int next = path.getNode(i + 1);
-            addOneEdge(cur, pre);
             addOneEdge(cur, next);
+            addOneEdge(next, cur);
         }
-        // head & tail occasion
-        MyPath myPath = (MyPath) path;
-        int head = myPath.getHead();
-        int headNext = myPath.getHeadNext();
-        addOneEdge(head, headNext);
-        int tail = myPath.getTail();
-        int tailPre = myPath.getTailPre();
-        addOneEdge(tail, tailPre);
 
         versionMark++;
     }
@@ -42,21 +33,12 @@ public class EdgeContainer {
         assert (path != null && path.isValid());
         int length = path.size();
         // normal occasion
-        for (int i = 1; i <= length - 2; i++) {
-            int pre = path.getNode(i - 1);
+        for (int i = 0; i <= length - 2; i++) {
             int cur = path.getNode(i);
             int next = path.getNode(i + 1);
-            removeOneEdge(cur, pre);
             removeOneEdge(cur, next);
+            removeOneEdge(next, cur);
         }
-        // head & tail occasion
-        MyPath myPath = (MyPath) path;
-        int head = myPath.getHead();
-        int headNext = myPath.getHeadNext();
-        removeOneEdge(head, headNext);
-        int tail = myPath.getTail();
-        int tailPre = myPath.getTailPre();
-        removeOneEdge(tail, tailPre);
 
         versionMark++;
     }

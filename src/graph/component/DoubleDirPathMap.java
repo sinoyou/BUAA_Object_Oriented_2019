@@ -30,7 +30,11 @@ public class DoubleDirPathMap {
         } else {
             boolean b1 = id2Path.remove(i, p);
             boolean b2 = path2Id.remove(p, i);
-            return 0;
+            if (b1 && b2) {
+                return 0;
+            } else {
+                return -1;
+            }
         }
     }
 
