@@ -67,7 +67,7 @@ public class ShortestRoad {
      * 3. Update versionMark.
      */
     private void stampCheck() {
-        if (versionMark.isLatest(edgeVersion)) {
+        if (!versionMark.isLatest(edgeVersion)) {
             roadMap.clear();
             spfa();
             edgeVersion = versionMark.getVersion();
