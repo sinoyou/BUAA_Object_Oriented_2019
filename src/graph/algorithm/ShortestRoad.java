@@ -2,6 +2,7 @@ package graph.algorithm;
 
 import graph.component.EdgeContainer;
 import graph.component.NodeCountMap;
+import graph.tool.VersionMark;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -11,15 +12,20 @@ import java.util.Set;
 public class ShortestRoad {
     private EdgeContainer edgeContainer;
     private HashMap<Integer, HashMap<Integer, Integer>> roadMap;
-    private int edgeVersion;
     private NodeCountMap nodeCountMap;
 
+    // version control
+    private VersionMark versionMark;
+    private int edgeVersion;
+
     public ShortestRoad(EdgeContainer edgeContainer,
-                        NodeCountMap nodeCountMap) {
+                        NodeCountMap nodeCountMap,
+                        VersionMark versionMark) {
         this.edgeContainer = edgeContainer;
         this.nodeCountMap = nodeCountMap;
         this.roadMap = new HashMap<>();
         edgeVersion = 0;
+        this.versionMark = versionMark;
     }
 
     /**
@@ -61,10 +67,10 @@ public class ShortestRoad {
      * 3. Update versionMark.
      */
     private void stampCheck() {
-        if (edgeVersion < edgeContainer.getVersionMark()) {
+        if (versionMark.isLatest(edgeVersion)) {
             roadMap.clear();
             spfa();
-            edgeVersion = edgeContainer.getVersionMark();
+            edgeVersion = versionMark.getVersion();
         }
     }
 

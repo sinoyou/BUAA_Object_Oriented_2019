@@ -10,6 +10,7 @@ import graph.algorithm.ShortestRoad;
 import graph.component.DoubleDirPathMap;
 import graph.component.EdgeContainer;
 import graph.component.NodeCountMap;
+import graph.tool.VersionMark;
 
 public class MyGraph implements Graph {
     // private HashMap<Integer, Path> doubleDirMap;
@@ -18,14 +19,17 @@ public class MyGraph implements Graph {
     private EdgeContainer edgeContainer;
     private ShortestRoad shortestRoad;
     private int idCnt;
+    private VersionMark versionMark;
 
     public MyGraph() {
         idCnt = 0;
         doubleDirMap = new DoubleDirPathMap();
         nodeCountMap = new NodeCountMap();
+        versionMark = new VersionMark();
         // Graph Theory Part
         edgeContainer = new EdgeContainer();
-        shortestRoad = new ShortestRoad(edgeContainer, nodeCountMap);
+        shortestRoad = new ShortestRoad(edgeContainer,
+            nodeCountMap, versionMark);
     }
 
     @Override
@@ -70,8 +74,9 @@ public class MyGraph implements Graph {
         return nodeCountMap.size();
     }
 
-    public boolean containsNode(int nodeId) {
-        return nodeCountMap.containsNode(nodeId);
+    @Override
+    public boolean containsNode(int i) {
+        return nodeCountMap.containsNode(i);
     }
 
     /* -------- Modification Type Method --------*/
@@ -157,12 +162,14 @@ public class MyGraph implements Graph {
 
     /* -------- Inner Maintain Method -------- */
     private void addOnePath(Path path) {
+        versionMark.versionUpdate();
         doubleDirMap.put(idCnt, path);
         nodeCountMap.addOnePath(path);
         edgeContainer.addOnePath(path);
     }
 
     private void removeOnePath(Path path, int pathId) {
+        versionMark.versionUpdate();
         doubleDirMap.remove(pathId, path);
         nodeCountMap.removeOnePath(path);
         edgeContainer.removeOnePath(path);

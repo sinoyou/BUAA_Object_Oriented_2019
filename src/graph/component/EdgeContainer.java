@@ -7,12 +7,17 @@ import java.util.Iterator;
 import java.util.Set;
 
 public class EdgeContainer {
+    /**
+     * 1.edgeMap: Use double-layer HashMap to record the number of edges.
+     *   edgeMap[i][j] = 3 means there're 3 edges from i to j.
+     *   TIPS:
+     *   When edge[i][j] = 0, <j, count> as a value will be removed.
+     *   When edge[i].size() = 0, <i, hashMap> as a value will be removed.
+     */
     private HashMap<Integer, HashMap<Integer, Integer>> edgeMap;
-    private int versionMark;
 
     public EdgeContainer() {
         edgeMap = new HashMap<>();
-        versionMark = 0;
     }
 
     public void addOnePath(Path path) {
@@ -25,10 +30,14 @@ public class EdgeContainer {
             addOneEdge(cur, next);
             addOneEdge(next, cur);
         }
-
-        versionMark++;
     }
 
+    /**
+     * Require: Path must have been added to edgeMap.
+     * !!! Run this method without the requirement will cause unpredictable bug.
+     * 1. Remove edges of path in edgeMap.
+     * 2. Update version mark.
+     */
     public void removeOnePath(Path path) {
         assert (path != null && path.isValid());
         int length = path.size();
@@ -39,8 +48,6 @@ public class EdgeContainer {
             removeOneEdge(cur, next);
             removeOneEdge(next, cur);
         }
-
-        versionMark++;
     }
 
     public Iterator<Integer> getConnectNodes(int node) {
@@ -48,10 +55,6 @@ public class EdgeContainer {
         Set<Integer> set = edgeMap.get(node).keySet();
         assert !set.isEmpty();
         return set.iterator();
-    }
-
-    public int getVersionMark() {
-        return versionMark;
     }
 
     public boolean containsEdge(int from, int to) {
