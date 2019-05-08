@@ -22,8 +22,8 @@ public class EdgeContainer {
 
     public void addOnePath(Path path) {
         assert (path != null && path.isValid());
+
         int length = path.size();
-        // normal occasion
         for (int i = 0; i <= length - 2; i++) {
             int cur = path.getNode(i);
             int next = path.getNode(i + 1);
@@ -40,8 +40,8 @@ public class EdgeContainer {
      */
     public void removeOnePath(Path path) {
         assert (path != null && path.isValid());
+
         int length = path.size();
-        // normal occasion
         for (int i = 0; i <= length - 2; i++) {
             int cur = path.getNode(i);
             int next = path.getNode(i + 1);
