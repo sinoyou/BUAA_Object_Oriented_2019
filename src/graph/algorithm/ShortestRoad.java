@@ -7,7 +7,6 @@ import graph.tool.VersionMark;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.Set;
 
 public class ShortestRoad {
     private EdgeContainer edgeContainer;
@@ -82,8 +81,9 @@ public class ShortestRoad {
      * 3. Add to RoadMap.
      */
     private void spfa() {
-        Set<Integer> nodeSet = nodeCountMap.nodeSet();
-        for (Integer node : nodeSet) {
+        Iterator<Integer> it = nodeCountMap.nodeSet();
+        while (it.hasNext()) {
+            int node = it.next();
             assert edgeContainer.containsKey(node);
             HashMap<Integer, Integer> lengthMap = spfaSingle(node);
             roadMap.put(node, lengthMap);

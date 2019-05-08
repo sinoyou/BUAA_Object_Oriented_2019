@@ -9,10 +9,10 @@ import java.util.Set;
 public class EdgeContainer {
     /**
      * 1.edgeMap: Use double-layer HashMap to record the number of edges.
-     *   edgeMap[i][j] = 3 means there're 3 edges from i to j.
-     *   TIPS:
-     *   When edge[i][j] = 0, <j, count> as a value will be removed.
-     *   When edge[i].size() = 0, <i, hashMap> as a value will be removed.
+     * edgeMap[i][j] = 3 means there're 3 edges from i to j.
+     * TIPS:
+     * When edge[i][j] = 0, <j, count> as a value will be removed.
+     * When edge[i].size() = 0, <i, hashMap> as a value will be removed.
      */
     private HashMap<Integer, HashMap<Integer, Integer>> edgeMap;
 
@@ -96,18 +96,21 @@ public class EdgeContainer {
      */
     private void removeOneEdge(int from, int to) {
         assert edgeMap.containsKey(from);
-        HashMap<Integer, Integer> map = edgeMap.get(from);
+        if (edgeMap.containsKey(from)) {
+            HashMap<Integer, Integer> map = edgeMap.get(from);
+            assert map.containsKey(to);
+            if (map.containsKey(to)) {
+                int count = map.get(to);
+                if (count == 1) {
+                    map.remove(to, count);
+                } else {
+                    map.replace(to, count - 1);
+                }
 
-        assert map.containsKey(to);
-        int count = map.get(to);
-        if (count == 1) {
-            map.remove(to, count);
-        } else {
-            map.replace(to, count - 1);
-        }
-
-        if (map.isEmpty()) {
-            edgeMap.remove(from, map);
+                if (map.isEmpty()) {
+                    edgeMap.remove(from, map);
+                }
+            }
         }
     }
 }

@@ -3,7 +3,7 @@ package graph.component;
 import com.oocourse.specs2.models.Path;
 
 import java.util.HashMap;
-import java.util.Set;
+import java.util.Iterator;
 
 public class NodeCountMap {
     private HashMap<Integer, Integer> countMap;
@@ -46,7 +46,7 @@ public class NodeCountMap {
         return countMap.containsKey(nodeId);
     }
 
-    public Set<Integer> nodeSet() {
-        return countMap.keySet();
+    public Iterator<Integer> nodeSet() {
+        return countMap.keySet().iterator();
     }
 }
