@@ -69,12 +69,7 @@ public class MyPath implements Path {
 
     @Override
     public int hashCode() {
-        if (hashSave != null) {
-            return hashSave;
-        } else {
-            hashSave = nodes.hashCode();
-            return hashSave;
-        }
+        return hashSave;
     }
 
     @Override

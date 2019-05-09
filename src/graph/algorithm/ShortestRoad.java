@@ -35,8 +35,8 @@ public class ShortestRoad {
      */
     public boolean isNodesConnected(int from, int to) {
         versionCheck();
-        assert roadMap.containsKey(from);
-        assert roadMap.containsKey(to);
+        // assert roadMap.containsKey(from);
+        // assert roadMap.containsKey(to);
         if (roadMap.containsKey(from)) {
             return roadMap.get(from).containsKey(to);
         } else {
