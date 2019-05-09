@@ -1,6 +1,7 @@
 package graph.component;
 
 import com.oocourse.specs2.models.Path;
+import graph.tool.Constant;
 
 import java.util.HashMap;
 
@@ -9,8 +10,8 @@ public class DoubleDirPathMap {
     private HashMap<Path, Integer> path2Id;
 
     public DoubleDirPathMap() {
-        id2Path = new HashMap<>(64, (float) 0.75);
-        path2Id = new HashMap<>(64, (float) 0.75);
+        id2Path = new HashMap<>(Constant.maxGraphModify * 2);
+        path2Id = new HashMap<>(Constant.maxGraphModify * 2);
     }
 
     /* ---------- None Pure Method ---------- */

@@ -18,7 +18,7 @@ public class MyPath implements Path {
         // nodes = array;
         distinctCount = null;
         nodes = new ArrayList<>(array.length);
-        nodeSet = new HashSet<>();
+        nodeSet = new HashSet<>(array.length);
         for (int i = 0; i < array.length; i++) {
             nodes.add(i, array[i]);
             nodeSet.add(array[i]);

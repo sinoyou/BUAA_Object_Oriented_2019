@@ -1,6 +1,7 @@
 package graph.component;
 
 import com.oocourse.specs2.models.Path;
+import graph.tool.Constant;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -17,7 +18,7 @@ public class EdgeContainer {
     private HashMap<Integer, HashMap<Integer, Integer>> edgeMap;
 
     public EdgeContainer() {
-        edgeMap = new HashMap<>();
+        edgeMap = new HashMap<>(Constant.maxGraphDistinctNode);
     }
 
     public void addOnePath(Path path) {
@@ -77,7 +78,7 @@ public class EdgeContainer {
      */
     private void addOneEdge(int from, int to) {
         if (!edgeMap.containsKey(from)) {
-            edgeMap.put(from, new HashMap<>());
+            edgeMap.put(from, new HashMap<>(Constant.maxGraphDistinctNode));
         }
         HashMap<Integer, Integer> map = edgeMap.get(from);
 

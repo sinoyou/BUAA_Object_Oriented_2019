@@ -2,6 +2,7 @@ package graph.algorithm;
 
 import graph.component.EdgeContainer;
 import graph.component.NodeCountMap;
+import graph.tool.Constant;
 import graph.tool.VersionMark;
 
 import java.util.HashMap;
@@ -22,7 +23,7 @@ public class ShortestRoad {
                         VersionMark versionMark) {
         this.edgeContainer = edgeContainer;
         this.nodeCountMap = nodeCountMap;
-        this.roadMap = new HashMap<>();
+        this.roadMap = new HashMap<>(Constant.maxGraphDistinctNode);
         edgeVersion = 0;
         this.versionMark = versionMark;
     }
@@ -33,7 +34,7 @@ public class ShortestRoad {
      * 2. Check connection.
      */
     public boolean isNodesConnected(int from, int to) {
-        stampCheck();
+        versionCheck();
         assert roadMap.containsKey(from);
         assert roadMap.containsKey(to);
         if (roadMap.containsKey(from)) {
@@ -49,7 +50,7 @@ public class ShortestRoad {
      * 2. Get shortest path. (If not connected, then return null.)
      */
     public Integer getShortestRoadLength(int from, int to) {
-        stampCheck();
+        versionCheck();
         if (isNodesConnected(from, to)) {
             return roadMap.get(from).get(to);
         } else {
@@ -65,7 +66,7 @@ public class ShortestRoad {
      * 2. Use spfa algorithm rebuild roadMap.
      * 3. Update versionMark.
      */
-    private void stampCheck() {
+    private void versionCheck() {
         if (!versionMark.isLatest(edgeVersion)) {
             // System.err.println(String.format("Old Version %d, " +
             //     "Latest Version %d.",edgeVersion,versionMark.getVersion()));
@@ -93,7 +94,8 @@ public class ShortestRoad {
     }
 
     private HashMap<Integer, Integer> spfaSingle(int nodeId) {
-        HashMap<Integer, Integer> lengthMap = new HashMap<>();
+        HashMap<Integer, Integer> lengthMap = new HashMap<>
+            (Constant.maxGraphDistinctNode);
         LinkedList<Integer> queue = new LinkedList<>();
 
         // initial: length[nodeId] = 0

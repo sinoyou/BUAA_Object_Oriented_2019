@@ -1,6 +1,7 @@
 package graph.component;
 
 import com.oocourse.specs2.models.Path;
+import graph.tool.Constant;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -9,7 +10,7 @@ public class NodeCountMap {
     private HashMap<Integer, Integer> countMap;
 
     public NodeCountMap() {
-        countMap = new HashMap<>();
+        countMap = new HashMap<>(Constant.maxGraphDistinctNode);
     }
 
     public void addOnePath(Path path) {
