@@ -94,8 +94,8 @@ public class ShortestRoad {
     }
 
     private HashMap<Integer, Integer> spfaSingle(int nodeId) {
-        HashMap<Integer, Integer> lengthMap = new HashMap<>
-            (Constant.maxGraphDistinctNode);
+        HashMap<Integer, Integer> lengthMap = new HashMap<>(Constant.
+            maxGraphDistinctNode);
         LinkedList<Integer> queue = new LinkedList<>();
 
         // initial: length[nodeId] = 0
