@@ -85,7 +85,7 @@ public class MyGraph implements Graph {
         if (path != null && path.isValid()) {
             if (!containsPath(path)) {
                 idCnt++;
-                addOnePath(path);
+                addOnePath(path, idCnt);
                 return idCnt;
             } else {
                 return getPathId(path);
@@ -161,9 +161,9 @@ public class MyGraph implements Graph {
     }
 
     /* -------- Inner Maintain Method -------- */
-    private void addOnePath(Path path) {
+    private void addOnePath(Path path, int pathId) {
         versionMark.versionUpdate();
-        doubleDirMap.put(idCnt, path);
+        doubleDirMap.put(pathId, path);
         nodeCountMap.addOnePath(path);
         edgeContainer.addOnePath(path);
     }

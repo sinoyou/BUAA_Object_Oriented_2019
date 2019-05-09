@@ -34,7 +34,7 @@ public class EdgeContainer {
 
     /**
      * Require: Path must have been added to edgeMap.
-     * !!! Run this method without the requirement will cause unpredictable bug.
+     * !!! Run this method without requirement will lead unpredictable error.
      * 1. Remove edges of path in edgeMap.
      * 2. Update version mark.
      */

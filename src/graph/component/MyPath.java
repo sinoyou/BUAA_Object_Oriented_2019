@@ -40,16 +40,7 @@ public class MyPath implements Path {
 
     @Override
     public boolean containsNode(int node) {
-        /*
-        for (int i = 0; i < this.size(); i++) {
-            if (this.getNode(i) == node) {
-                return true;
-            }
-        }
-        return false;
-        */
         return nodeSet.contains(node);
-        // return nodes.contains(node);
     }
 
     @Override
@@ -57,15 +48,6 @@ public class MyPath implements Path {
         if (distinctCount != null) {
             return distinctCount;
         } else {
-            /*
-            HashSet<Integer> set = new HashSet<>();
-            for (int i = 0; i < this.size(); i++) {
-                if (!set.contains(this.getNode(i))) {
-                    set.add(this.getNode(i));
-                }
-            }
-            distinctCount = set.size();
-            */
             distinctCount = nodeSet.size();
             return distinctCount;
         }
@@ -90,12 +72,6 @@ public class MyPath implements Path {
         if (hashSave != null) {
             return hashSave;
         } else {
-            /*
-            int hash = 0;
-            for (int i = 0; i < this.size(); i++) {
-                hash += getNode(i) * i;
-            }
-            */
             hashSave = nodes.hashCode();
             return hashSave;
         }
@@ -108,20 +84,6 @@ public class MyPath implements Path {
 
     @Override
     public Iterator<Integer> iterator() {
-        /*return new Iterator<Integer>() {
-            private int cursor = -1;
-
-            @Override
-            public boolean hasNext() {
-                return (cursor + 1 < size());
-            }
-
-            @Override
-            public Integer next() {
-                cursor++;
-                return getNode(cursor);
-            }
-        };*/
         return nodes.iterator();
     }
 
@@ -144,15 +106,7 @@ public class MyPath implements Path {
         return nodes.get(0);
     }
 
-    public int getHeadNext() {
-        return nodes.get(1);
-    }
-
     public int getTail() {
         return nodes.get(nodes.size() - 1);
-    }
-
-    public int getTailPre() {
-        return nodes.get(nodes.size() - 2);
     }
 }
