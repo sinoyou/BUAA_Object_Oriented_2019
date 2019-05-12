@@ -1,0 +1,72 @@
+package subway.component;
+
+import com.oocourse.specs3.models.Path;
+import subway.tool.Constant;
+
+import java.util.HashMap;
+
+public class DoubleDirPathMap {
+    private HashMap<Integer, Path> id2Path;
+    private HashMap<Path, Integer> path2Id;
+
+    public DoubleDirPathMap() {
+        id2Path = new HashMap<>(Constant.maxGraphModify * 2);
+        path2Id = new HashMap<>(Constant.maxGraphModify * 2);
+    }
+
+    /* ---------- None Pure Method ---------- */
+    public int put(Integer i, Path p) {
+        if (i == null || p == null) {
+            return -1;
+        } else {
+            id2Path.put(i, p);
+            path2Id.put(p, i);
+            return 0;
+        }
+    }
+
+    public int remove(Integer i, Path p) {
+        if (i == null || p == null) {
+            return -1;
+        } else {
+            boolean b1 = id2Path.remove(i, p);
+            boolean b2 = path2Id.remove(p, i);
+            if (b1 && b2) {
+                return 0;
+            } else {
+                return -1;
+            }
+        }
+    }
+
+    /* ---------- Pure Method ---------- */
+    public int size() {
+        assert (id2Path.size() == path2Id.size());
+        return id2Path.size();
+    }
+
+    public boolean containsId(int id) {
+        assert (path2Id.containsValue(id) == id2Path.containsKey(id));
+        return id2Path.containsKey(id);
+    }
+
+    public boolean containsPath(Path path) {
+        if (path == null) {
+            return false;
+        } else {
+            assert (path2Id.containsKey(path) == id2Path.containsValue(path));
+            return path2Id.containsKey(path);
+        }
+    }
+
+    public Path getPathById(int id) {
+        assert (containsId(id));
+        return id2Path.get(id);
+    }
+
+    public int getIdByPath(Path path) {
+        assert (containsPath(path));
+        return path2Id.get(path);
+    }
+
+}
