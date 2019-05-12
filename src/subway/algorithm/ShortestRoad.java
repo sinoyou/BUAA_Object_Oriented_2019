@@ -1,6 +1,6 @@
 package subway.algorithm;
 
-import subway.component.EdgeContainer;
+import subway.component.link.LinkContainer;
 import subway.component.NodeCountMap;
 import subway.tool.Constant;
 import subway.tool.VersionMark;
@@ -10,7 +10,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 
 public class ShortestRoad {
-    private EdgeContainer edgeContainer;
+    private LinkContainer linkContainer;
     private HashMap<Integer, HashMap<Integer, Integer>> roadMap;
     private NodeCountMap nodeCountMap;
 
@@ -18,10 +18,10 @@ public class ShortestRoad {
     private VersionMark versionMark;
     private int edgeVersion;
 
-    public ShortestRoad(EdgeContainer edgeContainer,
+    public ShortestRoad(LinkContainer linkContainer,
                         NodeCountMap nodeCountMap,
                         VersionMark versionMark) {
-        this.edgeContainer = edgeContainer;
+        this.linkContainer = linkContainer;
         this.nodeCountMap = nodeCountMap;
         this.roadMap = new HashMap<>(Constant.maxGraphDistinctNode);
         edgeVersion = 0;
@@ -78,7 +78,7 @@ public class ShortestRoad {
 
     /**
      * One of Shortest Path Algorithm.
-     * 1. Get keySet of EdgeContainer.
+     * 1. Get keySet of LinkContainer.
      * 2. For each not-lonely-node, use spfa single-source algorithm to generate
      * a hashMap<targetNode, shortestLength>.
      * 3. Add to RoadMap.
@@ -87,7 +87,7 @@ public class ShortestRoad {
         Iterator<Integer> it = nodeCountMap.nodeSet();
         while (it.hasNext()) {
             int node = it.next();
-            assert edgeContainer.containsKey(node);
+            assert linkContainer.containsKey(node);
             HashMap<Integer, Integer> lengthMap = spfaSingle(node);
             roadMap.put(node, lengthMap);
         }
@@ -109,11 +109,11 @@ public class ShortestRoad {
             int node = queue.removeFirst();
             int length = lengthMap.get(node);
             // protect programming
-            assert edgeContainer.containsKey(node);
-            if (!edgeContainer.containsKey(node)) {
+            assert linkContainer.containsKey(node);
+            if (!linkContainer.containsKey(node)) {
                 continue;
             }
-            Iterator<Integer> it = edgeContainer.getConnectNodes(node);
+            Iterator<Integer> it = linkContainer.getConnectNodes(node);
             while (it.hasNext()) {
                 int nodeTo = it.next();
                 // If already visited nodeTo -> check if need update.

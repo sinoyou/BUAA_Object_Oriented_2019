@@ -1,35 +1,35 @@
-package subway.component;
+package subway.component.link;
 
 import com.oocourse.specs3.models.Path;
 import subway.tool.Constant;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Set;
+import java.util.*;
 
-public class EdgeContainer {
+public class LinkContainer {
     /**
-     * 1.edgeMap: Use double-layer HashMap to record the number of edges.
-     * edgeMap[i][j] = 3 means there're 3 edges from i to j.
+     * 1.edgeMap: Use double-layer HashMap to record the hashSet of edge's pathId.
+     * edgeMap[i][j] contains pathId which has edge <i,j>
      * TIPS:
-     * When edge[i][j] = 0, <j, count> as a value will be removed.
-     * When edge[i].size() = 0, <i, hashMap> as a value will be removed.
+     * -Link describe the status of two nodes, in Link Object, there can be many
+     * specific info about this link status. such as edges number, pathId, etc.
+     * -When edge[i][j].size() = 0, <j, count> as a value will be removed.
+     * -When edge[i].size() = 0, <i, hashMap> as a value will be removed.
      */
-    private HashMap<Integer, HashMap<Integer, Integer>> edgeMap;
+    private HashMap<Integer, HashMap<Integer, Link>> edgeMap;
 
-    public EdgeContainer() {
+    public LinkContainer() {
         edgeMap = new HashMap<>(Constant.maxGraphDistinctNode);
     }
 
-    public void addOnePath(Path path) {
+    public void addOnePath(Path path, int pathId) {
         assert (path != null && path.isValid());
 
         int length = path.size();
         for (int i = 0; i <= length - 2; i++) {
             int cur = path.getNode(i);
             int next = path.getNode(i + 1);
-            addOneEdge(cur, next);
-            addOneEdge(next, cur);
+            addOneEdge(cur, next, pathId);
+            addOneEdge(next, cur, pathId);
         }
     }
 
@@ -39,15 +39,15 @@ public class EdgeContainer {
      * 1. Remove edges of path in edgeMap.
      * 2. Update version mark.
      */
-    public void removeOnePath(Path path) {
+    public void removeOnePath(Path path, int pathId) {
         assert (path != null && path.isValid());
 
         int length = path.size();
         for (int i = 0; i <= length - 2; i++) {
             int cur = path.getNode(i);
             int next = path.getNode(i + 1);
-            removeOneEdge(cur, next);
-            removeOneEdge(next, cur);
+            removeOneEdge(cur, next, pathId);
+            removeOneEdge(next, cur, pathId);
         }
     }
 
@@ -70,23 +70,36 @@ public class EdgeContainer {
         return edgeMap.containsKey(node);
     }
 
+    /**
+     * Return iterator of pathId set of from -> to edges. (For transfer graph.)
+     * Require: containEdge(from,to)
+     */
+    public Iterator<Integer> getLinkPathId(int from, int to) {
+        return edgeMap.get(from).get(to).getPathIdOfLink();
+    }
+
     /* -------- Inner Maintain Function --------*/
 
     /**
      * 1. get from's hashMap. If not exists, create one.
      * 2. add or update to's value in from's hashMap.
      */
-    private void addOneEdge(int from, int to) {
+    private void addOneEdge(int from, int to, int pathId) {
         if (!edgeMap.containsKey(from)) {
             edgeMap.put(from, new HashMap<>(Constant.maxGraphDistinctNode));
         }
-        HashMap<Integer, Integer> map = edgeMap.get(from);
+        HashMap<Integer, Link> map = edgeMap.get(from);
 
         if (!map.containsKey(to)) {
-            map.put(to, 1);
+            Link link = new Link();
+            link.addPathId(pathId);
+
+            map.put(to, link);
         } else {
-            int count = map.get(to);
-            map.replace(to, count + 1);
+            Link link = map.get(to);
+            link.addPathId(pathId);
+
+            map.replace(to, link);
         }
     }
 
@@ -95,17 +108,20 @@ public class EdgeContainer {
      * 2. remove or update to's value in from's hashMap.(hashMap must exists)
      * 3. If from's hashMap is empty, remove it in edgeMap.
      */
-    private void removeOneEdge(int from, int to) {
+    private void removeOneEdge(int from, int to, int pathId) {
         assert edgeMap.containsKey(from);
         if (edgeMap.containsKey(from)) {
-            HashMap<Integer, Integer> map = edgeMap.get(from);
+            HashMap<Integer, Link> map = edgeMap.get(from);
             assert map.containsKey(to);
             if (map.containsKey(to)) {
-                int count = map.get(to);
-                if (count == 1) {
-                    map.remove(to, count);
+
+                Link link = map.get(to);
+                link.subPathId(pathId);
+
+                if (link.isEmpty()) {
+                    map.remove(to, link);
                 } else {
-                    map.replace(to, count - 1);
+                    map.replace(to, link);
                 }
 
                 if (map.isEmpty()) {

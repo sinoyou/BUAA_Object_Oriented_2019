@@ -3,7 +3,7 @@ package subway;
 import com.oocourse.specs3.models.*;
 import subway.algorithm.ShortestRoad;
 import subway.component.DoubleDirPathMap;
-import subway.component.EdgeContainer;
+import subway.component.link.LinkContainer;
 import subway.component.NodeCountMap;
 import subway.tool.VersionMark;
 
@@ -11,7 +11,7 @@ public class MyRailwaySystem implements RailwaySystem {
     // private HashMap<Integer, Path> doubleDirMap;
     private DoubleDirPathMap doubleDirMap;
     private NodeCountMap nodeCountMap;
-    private EdgeContainer edgeContainer;
+    private LinkContainer linkContainer;
     private ShortestRoad shortestRoad;
     private int idCnt;
     private VersionMark versionMark;
@@ -22,8 +22,8 @@ public class MyRailwaySystem implements RailwaySystem {
         nodeCountMap = new NodeCountMap();
         versionMark = new VersionMark();
         // Graph Theory Part
-        edgeContainer = new EdgeContainer();
-        shortestRoad = new ShortestRoad(edgeContainer,
+        linkContainer = new LinkContainer();
+        shortestRoad = new ShortestRoad(linkContainer,
             nodeCountMap, versionMark);
     }
 
@@ -126,7 +126,7 @@ public class MyRailwaySystem implements RailwaySystem {
 
     @Override
     public boolean containsEdge(int i, int i1) {
-        return edgeContainer.containsEdge(i, i1);
+        return linkContainer.containsEdge(i, i1);
     }
 
     @Override
@@ -191,14 +191,14 @@ public class MyRailwaySystem implements RailwaySystem {
         versionMark.versionUpdate();
         doubleDirMap.put(pathId, path);
         nodeCountMap.addOnePath(path);
-        edgeContainer.addOnePath(path);
+        linkContainer.addOnePath(path, pathId);
     }
 
     private void removeOnePath(Path path, int pathId) {
         versionMark.versionUpdate();
         doubleDirMap.remove(pathId, path);
         nodeCountMap.removeOnePath(path);
-        edgeContainer.removeOnePath(path);
+        linkContainer.removeOnePath(path, pathId);
     }
 
 }
