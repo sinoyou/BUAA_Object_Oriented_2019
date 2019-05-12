@@ -190,14 +190,14 @@ public class MyRailwaySystem implements RailwaySystem {
     private void addOnePath(Path path, int pathId) {
         versionMark.versionUpdate();
         doubleDirMap.put(pathId, path);
-        nodeCountMap.addOnePath(path);
+        nodeCountMap.addOnePath(path, pathId);
         linkContainer.addOnePath(path, pathId);
     }
 
     private void removeOnePath(Path path, int pathId) {
         versionMark.versionUpdate();
         doubleDirMap.remove(pathId, path);
-        nodeCountMap.removeOnePath(path);
+        nodeCountMap.removeOnePath(path, pathId);
         linkContainer.removeOnePath(path, pathId);
     }
 
