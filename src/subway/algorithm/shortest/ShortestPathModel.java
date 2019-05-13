@@ -78,40 +78,11 @@ public abstract class ShortestPathModel {
         graphUpdate();
 
         // Establish result map to record actual node's least cost.
-        HashMap<Integer, Integer> result = new HashMap<>();
-        Iterator<Integer> virNodeIt = convertMap.actual2Virtual(node);
-        while (virNodeIt.hasNext()) {
-            // calculate each vir node result that actual node mapped to.
-            int virNode = virNodeIt.next();
-            HashMap<Integer, Integer> oneResult =
-                singleSrcAlgorithm(virNode, weightGraph);
-
-            // combine the result
-            Iterator<Integer> toNodeIt = nodeCountMap.nodeSet();
-            // foreach actual ToNode:
-            while (toNodeIt.hasNext()) {
-                int toNode = toNodeIt.next();
-                Iterator<Integer> virToNodeIt =
-                    convertMap.actual2Virtual(toNode);
-                // foreach ToNode's virtual node:
-                while (virToNodeIt.hasNext()) {
-                    int virToNode = virToNodeIt.next();
-                    if (oneResult.containsKey(virToNode)) {
-                        int cost = oneResult.get(virToNode);
-                        if (!result.containsKey(toNode)) {
-                            result.put(toNode, cost);
-                        } else {
-                            if (result.get(toNode) > cost) {
-                                result.put(toNode, cost);
-                            }
-                        }
-                    }
-                }
-            }
-        }
+        HashMap<Integer, Integer> oneResult =
+            singleSrcSpfa(node, weightGraph, convertMap, nodeCountMap);
 
         // update result of 'node' and refresh versionMark
-        resultCache.addGroup(node, result);
+        resultCache.addGroup(node, oneResult);
         nodeVersion.put(node, versionMark.getVersion());
     }
 
@@ -161,38 +132,49 @@ public abstract class ShortestPathModel {
      * A single source shortest path algorithm, it runs on different types of
      * weightGraph. It's implemented by SPFA.
      *
-     * @param from        Start node, vir node number-can only map one pathId.
+     * Here, we set multiple start nodes are all from's virtual nodes.
+     * At end, we combine actNodes' virNodes' best answer to form final
+     * result HashMap (key is actual node.)
+     *
+     * @param from        Start node, act node.
      * @param weightGraph Contain edge weights between all virtual node. (if
      *                    null means no edge.)
      * @return hashMap with result[i] = minLength(from -> i)
      */
-    private HashMap<Integer, Integer> singleSrcAlgorithm(int from,
-                                                         Matrix weightGraph) {
-        HashMap<Integer, Integer> result =
+    private HashMap<Integer, Integer> singleSrcSpfa(int from,
+                                                    Matrix weightGraph,
+                                                    ConvertMap convertMap,
+                                                    NodeCountMap nodeCountMap) {
+        HashMap<Integer, Integer> virResult =
             new HashMap<>(Constant.maxGraphDistinctNode);
         LinkedList<Integer> queue = new LinkedList<>();
 
+        // Technique 1 : Add all from's virNode to queue with length value 0.
         // length[from] = 0, queue.add(from)
-        result.put(from, 0);
-        queue.addLast(from);
+        Iterator<Integer> virNodeIt = convertMap.actual2Virtual(from);
+        while (virNodeIt.hasNext()) {
+            int virNode = virNodeIt.next();
+            virResult.put(virNode, 0);
+            queue.addLast(virNode);
+        }
 
+        // -------- Code Below Runs On Virtual Node Graph --------
         // SPFA
         while (!queue.isEmpty()) {
             int virNode = queue.removeFirst();
             Iterator<Integer> it = weightGraph.getExistSecondIndex(virNode);
             while (it.hasNext()) {
                 int visToNode = it.next();
-                int curLength = result.get(virNode);
-                if (!result.containsKey(visToNode)) {
-                    result.put(visToNode,
-                        curLength + weightGraph.getValue(virNode, visToNode));
+                int curLength = virResult.get(virNode);
+                int cmpLength = curLength +
+                    weightGraph.getValue(virNode, visToNode);
+
+                if (!virResult.containsKey(visToNode)) {
+                    virResult.put(visToNode, cmpLength);
                     queue.addLast(visToNode);
                 } else {
-                    if (result.get(visToNode) >
-                        curLength + weightGraph.getValue(virNode, visToNode)) {
-                        result.put(visToNode,
-                            curLength +
-                                weightGraph.getValue(virNode, visToNode));
+                    if (virResult.get(visToNode) > cmpLength) {
+                        virResult.put(visToNode, cmpLength);
                         if (!queue.contains(visToNode)) {
                             queue.addLast(visToNode);
                         }
@@ -200,6 +182,31 @@ public abstract class ShortestPathModel {
                 }
             }
         }
+        // -------- Code Above Runs Virtual Node Graph --------
+
+        // Visit All Actual Node and Combine Best Value of their virtual nodes.
+        HashMap<Integer, Integer> result = new HashMap<>();
+        Iterator<Integer> actNodeIt = nodeCountMap.nodeSet();
+        while (actNodeIt.hasNext()) {
+            int actNode = actNodeIt.next();
+            Iterator<Integer> virToNodeIt = convertMap.actual2Virtual(actNode);
+            while (virToNodeIt.hasNext()) {
+                int virNode = virToNodeIt.next();
+                // If virNode not reachable, then skip.
+                if (virResult.containsKey(virNode)) {
+                    int value = virResult.get(virNode);
+
+                    // result[actNode] = min(virResult[virNOde]
+                    // virNode in convert(actNode))
+                    if (!result.containsKey(actNode)) {
+                        result.put(actNode, value);
+                    } else if (result.get(actNode) > value) {
+                        result.put(actNode, value);
+                    }
+                }
+            }
+        }
+
         return result;
     }
 
