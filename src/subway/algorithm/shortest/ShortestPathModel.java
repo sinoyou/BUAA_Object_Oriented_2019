@@ -1,15 +1,17 @@
-package subway.algorithm;
+package subway.algorithm.shortest;
 
 import subway.component.NodeCountMap;
 import subway.component.link.LinkContainer;
+import subway.tool.Constant;
 import subway.tool.ConvertMap;
 import subway.tool.Matrix;
 import subway.tool.VersionMark;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
 
-public class LeastUnpleasant implements CostGraph {
+public abstract class ShortestPathModel {
     // Version Control
     private VersionMark versionMark;
     private int graphVersion;
@@ -27,8 +29,9 @@ public class LeastUnpleasant implements CostGraph {
     // result cache: node number is actual.
     private Matrix resultCache;
 
-    public LeastUnpleasant(LinkContainer linkContainer, VersionMark versionMark,
-                           NodeCountMap nodeCountMap) {
+    public ShortestPathModel(LinkContainer linkContainer,
+                             NodeCountMap nodeCountMap,
+                             VersionMark versionMark) {
         this.linkContainer = linkContainer;
         this.nodeCountMap = nodeCountMap;
         this.versionMark = versionMark;
@@ -38,10 +41,17 @@ public class LeastUnpleasant implements CostGraph {
         resultCache = new Matrix();
     }
 
+
+    /**
+     * Require: node From and node To must be connected to each other.
+     * NOTICE: node number defined here is actual node, only when call update
+     * method, virtual node will use.
+     * @param from node From
+     * @param to node To
+     * @return lowestCost based on different graph edge weight.
+     */
     public int getLowestCost(int from, int to) {
-        if (!resultCache.isExist(from, to)) {
-            nodeResultUpdate(from);
-        } else if (!nodeVersion.containsKey(from)) {
+        if (!nodeVersion.containsKey(from)) {
             nodeResultUpdate(from);
         } else if (!versionMark.isLatest(nodeVersion.get(from))) {
             nodeResultUpdate(from);
@@ -83,12 +93,14 @@ public class LeastUnpleasant implements CostGraph {
                 // foreach ToNode's virtual node:
                 while (virToNodeIt.hasNext()) {
                     int virToNode = virToNodeIt.next();
-                    int cost = oneResult.get(virToNode);
-                    if (!result.containsKey(toNode)) {
-                        result.put(toNode, cost);
-                    } else {
-                        if (result.get(toNode) > cost) {
+                    if(oneResult.containsKey(virToNode)){
+                        int cost = oneResult.get(virToNode);
+                        if (!result.containsKey(toNode)) {
                             result.put(toNode, cost);
+                        } else {
+                            if (result.get(toNode) > cost) {
+                                result.put(toNode, cost);
+                            }
                         }
                     }
                 }
@@ -119,7 +131,6 @@ public class LeastUnpleasant implements CostGraph {
             }
 
             // Part 2: Link all Virtual Node
-            // TODO with multiple strategy - present: unpleasant
             weightGraph = new Matrix();
             for (int i = 1; i <= cnt; i++) {
                 for (int j = 1; j <= cnt; j++) {
@@ -127,21 +138,13 @@ public class LeastUnpleasant implements CostGraph {
                     int actNodeJ = convertMap.virtual2Actual(j);
                     int pathIdI = convertMap.virtual2PathId(i);
                     int pathIdJ = convertMap.virtual2PathId(j);
-                    if (actNodeI == actNodeJ) {
-                        if (pathIdI == pathIdJ) {
-                            weightGraph.addPair(i, j, 0);
-                            weightGraph.addPair(j, i, 0);
-                        } else {
-                            weightGraph.addPair(i, j, 32);
-                            weightGraph.addPair(j, i, 32);
-                        }
-                    } else if(linkContainer.containsEdge(actNodeI,actNodeJ)){
-                        if (pathIdI == pathIdJ) {
-                            int value = Math.max((actNodeI % 5 + 5) % 5,
-                                (actNodeJ % 5 + 5) % 5);
-                            weightGraph.addPair(i,j,value);
-                            weightGraph.addPair(j,i,value);
-                        }
+
+                    Integer value = getEdgeValue(actNodeI,actNodeJ,
+                        pathIdI,pathIdJ,linkContainer);
+
+                    if(value != null){
+                        weightGraph.addPair(i,j,value);
+                        weightGraph.addPair(j,i,value);
                     }
                 }
             }
@@ -150,8 +153,61 @@ public class LeastUnpleasant implements CostGraph {
         }
     }
 
+    /**
+     * A single source shortest path algorithm, it runs on different types of
+     * weightGraph. It's implemented by SPFA.
+     * @param from Start node, virtual node number - can only map one pathId.
+     * @param weightGraph Contain edge weights between all virtual node. (if
+     *                    null means no edge.)
+     * @return hashMap with result[i] = minLength(from -> i)
+     */
     private HashMap<Integer, Integer> singleSrcAlgorithm(int from,
                                                          Matrix weightGraph) {
-        return null;
+        HashMap<Integer,Integer> result = new HashMap<>(Constant.maxGraphDistinctNode);
+        LinkedList<Integer> queue = new LinkedList<>();
+
+        // length[from] = 0, queue.add(from)
+        result.put(from,0);
+        queue.addLast(from);
+
+        // SPFA
+        while(!queue.isEmpty()){
+            int virNode = queue.removeFirst();
+            Iterator<Integer> it = weightGraph.getNoNullIndex(virNode);
+            while(it.hasNext()){
+                int visToNode = it.next();
+                int curLength = result.get(virNode);
+                if(!result.containsKey(visToNode)){
+                    result.put(visToNode,
+                        curLength + weightGraph.getValue(virNode,visToNode));
+                    queue.addLast(visToNode);
+                }else{
+                    if(result.get(visToNode) >
+                        curLength + weightGraph.getValue(virNode,visToNode)){
+                        result.put(visToNode,
+                            curLength + weightGraph.getValue(virNode,visToNode));
+                        if(!queue.contains(visToNode)){
+                            queue.addLast(visToNode);
+                        }
+                    }
+                }
+            }
+        }
+        return result;
     }
+
+    /**
+     * For each sub class extend this model,it has to implement this method to
+     * give edge weight in weight graph.
+     * @param actNodeI actual node number i
+     * @param actNodeJ actual node number j
+     * @param pathIdI pathId the virtual node of actNodeI belongs to.
+     * @param pathIdJ pathId the virtual node of actNodeJ belongs to.
+     * @param linkContainer Stores details of link between actual nodes.
+     * @return road weight value of (virNodeI, virNodeJ) & (virNodeJ, virNodeI),
+     *         null means needn't add edge.
+     */
+    public abstract Integer getEdgeValue(int actNodeI,int actNodeJ,
+                                int pathIdI, int pathIdJ,
+                                LinkContainer linkContainer);
 }

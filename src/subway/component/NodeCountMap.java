@@ -48,9 +48,9 @@ public class NodeCountMap {
             // 可能出现 1 1 1 1 1 型序列当删除一次后就不需要删除了。
             if(nodePathIdCount.containsKey(num)){
                 nodePathIdCount.get(num).remove(pathId);
-            }
-            if(nodePathIdCount.get(num).isEmpty()){
-                nodePathIdCount.remove(num);
+                if(nodePathIdCount.get(num).isEmpty()){
+                    nodePathIdCount.remove(num);
+                }
             }
         }
     }

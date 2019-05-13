@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 
-public class ShortestRoad {
+public class InfectGraph {
     private LinkContainer linkContainer;
     private HashMap<Integer, HashMap<Integer, Integer>> roadMap;
     private NodeCountMap nodeCountMap;
@@ -18,9 +18,9 @@ public class ShortestRoad {
     private VersionMark versionMark;
     private int edgeVersion;
 
-    public ShortestRoad(LinkContainer linkContainer,
-                        NodeCountMap nodeCountMap,
-                        VersionMark versionMark) {
+    public InfectGraph(LinkContainer linkContainer,
+                       NodeCountMap nodeCountMap,
+                       VersionMark versionMark) {
         this.linkContainer = linkContainer;
         this.nodeCountMap = nodeCountMap;
         this.roadMap = new HashMap<>(Constant.maxGraphDistinctNode);

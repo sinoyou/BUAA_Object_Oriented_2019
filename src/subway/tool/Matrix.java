@@ -1,6 +1,7 @@
 package subway.tool;
 
 import java.util.HashMap;
+import java.util.Iterator;
 
 public class Matrix {
     private HashMap<Integer, HashMap<Integer, Integer>> linkMap;
@@ -42,5 +43,9 @@ public class Matrix {
         } else {
             linkMap.get(from).put(to, value);
         }
+    }
+
+    public Iterator<Integer> getNoNullIndex(int from){
+        return linkMap.get(from).keySet().iterator();
     }
 }

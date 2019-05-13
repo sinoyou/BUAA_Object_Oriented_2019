@@ -71,11 +71,13 @@ public class LinkContainer {
     }
 
     /**
-     * Return iterator of pathId set of from -> to edges. (For transfer graph.)
-     * Require: containEdge(from,to)
+     * Check if link <from,to> has one edge belong to pathId.
      */
-    public Iterator<Integer> getLinkPathId(int from, int to) {
-        return edgeMap.get(from).get(to).getPathIdOfLink();
+    public boolean hasEdgeOnPath(int from, int to, int pathId) {
+        if (containsEdge(from, to)) {
+            return edgeMap.get(from).get(to).containEdgeOnPath(pathId);
+        }
+        return false;
     }
 
     /* -------- Inner Maintain Function --------*/

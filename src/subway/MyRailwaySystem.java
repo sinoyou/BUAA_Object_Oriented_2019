@@ -1,7 +1,8 @@
 package subway;
 
 import com.oocourse.specs3.models.*;
-import subway.algorithm.ShortestRoad;
+import subway.algorithm.shortest.*;
+import subway.algorithm.InfectGraph;
 import subway.component.DoubleDirPathMap;
 import subway.component.link.LinkContainer;
 import subway.component.NodeCountMap;
@@ -12,9 +13,15 @@ public class MyRailwaySystem implements RailwaySystem {
     private DoubleDirPathMap doubleDirMap;
     private NodeCountMap nodeCountMap;
     private LinkContainer linkContainer;
-    private ShortestRoad shortestRoad;
+    private InfectGraph infectGraph;
     private int idCnt;
     private VersionMark versionMark;
+
+    /* -------- New Algorithm Class in HM11 -------- */
+    private ShortestPathModel shortestPath;
+    private ShortestPathModel leastTransfer;
+    private ShortestPathModel lowestTicketPrice;
+    private ShortestPathModel leastUnpleasant;
 
     public MyRailwaySystem() {
         idCnt = 0;
@@ -23,8 +30,13 @@ public class MyRailwaySystem implements RailwaySystem {
         versionMark = new VersionMark();
         // Graph Theory Part
         linkContainer = new LinkContainer();
-        shortestRoad = new ShortestRoad(linkContainer,
+        infectGraph = new InfectGraph(linkContainer,
             nodeCountMap, versionMark);
+        // newly added in hm11
+        shortestPath = new ShortestPath(linkContainer,nodeCountMap,versionMark);
+        leastTransfer = new LeastTransfer(linkContainer,nodeCountMap,versionMark);
+        lowestTicketPrice = new LowestTicketPrice(linkContainer,nodeCountMap,versionMark);
+        leastUnpleasant = new LeastUnpleasant(linkContainer,nodeCountMap,versionMark);
     }
 
     @Override
@@ -139,7 +151,7 @@ public class MyRailwaySystem implements RailwaySystem {
             if (i == i1) {
                 return true;
             } else {
-                return shortestRoad.isNodesConnected(i, i1);
+                return infectGraph.isNodesConnected(i, i1);
             }
         }
     }
@@ -147,6 +159,8 @@ public class MyRailwaySystem implements RailwaySystem {
     @Override
     public int getShortestPathLength(int i, int i1)
         throws NodeIdNotFoundException, NodeNotConnectedException {
+        return costQuery(i,i1,shortestPath);
+        /*
         if (!containsNode(i)) {
             throw new NodeIdNotFoundException(i);
         } else if (!containsNode(i1)) {
@@ -157,9 +171,11 @@ public class MyRailwaySystem implements RailwaySystem {
             if (i == i1) {
                 return 0;
             } else {
-                return shortestRoad.getShortestRoadLength(i, i1);
+                return shortestPath.getLowestCost(i,i1);
+                // return infectGraph.getShortestRoadLength(i, i1);
             }
         }
+        */
     }
 
     /* -------- New Graph Theory Method in HM 11 -------- */
@@ -171,17 +187,17 @@ public class MyRailwaySystem implements RailwaySystem {
 
     @Override
     public int getLeastTransferCount(int i, int i1) throws NodeIdNotFoundException, NodeNotConnectedException {
-        return 0;
+        return costQuery(i,i1,leastTransfer);
     }
 
     @Override
     public int getLeastTicketPrice(int i, int i1) throws NodeIdNotFoundException, NodeNotConnectedException {
-        return 0;
+        return costQuery(i,i1,lowestTicketPrice);
     }
 
     @Override
     public int getLeastUnpleasantValue(int i, int i1) throws NodeIdNotFoundException, NodeNotConnectedException {
-        return 0;
+        return costQuery(i, i1,leastUnpleasant);
     }
 
 
@@ -199,6 +215,24 @@ public class MyRailwaySystem implements RailwaySystem {
         doubleDirMap.remove(pathId, path);
         nodeCountMap.removeOnePath(path, pathId);
         linkContainer.removeOnePath(path, pathId);
+    }
+
+    private int costQuery(int i, int i1, ShortestPathModel model)
+        throws NodeNotConnectedException, NodeIdNotFoundException {
+        if (!containsNode(i)) {
+            throw new NodeIdNotFoundException(i);
+        } else if (!containsNode(i1)) {
+            throw new NodeIdNotFoundException(i1);
+        } else if (!isConnected(i, i1)) {
+            throw new NodeNotConnectedException(i, i1);
+        } else {
+            if (i == i1) {
+                return 0;
+            } else {
+                return model.getLowestCost(i,i1);
+                // return infectGraph.getShortestRoadLength(i, i1);
+            }
+        }
     }
 
 }

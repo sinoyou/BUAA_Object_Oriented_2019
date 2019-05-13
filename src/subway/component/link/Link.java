@@ -39,4 +39,8 @@ public class Link {
     public Iterator<Integer> getPathIdOfLink(){
         return pathCnt.keySet().iterator();
     }
+
+    public boolean containEdgeOnPath(int pathId){
+        return pathCnt.containsKey(pathId);
+    }
 }
