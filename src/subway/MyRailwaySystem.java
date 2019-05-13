@@ -223,7 +223,7 @@ public class MyRailwaySystem implements RailwaySystem {
             if (i == i1) {
                 return 0;
             } else {
-                return model.getLowestCost(i, i1);
+                return model.getLowestRoadWeight(i, i1);
                 // return infectGraph.getShortestRoadLength(i, i1);
             }
         }
