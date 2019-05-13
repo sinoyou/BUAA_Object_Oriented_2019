@@ -173,7 +173,7 @@ public abstract class ShortestPathModel {
         // SPFA
         while(!queue.isEmpty()){
             int virNode = queue.removeFirst();
-            Iterator<Integer> it = weightGraph.getNoNullIndex(virNode);
+            Iterator<Integer> it = weightGraph.getExistSecondIndex(virNode);
             while(it.hasNext()){
                 int visToNode = it.next();
                 int curLength = result.get(virNode);
