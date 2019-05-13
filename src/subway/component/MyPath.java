@@ -107,6 +107,10 @@ public class MyPath implements Path {
 
     @Override
     public int getUnpleasantValue(int i) {
-        return 0;
+        if(containsNode(i)){
+            return 0;
+        }else {
+            return (int) Math.pow(4, (i % 5 + 5) % 5);
+        }
     }
 }

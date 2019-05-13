@@ -182,7 +182,7 @@ public class MyRailwaySystem implements RailwaySystem {
 
     @Override
     public int getConnectedBlockCount() {
-        return 0;
+        return infectGraph.getConnectedBlocks();
     }
 
     @Override
