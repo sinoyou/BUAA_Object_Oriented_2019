@@ -3,11 +3,13 @@ package subway.component.link;
 import com.oocourse.specs3.models.Path;
 import subway.tool.Constant;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Set;
 
 public class LinkContainer {
     /**
-     * 1.edgeMap: Use double-layer HashMap to record the hashSet of edge's pathId.
+     * 1.edgeMap: Use double-layer HashMap to record link detail information.
      * edgeMap[i][j] contains pathId which has edge <i,j>
      * TIPS:
      * -Link describe the status of two nodes, in Link Object, there can be many

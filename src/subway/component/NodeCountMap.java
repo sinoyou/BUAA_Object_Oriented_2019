@@ -17,11 +17,11 @@ public class NodeCountMap {
 
     public void addOnePath(Path path, int pathId) {
         for (Integer num : path) {
-            if(nodePathIdCount.isExist(num,pathId)){
-                int value = nodePathIdCount.getValue(num,pathId);
-                nodePathIdCount.addPair(num,pathId,value+1);
-            }else {
-                nodePathIdCount.addPair(num,pathId,1);
+            if (nodePathIdCount.isExist(num, pathId)) {
+                int value = nodePathIdCount.getValue(num, pathId);
+                nodePathIdCount.addPair(num, pathId, value + 1);
+            } else {
+                nodePathIdCount.addPair(num, pathId, 1);
             }
         }
     }
@@ -30,16 +30,16 @@ public class NodeCountMap {
      * Remove one existent path with correct pathId.
      * Require: path must exist in the graph, pathId must correct match it.
      *
-     * @param path path to be removed.
+     * @param path   path to be removed.
      * @param pathId unique sign of this path.
      */
     public void removeOnePath(Path path, int pathId) {
         for (Integer num : path) {
-            int value = nodePathIdCount.getValue(num,pathId);
-            if(value == 1){
-                nodePathIdCount.clearPairValue(num,pathId);
-            }else {
-                nodePathIdCount.addPair(num,pathId,value - 1);
+            int value = nodePathIdCount.getValue(num, pathId);
+            if (value == 1) {
+                nodePathIdCount.clearPairValue(num, pathId);
+            } else {
+                nodePathIdCount.addPair(num, pathId, value - 1);
             }
         }
     }
@@ -58,6 +58,7 @@ public class NodeCountMap {
 
     /**
      * Given a actual node number, return paths which this node is on.
+     *
      * @param node Actual node number
      * @return Iterator of pathId
      */

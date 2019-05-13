@@ -32,15 +32,15 @@ public class Link {
         }
     }
 
-    public boolean isEmpty(){
+    public boolean isEmpty() {
         return pathCnt.isEmpty();
     }
 
-    public Iterator<Integer> getPathIdOfLink(){
+    public Iterator<Integer> getPathIdOfLink() {
         return pathCnt.keySet().iterator();
     }
 
-    public boolean containEdgeOnPath(int pathId){
+    public boolean containEdgeOnPath(int pathId) {
         return pathCnt.containsKey(pathId);
     }
 }

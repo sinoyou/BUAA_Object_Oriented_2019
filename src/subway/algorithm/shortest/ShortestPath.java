@@ -4,7 +4,6 @@ import subway.component.NodeCountMap;
 import subway.component.link.LinkContainer;
 import subway.tool.VersionMark;
 
-
 public class ShortestPath extends ShortestPathModel {
 
     public ShortestPath(LinkContainer linkContainer,

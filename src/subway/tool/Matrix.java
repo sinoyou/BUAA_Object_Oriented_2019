@@ -14,18 +14,18 @@ public class Matrix {
         add(a, b, value);
     }
 
-    public void clearPairValue(int a,int b){
-        assert isExist(a,b);
-        HashMap<Integer,Integer> map = linkMap.get(a);
+    public void clearPairValue(int a, int b) {
+        assert isExist(a, b);
+        HashMap<Integer, Integer> map = linkMap.get(a);
         map.remove(b);
-        if(map.isEmpty()){
-            linkMap.remove(a,map);
+        if (map.isEmpty()) {
+            linkMap.remove(a, map);
         }
     }
 
     // occasion: map refresh after single source algorithm.
-    public void addGroup(int node, HashMap<Integer,Integer> map){
-        linkMap.put(node,map);
+    public void addGroup(int node, HashMap<Integer, Integer> map) {
+        linkMap.put(node, map);
     }
 
     public boolean isExist(int a, int b) {
@@ -40,7 +40,6 @@ public class Matrix {
         return linkMap.get(a).get(b);
     }
 
-
     private void add(int from, int to, int value) {
         if (!linkMap.containsKey(from)) {
             HashMap<Integer, Integer> map = new HashMap<>();
@@ -51,22 +50,20 @@ public class Matrix {
         }
     }
 
-
-    public int getExistFirstIndexAmount(){
+    public int getExistFirstIndexAmount() {
         return linkMap.keySet().size();
     }
 
-    public boolean isFirstIndexExist(int from){
+    public boolean isFirstIndexExist(int from) {
         return linkMap.containsKey(from);
     }
 
-    public Iterator<Integer> getExistFirstIndex(){
+    public Iterator<Integer> getExistFirstIndex() {
         return linkMap.keySet().iterator();
     }
 
-    public Iterator<Integer> getExistSecondIndex(int from){
+    public Iterator<Integer> getExistSecondIndex(int from) {
         return linkMap.get(from).keySet().iterator();
     }
-
 
 }

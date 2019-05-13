@@ -8,8 +8,8 @@ public class LeastTransfer extends ShortestPathModel {
 
     public LeastTransfer(LinkContainer linkContainer,
                          NodeCountMap nodeCountMap,
-                         VersionMark versionMark){
-        super(linkContainer,nodeCountMap,versionMark);
+                         VersionMark versionMark) {
+        super(linkContainer, nodeCountMap, versionMark);
     }
 
     @Override
@@ -23,7 +23,7 @@ public class LeastTransfer extends ShortestPathModel {
                 return 1;
             }
         } else if (pathIdI == pathIdJ) {
-            if (linkContainer.hasEdgeOnPath(actNodeI,actNodeJ,pathIdI)) {
+            if (linkContainer.hasEdgeOnPath(actNodeI, actNodeJ, pathIdI)) {
                 return 0;
             }
         }

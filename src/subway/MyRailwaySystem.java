@@ -1,11 +1,17 @@
 package subway;
 
-import com.oocourse.specs3.models.*;
-import subway.algorithm.shortest.*;
+import com.oocourse.specs3.models.NodeIdNotFoundException;
+import com.oocourse.specs3.models.NodeNotConnectedException;
+import com.oocourse.specs3.models.Path;
+import com.oocourse.specs3.models.PathIdNotFoundException;
+import com.oocourse.specs3.models.PathNotFoundException;
+import com.oocourse.specs3.models.RailwaySystem;
 import subway.algorithm.InfectGraph;
+import subway.algorithm.shortest.ShortestPathModel;
 import subway.component.DoubleDirPathMap;
 import subway.component.link.LinkContainer;
 import subway.component.NodeCountMap;
+import subway.tool.AlgorithmFactory;
 import subway.tool.VersionMark;
 
 public class MyRailwaySystem implements RailwaySystem {
@@ -23,7 +29,7 @@ public class MyRailwaySystem implements RailwaySystem {
     private ShortestPathModel lowestTicketPrice;
     private ShortestPathModel leastUnpleasant;
 
-    public MyRailwaySystem() {
+    public MyRailwaySystem() throws Exception {
         idCnt = 0;
         doubleDirMap = new DoubleDirPathMap();
         nodeCountMap = new NodeCountMap();
@@ -33,10 +39,12 @@ public class MyRailwaySystem implements RailwaySystem {
         infectGraph = new InfectGraph(linkContainer,
             nodeCountMap, versionMark);
         // newly added in hm11
-        shortestPath = new ShortestPath(linkContainer,nodeCountMap,versionMark);
-        leastTransfer = new LeastTransfer(linkContainer,nodeCountMap,versionMark);
-        lowestTicketPrice = new LowestTicketPrice(linkContainer,nodeCountMap,versionMark);
-        leastUnpleasant = new LeastUnpleasant(linkContainer,nodeCountMap,versionMark);
+        AlgorithmFactory algorithmFactory = new AlgorithmFactory(linkContainer,
+            nodeCountMap, versionMark);
+        shortestPath = algorithmFactory.produce("ShortestPath");
+        leastTransfer = algorithmFactory.produce("LeastTransfer");
+        lowestTicketPrice = algorithmFactory.produce("LowestPrice");
+        leastUnpleasant = algorithmFactory.produce("LeastUnpleasant");
     }
 
     @Override
@@ -159,7 +167,7 @@ public class MyRailwaySystem implements RailwaySystem {
     @Override
     public int getShortestPathLength(int i, int i1)
         throws NodeIdNotFoundException, NodeNotConnectedException {
-        return costQuery(i,i1,shortestPath);
+        return costQuery(i, i1, shortestPath);
         /*
         if (!containsNode(i)) {
             throw new NodeIdNotFoundException(i);
@@ -186,20 +194,22 @@ public class MyRailwaySystem implements RailwaySystem {
     }
 
     @Override
-    public int getLeastTransferCount(int i, int i1) throws NodeIdNotFoundException, NodeNotConnectedException {
-        return costQuery(i,i1,leastTransfer);
+    public int getLeastTransferCount(int i, int i1)
+        throws NodeIdNotFoundException, NodeNotConnectedException {
+        return costQuery(i, i1, leastTransfer);
     }
 
     @Override
-    public int getLeastTicketPrice(int i, int i1) throws NodeIdNotFoundException, NodeNotConnectedException {
-        return costQuery(i,i1,lowestTicketPrice);
+    public int getLeastTicketPrice(int i, int i1)
+        throws NodeIdNotFoundException, NodeNotConnectedException {
+        return costQuery(i, i1, lowestTicketPrice);
     }
 
     @Override
-    public int getLeastUnpleasantValue(int i, int i1) throws NodeIdNotFoundException, NodeNotConnectedException {
-        return costQuery(i, i1,leastUnpleasant);
+    public int getLeastUnpleasantValue(int i, int i1)
+        throws NodeIdNotFoundException, NodeNotConnectedException {
+        return costQuery(i, i1, leastUnpleasant);
     }
-
 
 
     /* -------- Inner Maintain Method -------- */
@@ -229,7 +239,7 @@ public class MyRailwaySystem implements RailwaySystem {
             if (i == i1) {
                 return 0;
             } else {
-                return model.getLowestCost(i,i1);
+                return model.getLowestCost(i, i1);
                 // return infectGraph.getShortestRoadLength(i, i1);
             }
         }

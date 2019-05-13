@@ -46,8 +46,9 @@ public abstract class ShortestPathModel {
      * Require: node From and node To must be connected to each other.
      * NOTICE: node number defined here is actual node, only when call update
      * method, virtual node will use.
+     *
      * @param from node From
-     * @param to node To
+     * @param to   node To
      * @return lowestCost based on different graph edge weight.
      */
     public int getLowestCost(int from, int to) {
@@ -82,18 +83,20 @@ public abstract class ShortestPathModel {
         while (virNodeIt.hasNext()) {
             // calculate each vir node result that actual node mapped to.
             int virNode = virNodeIt.next();
-            HashMap<Integer, Integer> oneResult = singleSrcAlgorithm(virNode, weightGraph);
+            HashMap<Integer, Integer> oneResult =
+                singleSrcAlgorithm(virNode, weightGraph);
 
             // combine the result
             Iterator<Integer> toNodeIt = nodeCountMap.nodeSet();
             // foreach actual ToNode:
             while (toNodeIt.hasNext()) {
                 int toNode = toNodeIt.next();
-                Iterator<Integer> virToNodeIt = convertMap.actual2Virtual(toNode);
+                Iterator<Integer> virToNodeIt =
+                    convertMap.actual2Virtual(toNode);
                 // foreach ToNode's virtual node:
                 while (virToNodeIt.hasNext()) {
                     int virToNode = virToNodeIt.next();
-                    if(oneResult.containsKey(virToNode)){
+                    if (oneResult.containsKey(virToNode)) {
                         int cost = oneResult.get(virToNode);
                         if (!result.containsKey(toNode)) {
                             result.put(toNode, cost);
@@ -123,7 +126,8 @@ public abstract class ShortestPathModel {
             Iterator<Integer> actualNodeIt = nodeCountMap.nodeSet();
             while (actualNodeIt.hasNext()) {
                 int actualNode = actualNodeIt.next();
-                Iterator<Integer> pathIdIt = nodeCountMap.getPathIdOnNode(actualNode);
+                Iterator<Integer> pathIdIt =
+                    nodeCountMap.getPathIdOnNode(actualNode);
                 while (pathIdIt.hasNext()) {
                     int virNode = ++cnt;
                     convertMap.addConvert(actualNode, virNode, pathIdIt.next());
@@ -139,12 +143,12 @@ public abstract class ShortestPathModel {
                     int pathIdI = convertMap.virtual2PathId(i);
                     int pathIdJ = convertMap.virtual2PathId(j);
 
-                    Integer value = getEdgeValue(actNodeI,actNodeJ,
-                        pathIdI,pathIdJ,linkContainer);
+                    Integer value = getEdgeValue(actNodeI, actNodeJ,
+                        pathIdI, pathIdJ, linkContainer);
 
-                    if(value != null){
-                        weightGraph.addPair(i,j,value);
-                        weightGraph.addPair(j,i,value);
+                    if (value != null) {
+                        weightGraph.addPair(i, j, value);
+                        weightGraph.addPair(j, i, value);
                     }
                 }
             }
@@ -156,37 +160,40 @@ public abstract class ShortestPathModel {
     /**
      * A single source shortest path algorithm, it runs on different types of
      * weightGraph. It's implemented by SPFA.
-     * @param from Start node, virtual node number - can only map one pathId.
+     *
+     * @param from        Start node, vir node number-can only map one pathId.
      * @param weightGraph Contain edge weights between all virtual node. (if
      *                    null means no edge.)
      * @return hashMap with result[i] = minLength(from -> i)
      */
     private HashMap<Integer, Integer> singleSrcAlgorithm(int from,
                                                          Matrix weightGraph) {
-        HashMap<Integer,Integer> result = new HashMap<>(Constant.maxGraphDistinctNode);
+        HashMap<Integer, Integer> result =
+            new HashMap<>(Constant.maxGraphDistinctNode);
         LinkedList<Integer> queue = new LinkedList<>();
 
         // length[from] = 0, queue.add(from)
-        result.put(from,0);
+        result.put(from, 0);
         queue.addLast(from);
 
         // SPFA
-        while(!queue.isEmpty()){
+        while (!queue.isEmpty()) {
             int virNode = queue.removeFirst();
             Iterator<Integer> it = weightGraph.getExistSecondIndex(virNode);
-            while(it.hasNext()){
+            while (it.hasNext()) {
                 int visToNode = it.next();
                 int curLength = result.get(virNode);
-                if(!result.containsKey(visToNode)){
+                if (!result.containsKey(visToNode)) {
                     result.put(visToNode,
-                        curLength + weightGraph.getValue(virNode,visToNode));
+                        curLength + weightGraph.getValue(virNode, visToNode));
                     queue.addLast(visToNode);
-                }else{
-                    if(result.get(visToNode) >
-                        curLength + weightGraph.getValue(virNode,visToNode)){
+                } else {
+                    if (result.get(visToNode) >
+                        curLength + weightGraph.getValue(virNode, visToNode)) {
                         result.put(visToNode,
-                            curLength + weightGraph.getValue(virNode,visToNode));
-                        if(!queue.contains(visToNode)){
+                            curLength +
+                                weightGraph.getValue(virNode, visToNode));
+                        if (!queue.contains(visToNode)) {
                             queue.addLast(visToNode);
                         }
                     }
@@ -199,15 +206,16 @@ public abstract class ShortestPathModel {
     /**
      * For each sub class extend this model,it has to implement this method to
      * give edge weight in weight graph.
-     * @param actNodeI actual node number i
-     * @param actNodeJ actual node number j
-     * @param pathIdI pathId the virtual node of actNodeI belongs to.
-     * @param pathIdJ pathId the virtual node of actNodeJ belongs to.
+     *
+     * @param actNodeI      actual node number i
+     * @param actNodeJ      actual node number j
+     * @param pathIdI       pathId the virtual node of actNodeI belongs to.
+     * @param pathIdJ       pathId the virtual node of actNodeJ belongs to.
      * @param linkContainer Stores details of link between actual nodes.
      * @return road weight value of (virNodeI, virNodeJ) & (virNodeJ, virNodeI),
-     *         null means needn't add edge.
+     * null means needn't add edge.
      */
-    public abstract Integer getEdgeValue(int actNodeI,int actNodeJ,
-                                int pathIdI, int pathIdJ,
-                                LinkContainer linkContainer);
+    public abstract Integer getEdgeValue(int actNodeI, int actNodeJ,
+                                         int pathIdI, int pathIdJ,
+                                         LinkContainer linkContainer);
 }

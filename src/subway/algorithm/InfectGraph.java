@@ -48,7 +48,6 @@ public class InfectGraph {
         }
     }
 
-
     public int getConnectedBlocks() {
         versionCheck();
         return connectedBlocksCache;
@@ -73,7 +72,6 @@ public class InfectGraph {
             edgeVersion = versionMark.getVersion();
         }
     }
-
 
     private int connectedBlocksCount() {
         HashSet<Integer> set = new HashSet<>(colorMap.values());
@@ -104,7 +102,7 @@ public class InfectGraph {
         LinkedList<Integer> queue = new LinkedList<>();
 
         // initial: length[nodeId] = 0
-        colorMap.put(nodeId,color);
+        colorMap.put(nodeId, color);
         queue.addLast(nodeId);
 
         while (!queue.isEmpty()) {
@@ -117,8 +115,8 @@ public class InfectGraph {
             Iterator<Integer> it = linkContainer.getConnectNodes(node);
             while (it.hasNext()) {
                 int nodeTo = it.next();
-                if(!colorMap.containsKey(nodeTo)){
-                    colorMap.put(nodeTo,color);
+                if (!colorMap.containsKey(nodeTo)) {
+                    colorMap.put(nodeTo, color);
                     if (!queue.contains(nodeTo)) {
                         queue.addLast(nodeTo);
                     }

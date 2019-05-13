@@ -21,7 +21,7 @@ public class ConvertMap {
      */
     public void addConvert(int actual, int virtual, int pathId) {
         virtualMap.put(virtual, actual);
-        pathIdOnVirtual.put(virtual,pathId);
+        pathIdOnVirtual.put(virtual, pathId);
         if (!actualMap.containsKey(actual)) {
             ArrayList<Integer> list = new ArrayList<>();
             list.add(virtual);
@@ -41,7 +41,7 @@ public class ConvertMap {
         return actualMap.get(actual).iterator();
     }
 
-    public int virtual2PathId(int virtual){
+    public int virtual2PathId(int virtual) {
         return pathIdOnVirtual.get(virtual);
     }
 }

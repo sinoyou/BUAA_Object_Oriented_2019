@@ -94,7 +94,7 @@ public class MyPath implements Path {
             }
         }
         // non public
-        return Integer.compare(size1,size2);
+        return Integer.compare(size1, size2);
     }
 
     public int getHead() {
@@ -107,9 +107,9 @@ public class MyPath implements Path {
 
     @Override
     public int getUnpleasantValue(int i) {
-        if(containsNode(i)){
+        if (containsNode(i)) {
             return 0;
-        }else {
+        } else {
             return (int) Math.pow(4, (i % 5 + 5) % 5);
         }
     }
