@@ -2,6 +2,7 @@ package subway.tool;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 public class Matrix {
     private HashMap<Integer, HashMap<Integer, Integer>> linkMap;
@@ -14,7 +15,7 @@ public class Matrix {
         add(a, b, value);
     }
 
-    public void clearPairValue(int a, int b) {
+    public void deletePair(int a, int b) {
         assert isExist(a, b);
         HashMap<Integer, Integer> map = linkMap.get(a);
         map.remove(b);
@@ -25,7 +26,11 @@ public class Matrix {
 
     // occasion: map refresh after single source algorithm.
     public void addGroup(int node, HashMap<Integer, Integer> map) {
-        linkMap.put(node, map);
+        HashMap<Integer, Integer> mapCopy = new HashMap<>();
+        for (Map.Entry<Integer, Integer> entry : map.entrySet()) {
+            mapCopy.put(entry.getKey(), entry.getValue());
+        }
+        linkMap.put(node, mapCopy);
     }
 
     public boolean isExist(int a, int b) {
