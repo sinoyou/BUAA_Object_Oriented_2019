@@ -9,18 +9,18 @@ import java.util.Set;
 
 public class LinkContainer {
     /**
-     * 1.edgeMap: Use double-layer HashMap to record link detail information.
-     * edgeMap[i][j] contains pathId which has edge <i,j>
+     * 1.linkMap: Use double-layer HashMap to record link detail information.
+     * linkMap[i][j] contains pathId which has edge <i,j>
      * TIPS:
      * -Link describe the status of two nodes, in Link Object, there can be many
      * specific info about this link status. such as edges number, pathId, etc.
-     * -When edge[i][j].size() = 0, <j, count> as a value will be removed.
-     * -When edge[i].size() = 0, <i, hashMap> as a value will be removed.
+     * -When linkMap[i][j].size() = 0, <j, count> as a value will be removed.
+     * -When linkMap[i].size() = 0, <i, hashMap> as a value will be removed.
      */
-    private HashMap<Integer, HashMap<Integer, Link>> edgeMap;
+    private HashMap<Integer, HashMap<Integer, Link>> linkMap;
 
     public LinkContainer() {
-        edgeMap = new HashMap<>(Constant.maxGraphDistinctNode);
+        linkMap = new HashMap<>(Constant.maxGraphDistinctNode);
     }
 
     public void addOnePath(Path path, int pathId) {
@@ -36,9 +36,9 @@ public class LinkContainer {
     }
 
     /**
-     * Require: Path must have been added to edgeMap.
+     * Require: Path must have been added to linkMap.
      * !!! Run this method without requirement will lead unpredictable error.
-     * 1. Remove edges of path in edgeMap.
+     * 1. Remove edges of path in linkMap.
      * 2. Update version mark.
      */
     public void removeOnePath(Path path, int pathId) {
@@ -54,22 +54,22 @@ public class LinkContainer {
     }
 
     public Iterator<Integer> getConnectNodes(int node) {
-        assert edgeMap.containsKey(node);
-        Set<Integer> set = edgeMap.get(node).keySet();
+        assert linkMap.containsKey(node);
+        Set<Integer> set = linkMap.get(node).keySet();
         assert !set.isEmpty();
         return set.iterator();
     }
 
     public boolean containsEdge(int from, int to) {
-        if (edgeMap.containsKey(from)) {
-            return edgeMap.get(from).containsKey(to);
+        if (linkMap.containsKey(from)) {
+            return linkMap.get(from).containsKey(to);
         } else {
             return false;
         }
     }
 
     public boolean containsKey(int node) {
-        return edgeMap.containsKey(node);
+        return linkMap.containsKey(node);
     }
 
     /**
@@ -77,7 +77,7 @@ public class LinkContainer {
      */
     public boolean hasEdgeOnPath(int from, int to, int pathId) {
         if (containsEdge(from, to)) {
-            return edgeMap.get(from).get(to).containEdgeOnPath(pathId);
+            return linkMap.get(from).get(to).containEdgeOnPath(pathId);
         }
         return false;
     }
@@ -89,10 +89,10 @@ public class LinkContainer {
      * 2. add or update to's value in from's hashMap.
      */
     private void addOneEdge(int from, int to, int pathId) {
-        if (!edgeMap.containsKey(from)) {
-            edgeMap.put(from, new HashMap<>(Constant.maxGraphDistinctNode));
+        if (!linkMap.containsKey(from)) {
+            linkMap.put(from, new HashMap<>(Constant.maxGraphDistinctNode));
         }
-        HashMap<Integer, Link> map = edgeMap.get(from);
+        HashMap<Integer, Link> map = linkMap.get(from);
 
         if (!map.containsKey(to)) {
             Link link = new Link();
@@ -102,20 +102,18 @@ public class LinkContainer {
         } else {
             Link link = map.get(to);
             link.addPathId(pathId);
-
-            map.replace(to, link);
         }
     }
 
     /**
      * 1. Get from's hashMap.(hashMap must exists)
      * 2. remove or update to's value in from's hashMap.(hashMap must exists)
-     * 3. If from's hashMap is empty, remove it in edgeMap.
+     * 3. If from's hashMap is empty, remove it in linkMap.
      */
     private void removeOneEdge(int from, int to, int pathId) {
-        assert edgeMap.containsKey(from);
-        if (edgeMap.containsKey(from)) {
-            HashMap<Integer, Link> map = edgeMap.get(from);
+        assert linkMap.containsKey(from);
+        if (linkMap.containsKey(from)) {
+            HashMap<Integer, Link> map = linkMap.get(from);
             assert map.containsKey(to);
             if (map.containsKey(to)) {
 
@@ -124,12 +122,10 @@ public class LinkContainer {
 
                 if (link.isEmpty()) {
                     map.remove(to, link);
-                } else {
-                    map.replace(to, link);
                 }
 
                 if (map.isEmpty()) {
-                    edgeMap.remove(from, map);
+                    linkMap.remove(from, map);
                 }
             }
         }

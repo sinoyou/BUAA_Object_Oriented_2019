@@ -1,7 +1,7 @@
 package subway.algorithm;
 
 import subway.component.link.LinkContainer;
-import subway.component.NodeCountMap;
+import subway.component.node.NodeCountMap;
 import subway.tool.Constant;
 import subway.tool.VersionMark;
 

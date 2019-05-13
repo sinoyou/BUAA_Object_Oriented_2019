@@ -1,6 +1,6 @@
 package subway.algorithm.shortest;
 
-import subway.component.NodeCountMap;
+import subway.component.node.NodeCountMap;
 import subway.component.link.LinkContainer;
 import subway.tool.VersionMark;
 

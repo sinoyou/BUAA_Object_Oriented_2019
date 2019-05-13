@@ -1,4 +1,4 @@
-package subway.component;
+package subway.component.node;
 
 import com.oocourse.specs3.models.Path;
 import subway.tool.Matrix;
@@ -6,7 +6,7 @@ import subway.tool.Matrix;
 import java.util.Iterator;
 
 public class NodeCountMap {
-    // For one node, how many paths does it exist now and how many times does it
+    // For one node, how many paths is it on now and how many times does it
     // exist on one certain path.
     // private HashMap<Integer, HashMap<Integer, Integer>> nodePathIdCount;
     private Matrix nodePathIdCount;
@@ -15,6 +15,14 @@ public class NodeCountMap {
         nodePathIdCount = new Matrix();
     }
 
+    /**
+     * Add one path. For each node on the path, record its relation with pathId.
+     * map[node][path] not exist -> map[node][path] = 1
+     * map[node][path] exist -> map[node][node] ++
+     * Require: pathId must correct match it.
+     * @param path Path details
+     * @param pathId Path Id
+     */
     public void addOnePath(Path path, int pathId) {
         for (Integer num : path) {
             if (nodePathIdCount.isExist(num, pathId)) {
@@ -29,7 +37,11 @@ public class NodeCountMap {
     /**
      * Remove one existent path with correct pathId.
      * Require: path must exist in the graph, pathId must correct match it.
-     *
+     * Require: map[node][pathId] must exist
+     * map[node][pathId] = 1 -> remove map[node][pathId]
+     * map[node][pathId] > 1 -> map[node][pathId] --
+     * if map[node].size() == 0 -> remove map[node](node completely removed fr
+     * om the graph)
      * @param path   path to be removed.
      * @param pathId unique sign of this path.
      */
@@ -37,7 +49,7 @@ public class NodeCountMap {
         for (Integer num : path) {
             int value = nodePathIdCount.getValue(num, pathId);
             if (value == 1) {
-                nodePathIdCount.clearPairValue(num, pathId);
+                nodePathIdCount.deletePair(num, pathId);
             } else {
                 nodePathIdCount.addPair(num, pathId, value - 1);
             }

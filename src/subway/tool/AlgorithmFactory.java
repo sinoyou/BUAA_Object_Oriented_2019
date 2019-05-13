@@ -5,7 +5,7 @@ import subway.algorithm.shortest.LeastUnpleasant;
 import subway.algorithm.shortest.LowestTicketPrice;
 import subway.algorithm.shortest.ShortestPath;
 import subway.algorithm.shortest.ShortestPathModel;
-import subway.component.NodeCountMap;
+import subway.component.node.NodeCountMap;
 import subway.component.link.LinkContainer;
 
 public class AlgorithmFactory {

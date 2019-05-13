@@ -10,7 +10,7 @@ import subway.algorithm.InfectGraph;
 import subway.algorithm.shortest.ShortestPathModel;
 import subway.component.DoubleDirPathMap;
 import subway.component.link.LinkContainer;
-import subway.component.NodeCountMap;
+import subway.component.node.NodeCountMap;
 import subway.tool.AlgorithmFactory;
 import subway.tool.VersionMark;
 
@@ -168,22 +168,6 @@ public class MyRailwaySystem implements RailwaySystem {
     public int getShortestPathLength(int i, int i1)
         throws NodeIdNotFoundException, NodeNotConnectedException {
         return costQuery(i, i1, shortestPath);
-        /*
-        if (!containsNode(i)) {
-            throw new NodeIdNotFoundException(i);
-        } else if (!containsNode(i1)) {
-            throw new NodeIdNotFoundException(i1);
-        } else if (!isConnected(i, i1)) {
-            throw new NodeNotConnectedException(i, i1);
-        } else {
-            if (i == i1) {
-                return 0;
-            } else {
-                return shortestPath.getLowestCost(i,i1);
-                // return infectGraph.getShortestRoadLength(i, i1);
-            }
-        }
-        */
     }
 
     /* -------- New Graph Theory Method in HM 11 -------- */
