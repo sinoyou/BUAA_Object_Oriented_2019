@@ -85,21 +85,21 @@ public abstract class ShortestPathModel {
         resultCache.addGroup(node, oneResult);
         nodeVersion.put(node, versionMark.getVersion());
         System.err.println(String.format("Node %d of %s update to Version %d",
-            node,this.getClass().getName(),graphVersion));
+            node, this.getClass().getName(), graphVersion));
     }
 
     /**
      * Make sure the weight graph is latest version.
      * 1. Check version, if latest -> no need to build graph and return.
-     *
+     * <p>
      * 2. Convert all actual nodes in graph into virtual nodes, virtual nodes is
-     *    split actual node in different path and they must acquire:
-     *    - point to unique actual node
-     *    - point to unique pathId
-     *    Here, we use convertMap to record relation of actNode,virNode,pathId.
-     *
+     * split actual node in different path and they must acquire:
+     * - point to unique actual node
+     * - point to unique pathId
+     * Here, we use convertMap to record relation of actNode,virNode,pathId.
+     * <p>
      * 3. For each virNode pair in new graph, use implemented method to give
-     *    correct edge weight. Here, we use Matrix to record weight.
+     * correct edge weight. Here, we use Matrix to record weight.
      */
     private void graphUpdate() {
         // check if graph is newest
@@ -145,13 +145,13 @@ public abstract class ShortestPathModel {
 
         graphVersion = versionMark.getVersion();
         System.err.println(String.format("Graph of %s update to Version %d",
-            this.getClass().getName(),graphVersion));
+            this.getClass().getName(), graphVersion));
     }
 
     /**
      * A single source shortest path algorithm, it runs on different types of
      * weightGraph. It's implemented by SPFA.
-     *
+     * <p>
      * Here, we set multiple start nodes are all from's virtual nodes.
      * At end, we combine actNodes' virNodes' best answer to form final
      * result HashMap (key is actual node.)
@@ -166,7 +166,7 @@ public abstract class ShortestPathModel {
                                                     ConvertMap convertMap,
                                                     NodeCountMap nodeCountMap) {
         HashMap<Integer, Integer> virResult =
-            new HashMap<>(Constant.maxGraphDistinctNode);
+            new HashMap<>(Constant.maxGraphDistinctNode * 2);
         LinkedList<Integer> queue = new LinkedList<>();
 
         // Technique 1 : Add all from's virNode to queue with length value 0.
