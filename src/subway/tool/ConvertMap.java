@@ -10,9 +10,9 @@ public class ConvertMap {
     private HashMap<Integer, Integer> pathIdOnVirtual;
 
     public ConvertMap() {
-        actualMap = new HashMap<>();
-        virtualMap = new HashMap<>();
-        pathIdOnVirtual = new HashMap<>();
+        actualMap = new HashMap<>(Constant.maxGraphDistinctNode);
+        virtualMap = new HashMap<>(Constant.maxGraphDistinctNode * 2);
+        pathIdOnVirtual = new HashMap<>(Constant.maxGraphDistinctNode * 2);
     }
 
     /**

@@ -86,11 +86,11 @@ public class LinkContainer {
 
     /**
      * 1. get from's hashMap. If not exists, create one.
-     * 2. add or update to's value in from's hashMap.
+     * 2. add or update (from,to) link information.
      */
     private void addOneEdge(int from, int to, int pathId) {
         if (!linkMap.containsKey(from)) {
-            linkMap.put(from, new HashMap<>(Constant.maxGraphDistinctNode));
+            linkMap.put(from, new HashMap<>());
         }
         HashMap<Integer, Link> map = linkMap.get(from);
 
@@ -107,7 +107,7 @@ public class LinkContainer {
 
     /**
      * 1. Get from's hashMap.(hashMap must exists)
-     * 2. remove or update to's value in from's hashMap.(hashMap must exists)
+     * 2. remove or update (from,to) link information.(hashMap must exists)
      * 3. If from's hashMap is empty, remove it in linkMap.
      */
     private void removeOneEdge(int from, int to, int pathId) {

@@ -37,7 +37,7 @@ public abstract class ShortestPathModel {
         this.versionMark = versionMark;
 
         graphVersion = 0;
-        nodeVersion = new HashMap<>();
+        nodeVersion = new HashMap<>(Constant.maxGraphDistinctNode);
         resultCache = new Matrix();
     }
 
