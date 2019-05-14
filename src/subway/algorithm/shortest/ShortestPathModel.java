@@ -84,17 +84,35 @@ public abstract class ShortestPathModel {
         // update result of 'node' and refresh versionMark
         resultCache.addGroup(node, oneResult);
         nodeVersion.put(node, versionMark.getVersion());
+        System.err.println(String.format("Node %d of %s update to Version %d",
+            node,this.getClass().getName(),graphVersion));
     }
 
+    /**
+     * Make sure the weight graph is latest version.
+     * 1. Check version, if latest -> no need to build graph and return.
+     *
+     * 2. Convert all actual nodes in graph into virtual nodes, virtual nodes is
+     *    split actual node in different path and they must acquire:
+     *    - point to unique actual node
+     *    - point to unique pathId
+     *    Here, we use convertMap to record relation of actNode,virNode,pathId.
+     *
+     * 3. For each virNode pair in new graph, use implemented method to give
+     *    correct edge weight. Here, we use Matrix to record weight.
+     */
     private void graphUpdate() {
         // check if graph is newest
         if (versionMark.isLatest(graphVersion)) {
             return;
         }
 
+        // initial
+        weightGraph = new Matrix();
+        convertMap = new ConvertMap();
+
         // Part 1: Convert Actual Node
         int cnt = 0;
-        convertMap = new ConvertMap();
 
         Iterator<Integer> actualNodeIt = nodeCountMap.nodeSet();
         while (actualNodeIt.hasNext()) {
@@ -108,7 +126,6 @@ public abstract class ShortestPathModel {
         }
 
         // Part 2: Link all Virtual Node
-        weightGraph = new Matrix();
         for (int i = 1; i <= cnt; i++) {
             for (int j = 1; j <= cnt; j++) {
                 int actNodeI = convertMap.virtual2Actual(i);
@@ -121,18 +138,20 @@ public abstract class ShortestPathModel {
 
                 if (value != null) {
                     weightGraph.addPair(i, j, value);
-                    weightGraph.addPair(j, i, value);
+                    // weightGraph.addPair(j, i, value);
                 }
             }
         }
 
         graphVersion = versionMark.getVersion();
+        System.err.println(String.format("Graph of %s update to Version %d",
+            this.getClass().getName(),graphVersion));
     }
 
     /**
      * A single source shortest path algorithm, it runs on different types of
      * weightGraph. It's implemented by SPFA.
-     * <p>
+     *
      * Here, we set multiple start nodes are all from's virtual nodes.
      * At end, we combine actNodes' virNodes' best answer to form final
      * result HashMap (key is actual node.)
@@ -197,8 +216,8 @@ public abstract class ShortestPathModel {
                 if (virResult.containsKey(virNode)) {
                     int value = virResult.get(virNode);
 
-                    // result[actNode] = min(virResult[virNOde]
-                    // virNode in convert(actNode))
+                    // result[actNode] = min(virResult[virNode])
+                    // * (virNode == convert(actNode).iterator)
                     if (!result.containsKey(actNode)) {
                         result.put(actNode, value);
                     } else if (result.get(actNode) > value) {
