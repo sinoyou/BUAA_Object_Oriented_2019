@@ -179,6 +179,7 @@ public abstract class ShortestPathModel {
             int virNode = virNodeIt.next();
             virResult.put(virNode, 0);
             queue.addLast(virNode);
+            vis.add(virNode);
         }
 
         // -------- Code Below Runs On Virtual Node Graph --------
