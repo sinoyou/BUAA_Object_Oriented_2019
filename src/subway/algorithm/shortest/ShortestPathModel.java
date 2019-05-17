@@ -8,6 +8,7 @@ import subway.tool.Matrix;
 import subway.tool.VersionMark;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 
@@ -168,6 +169,8 @@ public abstract class ShortestPathModel {
         HashMap<Integer, Integer> virResult =
             new HashMap<>(Constant.maxGraphDistinctNode * 2);
         LinkedList<Integer> queue = new LinkedList<>();
+        HashSet<Integer> vis = new HashSet<>(Constant.maxGraphDistinctNode * 2);
+
 
         // Technique 1 : Add all from's virNode to queue with length value 0.
         // length[from] = 0, queue.add(from)
@@ -185,6 +188,7 @@ public abstract class ShortestPathModel {
             Iterator<Integer> it = weightGraph.getExistSecondIndex(virNode);
             while (it.hasNext()) {
                 int visToNode = it.next();
+                vis.remove(visToNode);
                 int curLength = virResult.get(virNode);
                 int cmpLength = curLength +
                     weightGraph.getValue(virNode, visToNode);
@@ -192,11 +196,13 @@ public abstract class ShortestPathModel {
                 if (!virResult.containsKey(visToNode)) {
                     virResult.put(visToNode, cmpLength);
                     queue.addLast(visToNode);
+                    vis.add(visToNode);
                 } else {
                     if (virResult.get(visToNode) > cmpLength) {
                         virResult.put(visToNode, cmpLength);
-                        if (!queue.contains(visToNode)) {
+                        if (!vis.contains(visToNode)) {
                             queue.addLast(visToNode);
+                            vis.add(visToNode);
                         }
                     }
                 }
