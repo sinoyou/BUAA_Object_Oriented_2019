@@ -24,7 +24,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-
 public class MyUmlInteraction implements UmlInteraction {
 
     private int classCount = 0;
@@ -65,7 +64,8 @@ public class MyUmlInteraction implements UmlInteraction {
             UmlElement element = it.next();
             if (element instanceof UmlOperation) {
                 it.remove();
-                OperationNode operationNode = new OperationNode((UmlOperation) element);
+                OperationNode operationNode = new OperationNode(
+                    (UmlOperation) element);
                 nodeNav.addOneOperation(operationNode);
             }
         }
@@ -85,7 +85,8 @@ public class MyUmlInteraction implements UmlInteraction {
             if (nodeNav.containsClassNode(parentId)) {
                 nodeNav.getClassNodeById(parentId).addOperation(operationNode);
             } else if (nodeNav.containsInterfaceNode(parentId)) {
-                nodeNav.getInterfaceNodeById(parentId).addOperation(operationNode);
+                nodeNav.getInterfaceNodeById(parentId).
+                    addOperation(operationNode);
             } else {
                 System.err.println(String.format("[UMLInteraction]: Error" +
                         "when add back operation %s to class or interface.",
@@ -101,13 +102,17 @@ public class MyUmlInteraction implements UmlInteraction {
 
     /* -------- ClassNode Inner Data Analysis -------- */
     @Override
-    public int getClassOperationCount(String s, OperationQueryType operationQueryType) throws ClassNotFoundException, ClassDuplicatedException {
+    public int getClassOperationCount(String s,
+                                      OperationQueryType operationQueryType)
+        throws ClassNotFoundException, ClassDuplicatedException {
         ClassNode classNode = nodeNav.getClassNodeByName(s);
         return classNode.getSelfOperationCount(operationQueryType);
     }
 
     @Override
-    public int getClassAttributeCount(String s, AttributeQueryType attributeQueryType) throws ClassNotFoundException, ClassDuplicatedException {
+    public int getClassAttributeCount(String s,
+                                      AttributeQueryType attributeQueryType)
+        throws ClassNotFoundException, ClassDuplicatedException {
         ClassNode classNode = nodeNav.getClassNodeByName(s);
         if (attributeQueryType == AttributeQueryType.SELF_ONLY) {
             return classNode.getSelfAttributesCount();
@@ -122,9 +127,11 @@ public class MyUmlInteraction implements UmlInteraction {
     }
 
     @Override
-    public int getClassAssociationCount(String s) throws ClassNotFoundException, ClassDuplicatedException {
+    public int getClassAssociationCount(String s)
+        throws ClassNotFoundException, ClassDuplicatedException {
         ClassNode classNode = nodeNav.getClassNodeByName(s);
-        Iterator<ClassNode> classGenerateIt = classNode.getGenerateListIterator();
+        Iterator<ClassNode> classGenerateIt =
+            classNode.getGenerateListIterator();
         int count = 0;
         while (classGenerateIt.hasNext()) {
             count += classGenerateIt.next().getSelfAssociationAmount();
@@ -133,7 +140,8 @@ public class MyUmlInteraction implements UmlInteraction {
     }
 
     @Override
-    public List<String> getClassAssociatedClassList(String s) throws ClassNotFoundException, ClassDuplicatedException {
+    public List<String> getClassAssociatedClassList(String s)
+        throws ClassNotFoundException, ClassDuplicatedException {
         ClassNode classNode = nodeNav.getClassNodeByName(s);
         Iterator<ClassNode> generateIt = classNode.getGenerateListIterator();
 
@@ -154,19 +162,26 @@ public class MyUmlInteraction implements UmlInteraction {
 
     /* -------- Visibility Analysis -------- */
     @Override
-    public Map<Visibility, Integer> getClassOperationVisibility(String s, String s1) throws ClassNotFoundException, ClassDuplicatedException {
+    public Map<Visibility, Integer> getClassOperationVisibility(String s,
+                                                                String s1)
+        throws ClassNotFoundException, ClassDuplicatedException {
         ClassNode classNode = nodeNav.getClassNodeByName(s);
         return classNode.getSelfOperationVisibility(s1);
     }
 
     @Override
-    public Visibility getClassAttributeVisibility(String s, String s1) throws ClassNotFoundException, ClassDuplicatedException, AttributeNotFoundException, AttributeDuplicatedException {
+    public Visibility getClassAttributeVisibility(String s, String s1)
+        throws ClassNotFoundException, ClassDuplicatedException,
+        AttributeNotFoundException, AttributeDuplicatedException {
+
         ClassNode classNode = nodeNav.getClassNodeByName(s);
-        Iterator<ClassNode> classGenerateIt = classNode.getGenerateListIterator();
+        Iterator<ClassNode> classGenerateIt =
+            classNode.getGenerateListIterator();
         Visibility visibility = null;
         while (classGenerateIt.hasNext()) {
             try {
-                Visibility temp = classGenerateIt.next().getSelfAttributeVisibility(s1);
+                Visibility temp =
+                    classGenerateIt.next().getSelfAttributeVisibility(s1);
                 if (visibility != null && temp != null) {
                     throw new AttributeDuplicatedException(s, s1);
                 }
@@ -188,24 +203,29 @@ public class MyUmlInteraction implements UmlInteraction {
 
     /* -------- Other -------- */
     @Override
-    public String getTopParentClass(String s) throws ClassNotFoundException, ClassDuplicatedException {
+    public String getTopParentClass(String s)
+        throws ClassNotFoundException, ClassDuplicatedException {
         ClassNode classNode = nodeNav.getClassNodeByName(s);
         return classNode.getTopClass().getKernelInstance().getName();
     }
 
     @Override
-    public List<String> getImplementInterfaceList(String s) throws ClassNotFoundException, ClassDuplicatedException {
+    public List<String> getImplementInterfaceList(String s)
+        throws ClassNotFoundException, ClassDuplicatedException {
         ClassNode classNode = nodeNav.getClassNodeByName(s);
         // initial a set to save interfaceNode
         // loop1 : loop for generation of class
         // loop2 : loop for realized interfaces of class.
         // loop3 : loop for generation of interface realized by class
         HashSet<InterfaceNode> set = new HashSet<>();
-        Iterator<ClassNode> classGenerateIt = classNode.getGenerateListIterator();
+        Iterator<ClassNode> classGenerateIt =
+            classNode.getGenerateListIterator();
         while (classGenerateIt.hasNext()) {
-            Iterator<InterfaceNode> interfaceIt = classGenerateIt.next().getSelfImplementInterface();
+            Iterator<InterfaceNode> interfaceIt =
+                classGenerateIt.next().getSelfImplementInterface();
             while (interfaceIt.hasNext()) {
-                Iterator<InterfaceNode> interfaceGenerateIt = interfaceIt.next().getGenerateListInterator();
+                Iterator<InterfaceNode> interfaceGenerateIt =
+                    interfaceIt.next().getGenerateListInterator();
                 while (interfaceGenerateIt.hasNext()) {
                     set.add(interfaceGenerateIt.next());
                 }
@@ -221,10 +241,13 @@ public class MyUmlInteraction implements UmlInteraction {
     }
 
     @Override
-    public List<AttributeClassInformation> getInformationNotHidden(String s) throws ClassNotFoundException, ClassDuplicatedException {
+    public List<AttributeClassInformation> getInformationNotHidden(String s)
+        throws ClassNotFoundException, ClassDuplicatedException {
+
         ClassNode classNode = nodeNav.getClassNodeByName(s);
         ArrayList<AttributeClassInformation> list = new ArrayList<>();
-        Iterator<ClassNode> classGenerateIt = classNode.getGenerateListIterator();
+        Iterator<ClassNode> classGenerateIt =
+            classNode.getGenerateListIterator();
         while (classGenerateIt.hasNext()) {
             list.addAll(classGenerateIt.next().getSelfNotHiddenAttribute());
         }

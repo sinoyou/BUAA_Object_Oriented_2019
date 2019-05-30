@@ -47,7 +47,8 @@ public class NodeNavigator {
         idToClassMap.put(classNode.getKernelInstance().getId(), classNode);
     }
 
-    public ClassNode getClassNodeByName(String name) throws ClassDuplicatedException, ClassNotFoundException {
+    public ClassNode getClassNodeByName(String name)
+        throws ClassDuplicatedException, ClassNotFoundException {
         if (nameToClassMap.containsKey(name)) {
             if (nameToClassMap.get(name).size() == 1) {
                 return nameToClassMap.get(name).get(0);
@@ -83,7 +84,8 @@ public class NodeNavigator {
 
     /* -------- OperationNode Node -------- */
     public void addOneOperation(OperationNode operationNode) {
-        idToOperation.put(operationNode.getKernelInstance().getId(), operationNode);
+        idToOperation.put(operationNode.getKernelInstance().getId(),
+            operationNode);
     }
 
     public OperationNode getOperationNodeById(String id) {

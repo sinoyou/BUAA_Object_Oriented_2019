@@ -19,7 +19,7 @@ public class OperationNode {
         hasReturn = null;
     }
 
-    public UmlOperation getKernelInstance(){
+    public UmlOperation getKernelInstance() {
         return kernelInstance;
     }
 

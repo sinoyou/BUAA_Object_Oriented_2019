@@ -20,7 +20,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
-
 public abstract class ClassInterfaceModel {
     private ArrayList<UmlAssociationEnd> associationEndsList;
     private ArrayList<OperationNode> operationNodeList;
@@ -136,8 +135,8 @@ public abstract class ClassInterfaceModel {
         return set;
     }
 
-    public HashMap<Visibility, Integer> getSelfOperationVisibility
-        (String methodName) {
+    public HashMap<Visibility, Integer> getSelfOperationVisibility(
+        String methodName) {
         // initial
         HashMap<Visibility, Integer> countMap = new HashMap<>();
         countMap.put(Visibility.PUBLIC, 0);
@@ -147,8 +146,10 @@ public abstract class ClassInterfaceModel {
 
         // loop for all operation in self class
         for (OperationNode operationNode : operationNodeList) {
-            if (operationNode.getKernelInstance().getName().equals(methodName)) {
-                Visibility vis = operationNode.getKernelInstance().getVisibility();
+            if (operationNode.getKernelInstance().getName().
+                equals(methodName)) {
+                Visibility vis = operationNode.getKernelInstance().
+                    getVisibility();
                 Integer count = countMap.get(vis);
                 countMap.replace(vis, count + 1);
             }
@@ -168,9 +169,11 @@ public abstract class ClassInterfaceModel {
             }
         }
         if (cnt == 0) {
-            throw new AttributeNotFoundException(kernelInstance.getName(), name);
+            throw new AttributeNotFoundException(kernelInstance.getName(),
+                name);
         } else if (cnt > 1) {
-            throw new AttributeDuplicatedException(kernelInstance.getName(), name);
+            throw new AttributeDuplicatedException(kernelInstance.getName(),
+                name);
         } else {
             return save.getVisibility();
         }

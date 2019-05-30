@@ -2,9 +2,7 @@ package navigate;
 
 import com.oocourse.uml1.models.elements.UmlElement;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Set;
 
 public class IdToUmlElement {
     private HashMap<String, UmlElement> idMap;

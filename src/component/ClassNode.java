@@ -1,7 +1,6 @@
 package component;
 
 import com.oocourse.uml1.models.elements.UmlClass;
-import com.oocourse.uml1.models.elements.UmlInterface;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -10,7 +9,6 @@ import java.util.LinkedList;
 public class ClassNode extends ClassInterfaceModel {
     private ArrayList<InterfaceNode> realizeList;
     private ClassNode generateFrom;
-
 
     public ClassNode(UmlClass umlClass) {
         super(umlClass);

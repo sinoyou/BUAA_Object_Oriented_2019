@@ -51,7 +51,8 @@ public class AddElementHandler {
         assoMap.addUmlAssociation(umlAssociation);
     }
 
-    private static void handleAssociationEnd(UmlAssociationEnd umlAssociationEnd) {
+    private static void handleAssociationEnd(UmlAssociationEnd
+                                                 umlAssociationEnd) {
         String refId = umlAssociationEnd.getReference();
         if (nodeNav.containsClassNode(refId)) {
             ClassNode classNode = nodeNav.getClassNodeById(refId);
@@ -71,7 +72,8 @@ public class AddElementHandler {
             ClassNode classNode = nodeNav.getClassNodeById(parentId);
             classNode.addAttribute(umlAttribute);
         } else if (nodeNav.containsInterfaceNode(parentId)) {
-            InterfaceNode interfaceNode = nodeNav.getInterfaceNodeById(parentId);
+            InterfaceNode interfaceNode =
+                nodeNav.getInterfaceNodeById(parentId);
             interfaceNode.addAttribute(umlAttribute);
         } else {
             System.err.println(String.format("[Handler]:Error, attr is " +
@@ -113,7 +115,8 @@ public class AddElementHandler {
             "should not be handled here %s ", umlInterface.getId()));
     }
 
-    private static void handleInterfaceRealization(UmlInterfaceRealization umlInterfaceRealization) {
+    private static void handleInterfaceRealization(
+        UmlInterfaceRealization umlInterfaceRealization) {
         String source = umlInterfaceRealization.getSource();
         String target = umlInterfaceRealization.getTarget();
         // Get interface be realized
@@ -139,7 +142,7 @@ public class AddElementHandler {
     }
 
     private static void handleOperation(UmlOperation umlOperation) {
-        System.err.println(String.format("[Handler] Error,operation element %s " +
+        System.err.println(String.format("[Handler] Error,oper element %s " +
             "should not be handled here.", umlOperation.getId()));
     }
 
