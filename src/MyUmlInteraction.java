@@ -189,7 +189,7 @@ public class MyUmlInteraction implements UmlInteraction {
             } catch (AttributeNotFoundException e1) {
                 // ignore
             } catch (AttributeDuplicatedException e2) {
-                throw e2;
+                throw new AttributeDuplicatedException(s, s1);
             }
         }
 
