@@ -45,5 +45,4 @@ public class IdToUmlElement {
         return (UmlAssociation) element;
     }
 
-
 }
