@@ -20,12 +20,11 @@ public class InterfaceNode extends ClassInterfaceModel {
         generateList.add(interfaceNode);
     }
 
-    public Iterator<InterfaceNode> getGenerateListInterator() {
+    public Iterator<InterfaceNode> getGenerateListIterator() {
         return getGenerateList().iterator();
     }
 
     /* ------- Inner Help Function -------- */
-
     /**
      * Use BFS to search all generated interfaces of 'this'(Including itself).
      * HINT: Generation relation of interfaces can be more complex than class.

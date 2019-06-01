@@ -99,4 +99,12 @@ public class NodeNavigator {
     public boolean containsOperationNode(String id) {
         return idToOperation.containsKey(id);
     }
+
+    /* -------- clear for unit test -------- */
+    public void clearAll() {
+        nameToClassMap.clear();
+        idToClassMap.clear();
+        idToInterfaceMap.clear();
+        idToOperation.clear();
+    }
 }

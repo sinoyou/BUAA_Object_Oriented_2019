@@ -225,7 +225,7 @@ public class MyUmlInteraction implements UmlInteraction {
                 classGenerateIt.next().getSelfImplementInterface();
             while (interfaceIt.hasNext()) {
                 Iterator<InterfaceNode> interfaceGenerateIt =
-                    interfaceIt.next().getGenerateListInterator();
+                    interfaceIt.next().getGenerateListIterator();
                 while (interfaceGenerateIt.hasNext()) {
                     set.add(interfaceGenerateIt.next());
                 }
