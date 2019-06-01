@@ -12,11 +12,20 @@ public class OperationNode {
     private Boolean hasReturn;
     private Boolean hasIn;
 
+    // cache version control
+    private int version;
+    private int hasInVersion;
+    private int hasReturnVersion;
+
     public OperationNode(UmlOperation umlOperation) {
         parameterList = new ArrayList<>();
         kernelInstance = umlOperation;
         hasIn = null;
         hasReturn = null;
+
+        version = 0;
+        hasInVersion = 0;
+        hasReturnVersion = 0;
     }
 
     public UmlOperation getKernelInstance() {
@@ -26,20 +35,21 @@ public class OperationNode {
     /* ------- Modification Type Method -------- */
     public void addParameter(UmlParameter umlParameter) {
         parameterList.add(umlParameter);
+        version++;
     }
 
     /* -------- OperationNode Type Query -------- */
     public boolean hasReturn() {
-        if (hasReturn != null) {
+        if (version == hasReturnVersion && hasReturn != null) {
             return hasReturn;
         }
-
         for (UmlParameter umlParameter : parameterList) {
             if (umlParameter.getDirection() == Direction.RETURN) {
                 hasReturn = Boolean.TRUE;
                 return hasReturn;
             }
         }
+        hasReturnVersion = version;
         hasReturn = Boolean.FALSE;
         return hasReturn;
     }
@@ -47,7 +57,7 @@ public class OperationNode {
     // Check if exist parameter other than RETURN in this kernelInstance.
     // NOTES: IN INOUT OUT are all regraded as import parameter.
     public boolean hasIn() {
-        if (hasIn != null) {
+        if (version == hasInVersion && hasIn != null) {
             return hasIn;
         }
 
@@ -57,6 +67,7 @@ public class OperationNode {
                 return hasIn;
             }
         }
+        hasInVersion = version;
         hasIn = Boolean.FALSE;
         return hasIn;
     }
