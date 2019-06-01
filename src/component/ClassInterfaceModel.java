@@ -13,7 +13,6 @@ import com.oocourse.uml1.models.elements.UmlElement;
 import com.oocourse.uml1.models.elements.UmlInterface;
 import navigate.IdToUmlElement;
 import navigate.NodeNavigator;
-import navigate.UmlAssociationMap;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -105,14 +104,12 @@ public abstract class ClassInterfaceModel {
         HashSet<ClassNode> set = new HashSet<>();
 
         // Get navigator helper instance
-        UmlAssociationMap assoMap = UmlAssociationMap.getInstance();
         IdToUmlElement idMap = IdToUmlElement.getInstance();
         NodeNavigator nodeNav = NodeNavigator.getInstance();
 
         for (UmlAssociationEnd umlAssociationEnd : associationEndsList) {
             UmlAssociation umlAssociation =
-                assoMap.getUmlAssoByUmlEnd(umlAssociationEnd);
-
+                idMap.getUmlAssoByUmlEnd(umlAssociationEnd);
             // Set Opposite End of Association
             String oppositeEndId;
             if (umlAssociation.getEnd1().equals(umlAssociationEnd.getId())) {

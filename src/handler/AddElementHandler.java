@@ -15,12 +15,10 @@ import component.InterfaceNode;
 import component.OperationNode;
 import navigate.IdToUmlElement;
 import navigate.NodeNavigator;
-import navigate.UmlAssociationMap;
 
 public class AddElementHandler {
     private static IdToUmlElement idMap = IdToUmlElement.getInstance();
     private static NodeNavigator nodeNav = NodeNavigator.getInstance();
-    private static UmlAssociationMap assoMap = UmlAssociationMap.getInstance();
 
     public static void handleElement(UmlElement element) {
         if (element instanceof UmlAssociation) {
@@ -48,7 +46,8 @@ public class AddElementHandler {
     }
 
     private static void handleAssociation(UmlAssociation umlAssociation) {
-        assoMap.addUmlAssociation(umlAssociation);
+        assert idMap.containsElement(umlAssociation.getId());
+        // nothing need to do now
     }
 
     private static void handleAssociationEnd(UmlAssociationEnd
