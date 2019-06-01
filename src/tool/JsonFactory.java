@@ -1,6 +1,7 @@
 package tool;
 
 import java.util.HashMap;
+import java.util.HashSet;
 
 /**
  * This class used for generate json object for unit test.
@@ -102,7 +103,7 @@ public class JsonFactory {
     ) {
         HashMap<String, Object> map = new HashMap<>();
         writeAbstract(map, id, name, parent);
-        map.put("_type","UMLGeneralization");
+        map.put("_type", "UMLGeneralization");
         map.put("source", source);
         map.put("target", target);
         return map;
@@ -116,10 +117,25 @@ public class JsonFactory {
         String target
     ) {
         HashMap<String, Object> map = new HashMap<>();
-        map.put("_type","UMLRealization");
+        map.put("_type", "UMLRealization");
         writeAbstract(map, id, name, parent);
         map.put("source", source);
         map.put("target", target);
+        return map;
+    }
+
+    public static Object produceAttribute(
+        String id,
+        String name,
+        String parent,
+        String visibility,
+        String type
+    ) {
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("_type", "UMLAttribute");
+        writeAbstract(map, id, name, parent);
+        writeVisibility(map, visibility);
+        map.put("type", type);
         return map;
     }
 

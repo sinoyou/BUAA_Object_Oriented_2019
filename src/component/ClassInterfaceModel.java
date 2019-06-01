@@ -26,6 +26,11 @@ public abstract class ClassInterfaceModel {
     private UmlElement kernelInstance;
 
     public ClassInterfaceModel(UmlElement kernelInstance) {
+        if (kernelInstance == null) {
+            System.err.println("[ClassInterfaceModel]: Null");
+            return;
+        }
+
         if (!(kernelInstance instanceof UmlClass ||
             kernelInstance instanceof UmlInterface)) {
             System.err.println(String.format("[ClassInterfaceModel]:Wrong " +
