@@ -45,6 +45,7 @@ public class OperationNode {
         }
         for (UmlParameter umlParameter : parameterList) {
             if (umlParameter.getDirection() == Direction.RETURN) {
+                hasReturnVersion = version;
                 hasReturn = Boolean.TRUE;
                 return hasReturn;
             }
@@ -63,6 +64,7 @@ public class OperationNode {
 
         for (UmlParameter umlParameter : parameterList) {
             if (umlParameter.getDirection() != Direction.RETURN) {
+                hasInVersion = version;
                 hasIn = Boolean.TRUE;
                 return hasIn;
             }
