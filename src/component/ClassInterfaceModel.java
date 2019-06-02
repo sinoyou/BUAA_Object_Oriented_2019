@@ -13,6 +13,7 @@ import com.oocourse.uml1.models.elements.UmlElement;
 import com.oocourse.uml1.models.elements.UmlInterface;
 import navigate.IdToUmlElement;
 import navigate.NodeNavigator;
+import tool.VersionCache;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -24,6 +25,7 @@ public abstract class ClassInterfaceModel {
     private ArrayList<OperationNode> operationNodeList;
     private ArrayList<UmlAttribute> attributeList;
     private UmlElement kernelInstance;
+    private VersionCache versionCache;
 
     public ClassInterfaceModel(UmlElement kernelInstance) {
         if (kernelInstance == null) {
@@ -41,6 +43,7 @@ public abstract class ClassInterfaceModel {
         this.kernelInstance = kernelInstance;
         operationNodeList = new ArrayList<>();
         attributeList = new ArrayList<>();
+        versionCache = new VersionCache();
     }
 
     public UmlElement getKernelInstance() {
@@ -50,14 +53,17 @@ public abstract class ClassInterfaceModel {
     /* -------- None Pure Modification Method -------- */
     public void addAssociateEnd(UmlAssociationEnd umlAssociationEnd) {
         associationEndsList.add(umlAssociationEnd);
+        updateVersion();
     }
 
     public void addOperation(OperationNode operationNode) {
         operationNodeList.add(operationNode);
+        updateVersion();
     }
 
     public void addAttribute(UmlAttribute umlAttribute) {
         attributeList.add(umlAttribute);
+        updateVersion();
     }
 
     /* -------- Pure Query Method --------*/
@@ -106,8 +112,14 @@ public abstract class ClassInterfaceModel {
     }
 
     public HashSet<ClassNode> getSelfAssociatedClasses() {
-        HashSet<ClassNode> set = new HashSet<>();
+        Object o = getCache("SelfAssociatedClasses");
+        // Condition 1: fresh data
+        if (o != null) {
+            return (HashSet<ClassNode>) o;
+        }
 
+        // Condition 2: old data
+        HashSet<ClassNode> set = new HashSet<>();
         // Get navigator helper instance
         IdToUmlElement idMap = IdToUmlElement.getInstance();
         NodeNavigator nodeNav = NodeNavigator.getInstance();
@@ -134,6 +146,7 @@ public abstract class ClassInterfaceModel {
             }
         }
 
+        updateCache("SelfAssociatedClasses", set);
         return set;
     }
 
@@ -182,6 +195,13 @@ public abstract class ClassInterfaceModel {
     }
 
     public List<AttributeClassInformation> getSelfNotHiddenAttribute() {
+        Object o = getCache("SelfNotHiddenAttribute");
+        // Condition 1: fresh data
+        if (o != null) {
+            return (List<AttributeClassInformation>) o;
+        }
+
+        // Condition 2: old data
         ArrayList<AttributeClassInformation> infoList = new ArrayList<>();
         for (UmlAttribute umlAttribute : attributeList) {
             if (umlAttribute.getVisibility() != Visibility.PRIVATE) {
@@ -191,6 +211,7 @@ public abstract class ClassInterfaceModel {
                 infoList.add(info);
             }
         }
+        updateCache("SelfNotHiddenAttribute", infoList);
         return infoList;
     }
 
@@ -207,5 +228,18 @@ public abstract class ClassInterfaceModel {
             return super.equals(obj);
         }
         return false;
+    }
+
+    /* -------- Version Control Function -------- */
+    protected void updateVersion() {
+        versionCache.updateVersion();
+    }
+
+    protected Object getCache(String tag) {
+        return versionCache.getCache(tag);
+    }
+
+    protected void updateCache(String tag, Object o) {
+        versionCache.updateCache(tag, o);
     }
 }

@@ -1,7 +1,6 @@
 package tool;
 
 import java.util.HashMap;
-import java.util.HashSet;
 
 /**
  * This class used for generate json object for unit test.

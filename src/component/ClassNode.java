@@ -24,14 +24,16 @@ public class ClassNode extends ClassInterfaceModel {
     /* -------- New Implemented Method -------- */
     public void addRealize(InterfaceNode interfaceNode) {
         realizeList.add(interfaceNode);
-    }
-
-    public Iterator<InterfaceNode> getSelfImplementInterface() {
-        return realizeList.iterator();
+        updateVersion();
     }
 
     public void addGenerateFrom(ClassNode classNode) {
         generateFrom = classNode;
+        updateVersion();
+    }
+
+    public Iterator<InterfaceNode> getSelfImplementInterface() {
+        return realizeList.iterator();
     }
 
     public Iterator<ClassNode> getGenerateListIterator() {
@@ -53,12 +55,19 @@ public class ClassNode extends ClassInterfaceModel {
      * @return A list of generation (head -> this class, tail -> top class)
      */
     private LinkedList<ClassNode> getGenerateList() {
+        // Condition 1: cache is fresh
+        Object o = getCache("ClassGenerateList");
+        if (o != null) {
+            return (LinkedList<ClassNode>) o;
+        }
+        // Condition 2: cache is not fresh
         LinkedList<ClassNode> linkedList = new LinkedList<>();
         ClassNode p = this;
         while (p != null) {
             linkedList.addLast(p);
             p = p.generateFrom;
         }
+        updateCache("ClassGenerateList", linkedList);
         return linkedList;
     }
 }
