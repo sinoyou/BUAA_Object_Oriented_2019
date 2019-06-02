@@ -1,3 +1,5 @@
+package main;
+
 import com.oocourse.uml1.interact.AppRunner;
 
 public class Main {

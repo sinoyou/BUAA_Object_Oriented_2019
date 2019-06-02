@@ -45,4 +45,9 @@ public class IdToUmlElement {
         return (UmlAssociation) element;
     }
 
+    /* -------- unit test help function -------- */
+    public void clearAll() {
+        idMap.clear();
+    }
+
 }

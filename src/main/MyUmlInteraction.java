@@ -1,3 +1,5 @@
+package main;
+
 import com.oocourse.uml1.interact.common.AttributeClassInformation;
 import com.oocourse.uml1.interact.common.AttributeQueryType;
 import com.oocourse.uml1.interact.common.OperationQueryType;

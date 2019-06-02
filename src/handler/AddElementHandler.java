@@ -147,7 +147,7 @@ public class AddElementHandler {
 
     private static void handleParameter(UmlParameter umlParameter) {
         String opId = umlParameter.getParentId();
-        assert nodeNav.containsClassNode(opId);
+        assert nodeNav.containsOperationNode(opId);
         if (nodeNav.containsOperationNode(opId)) {
             OperationNode operationNode = nodeNav.getOperationNodeById(opId);
             operationNode.addParameter(umlParameter);
