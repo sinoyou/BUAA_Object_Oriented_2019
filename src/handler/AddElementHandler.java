@@ -1,159 +1,110 @@
 package handler;
 
-import com.oocourse.uml2.models.elements.UmlAssociation;
-import com.oocourse.uml2.models.elements.UmlAssociationEnd;
-import com.oocourse.uml2.models.elements.UmlAttribute;
 import com.oocourse.uml2.models.elements.UmlClass;
 import com.oocourse.uml2.models.elements.UmlElement;
-import com.oocourse.uml2.models.elements.UmlGeneralization;
 import com.oocourse.uml2.models.elements.UmlInterface;
-import com.oocourse.uml2.models.elements.UmlInterfaceRealization;
 import com.oocourse.uml2.models.elements.UmlOperation;
-import com.oocourse.uml2.models.elements.UmlParameter;
-import component.ClassNode;
-import component.InterfaceNode;
-import component.OperationNode;
-import navigate.IdToUmlElement;
+import compoent.model.ClassNode;
+import compoent.model.InterfaceNode;
+import compoent.model.OperationNode;
 import navigate.NodeNavigator;
 
+import java.util.Iterator;
+import java.util.List;
+
 public class AddElementHandler {
-    private static IdToUmlElement idMap = IdToUmlElement.getInstance();
     private static NodeNavigator nodeNav = NodeNavigator.getInstance();
 
-    public static void handleElement(UmlElement element) {
-        if (element instanceof UmlAssociation) {
-            handleAssociation((UmlAssociation) element);
-        } else if (element instanceof UmlAssociationEnd) {
-            handleAssociationEnd((UmlAssociationEnd) element);
-        } else if (element instanceof UmlAttribute) {
-            handleAttribute((UmlAttribute) element);
-        } else if (element instanceof UmlClass) {
-            handleClass((UmlClass) element);
-        } else if (element instanceof UmlGeneralization) {
-            handleGeneration((UmlGeneralization) element);
-        } else if (element instanceof UmlInterface) {
-            handleInterface((UmlInterface) element);
-        } else if (element instanceof UmlInterfaceRealization) {
-            handleInterfaceRealization((UmlInterfaceRealization) element);
-        } else if (element instanceof UmlOperation) {
-            handleOperation((UmlOperation) element);
-        } else if (element instanceof UmlParameter) {
-            handleParameter((UmlParameter) element);
-        } else {
-            System.err.println(String.format("[Handler] Unknown UmlElement" +
-                " Type %s %s.", element.getElementType(), element.getId()));
+    public static void addHandler(List<UmlElement> elementList) {
+
+        // Step 1: Process Top Element : Class, Interface,
+        // State Machine & Region, Interaction
+        handleTopElement(elementList);
+
+        // Step 2: Process Middle Element : Operation, State, Lifeline
+        // Caution: Middle layer elements are bridge between top and bottom,
+        // it may be added back to top after proceeding bottom.
+        handleMiddleElement(elementList);
+
+        // Step 3: General Handle
+        Iterator<UmlElement> it = elementList.iterator();
+        while (it.hasNext()) {
+            GeneralHandler.handleElement(it.next());
+        }
+
+        // Step 4: Process Middle Element Backwards
+        handlerMiddleElementBackwards();
+    }
+
+    /**
+     * To handler Top uml elements to prepare other elements' container.
+     * 1. Class Node
+     * 2. Interface Node
+     * 3. State Machine Node (in fact is Region)
+     * 4. Interaction Node
+     *
+     * @param elementList
+     */
+    private static void handleTopElement(List<UmlElement> elementList) {
+        Iterator<UmlElement> it = elementList.iterator();
+        while (it.hasNext()) {
+            UmlElement element = it.next();
+            if (element instanceof UmlClass) {
+                it.remove();
+                ClassNode classNode = new ClassNode((UmlClass) element);
+                nodeNav.addOneClassNode(classNode);
+            } else if (element instanceof UmlInterface) {
+                it.remove();
+                InterfaceNode interfaceNode = new InterfaceNode((UmlInterface)
+                    element);
+                nodeNav.addOneInterfaceNode(interfaceNode);
+            }
         }
     }
 
-    private static void handleAssociation(UmlAssociation umlAssociation) {
-        assert idMap.containsElement(umlAssociation.getId());
-        // nothing need to do now
-    }
-
-    private static void handleAssociationEnd(UmlAssociationEnd
-                                                 umlAssociationEnd) {
-        String refId = umlAssociationEnd.getReference();
-        if (nodeNav.containsClassNode(refId)) {
-            ClassNode classNode = nodeNav.getClassNodeById(refId);
-            classNode.addAssociateEnd(umlAssociationEnd);
-        } else if (nodeNav.containsInterfaceNode(refId)) {
-            InterfaceNode interfaceNode = nodeNav.getInterfaceNodeById(refId);
-            interfaceNode.addAssociateEnd(umlAssociationEnd);
-        } else {
-            System.err.println(String.format("[Handler]:Error, End " +
-                "refered to class or interface %s", umlAssociationEnd.getId()));
+    /**
+     * Middle elements are bridge between top and bottom, it has to be
+     * proceeded twice. This time is to make preparation for link bottom.
+     * 1. Operation Node
+     * 2. State Node
+     * 3. LifeLine Node
+     *
+     * @param elementList Elements remains to be proceeded.
+     */
+    private static void handleMiddleElement(List<UmlElement> elementList) {
+        Iterator<UmlElement> it = elementList.iterator();
+        while (it.hasNext()) {
+            UmlElement element = it.next();
+            if (element instanceof UmlOperation) {
+                it.remove();
+                OperationNode operationNode = new OperationNode(
+                    (UmlOperation) element);
+                nodeNav.addOneOperation(operationNode);
+            }
         }
     }
 
-    private static void handleAttribute(UmlAttribute umlAttribute) {
-        String parentId = umlAttribute.getParentId();
-        if (nodeNav.containsClassNode(parentId)) {
-            ClassNode classNode = nodeNav.getClassNodeById(parentId);
-            classNode.addAttribute(umlAttribute);
-        } else if (nodeNav.containsInterfaceNode(parentId)) {
-            InterfaceNode interfaceNode =
-                nodeNav.getInterfaceNodeById(parentId);
-            interfaceNode.addAttribute(umlAttribute);
-        } else {
-            System.err.println(String.format("[Handler]:Error, attr is " +
-                "not referred to class or interface %s", umlAttribute.getId()));
-        }
-    }
+    /**
+     * Middle elements are bridge between top and bottom,
+     * it has to be proceeded twice.(last time link bottom, this time link top)
+     * 1. Operation :Add Operation Node back to Class or Interface Node
+     */
+    private static void handlerMiddleElementBackwards() {
+        Iterator<OperationNode> opIt = nodeNav.getOperationNodes();
+        while (opIt.hasNext()) {
+            OperationNode operationNode = opIt.next();
+            String parentId = operationNode.getKernelInstance().getParentId();
 
-    private static void handleClass(UmlClass umlClass) {
-        System.err.println(String.format("[Handler] Error, class element" +
-            "should not be handled here %s ", umlClass.getId()));
-    }
-
-    private static void handleGeneration(UmlGeneralization umlGeneralization) {
-        String source = umlGeneralization.getSource();
-        String target = umlGeneralization.getTarget();
-        // class type generation
-        if (nodeNav.containsClassNode(source)) {
-            assert nodeNav.containsClassNode(target);
-            ClassNode classNodeSrc = nodeNav.getClassNodeById(source);
-            ClassNode classNodeDst = nodeNav.getClassNodeById(target);
-            classNodeSrc.addGenerateFrom(classNodeDst);
-        }
-        // interface type generation
-        else if (nodeNav.containsInterfaceNode(source)) {
-            assert nodeNav.containsInterfaceNode(target);
-            InterfaceNode interfaceNodeSrc =
-                nodeNav.getInterfaceNodeById(source);
-            InterfaceNode interfaceNodeDst =
-                nodeNav.getInterfaceNodeById(target);
-            interfaceNodeSrc.addGenerateFrom(interfaceNodeDst);
-        } else {
-            System.err.println(String.format("[Handler]: Error, unknown " +
-                "generation type %s", umlGeneralization.getId()));
-        }
-    }
-
-    private static void handleInterface(UmlInterface umlInterface) {
-        System.err.println(String.format("[Handler] Error, interface element" +
-            "should not be handled here %s ", umlInterface.getId()));
-    }
-
-    private static void handleInterfaceRealization(
-        UmlInterfaceRealization umlInterfaceRealization) {
-        String source = umlInterfaceRealization.getSource();
-        String target = umlInterfaceRealization.getTarget();
-        // Get interface be realized
-        InterfaceNode interfaceNode;
-        assert nodeNav.containsInterfaceNode(target);
-        if (nodeNav.containsInterfaceNode(target)) {
-            interfaceNode = nodeNav.getInterfaceNodeById(target);
-        } else {
-            System.err.println(String.format("[Handler] Error, interface " +
-                "should exist in realization %s", target));
-            return;
-        }
-        ClassNode classNode;
-        assert nodeNav.containsClassNode(source);
-        if (nodeNav.containsClassNode(source)) {
-            classNode = nodeNav.getClassNodeById(source);
-        } else {
-            System.err.println(String.format("[Handler] Error, class " +
-                "should exist in realization %s", target));
-            return;
-        }
-        classNode.addRealize(interfaceNode);
-    }
-
-    private static void handleOperation(UmlOperation umlOperation) {
-        System.err.println(String.format("[Handler] Error,oper element %s " +
-            "should not be handled here.", umlOperation.getId()));
-    }
-
-    private static void handleParameter(UmlParameter umlParameter) {
-        String opId = umlParameter.getParentId();
-        assert nodeNav.containsOperationNode(opId);
-        if (nodeNav.containsOperationNode(opId)) {
-            OperationNode operationNode = nodeNav.getOperationNodeById(opId);
-            operationNode.addParameter(umlParameter);
-        } else {
-            System.err.println(String.format("[Handler] Error,para %s's op" +
-                "should exist %s", umlParameter.getName(), opId));
+            if (nodeNav.containsClassNode(parentId)) {
+                nodeNav.getClassNodeById(parentId).addOperation(operationNode);
+            } else if (nodeNav.containsInterfaceNode(parentId)) {
+                nodeNav.getInterfaceNodeById(parentId).
+                    addOperation(operationNode);
+            } else {
+                System.err.println(String.format("[UMLInteraction]: Error" +
+                        "when add back operation %s to class or interface.",
+                    operationNode.getKernelInstance().getName()));
+            }
         }
     }
 }

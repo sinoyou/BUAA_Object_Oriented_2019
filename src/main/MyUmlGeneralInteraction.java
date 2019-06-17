@@ -7,15 +7,23 @@ import com.oocourse.uml2.interact.exceptions.user.AttributeDuplicatedException;
 import com.oocourse.uml2.interact.exceptions.user.AttributeNotFoundException;
 import com.oocourse.uml2.interact.exceptions.user.ClassDuplicatedException;
 import com.oocourse.uml2.interact.exceptions.user.ClassNotFoundException;
+import com.oocourse.uml2.interact.exceptions.user.InteractionDuplicatedException;
+import com.oocourse.uml2.interact.exceptions.user.InteractionNotFoundException;
+import com.oocourse.uml2.interact.exceptions.user.LifelineDuplicatedException;
+import com.oocourse.uml2.interact.exceptions.user.LifelineNotFoundException;
+import com.oocourse.uml2.interact.exceptions.user.PreCheckRuleException;
+import com.oocourse.uml2.interact.exceptions.user.StateDuplicatedException;
+import com.oocourse.uml2.interact.exceptions.user.StateMachineDuplicatedException;
+import com.oocourse.uml2.interact.exceptions.user.StateMachineNotFoundException;
+import com.oocourse.uml2.interact.exceptions.user.StateNotFoundException;
+import com.oocourse.uml2.interact.exceptions.user.UmlRule002Exception;
+import com.oocourse.uml2.interact.exceptions.user.UmlRule008Exception;
+import com.oocourse.uml2.interact.exceptions.user.UmlRule009Exception;
 import com.oocourse.uml2.interact.format.UmlGeneralInteraction;
 import com.oocourse.uml2.models.common.Visibility;
-import com.oocourse.uml2.models.elements.UmlClass;
 import com.oocourse.uml2.models.elements.UmlElement;
-import com.oocourse.uml2.models.elements.UmlInterface;
-import com.oocourse.uml2.models.elements.UmlOperation;
-import component.ClassNode;
-import component.InterfaceNode;
-import component.OperationNode;
+import compoent.model.ClassNode;
+import compoent.model.InterfaceNode;
 import handler.AddElementHandler;
 import navigate.IdToUmlElement;
 import navigate.NodeNavigator;
@@ -28,7 +36,6 @@ import java.util.Map;
 
 public class MyUmlGeneralInteraction implements UmlGeneralInteraction {
 
-    private int classCount = 0;
     // Get navigator help class
     private IdToUmlElement idMap = IdToUmlElement.getInstance();
     private NodeNavigator nodeNav = NodeNavigator.getInstance();
@@ -43,63 +50,16 @@ public class MyUmlGeneralInteraction implements UmlGeneralInteraction {
             idMap.addUmlElement(umlElement);
         }
 
-        // Step 1: Process with Class Or Interface
-        Iterator<UmlElement> it = elementList.iterator();
-        while (it.hasNext()) {
-            UmlElement element = it.next();
-            if (element instanceof UmlClass) {
-                it.remove();
-                ClassNode classNode = new ClassNode((UmlClass) element);
-                nodeNav.addOneClassNode(classNode);
-                classCount++; // special info
-            } else if (element instanceof UmlInterface) {
-                it.remove();
-                InterfaceNode interfaceNode = new InterfaceNode((UmlInterface)
-                    element);
-                nodeNav.addOneInterfaceNode(interfaceNode);
-            }
-        }
+        // todo sort by type
 
-        // Step 2: Process with OperationNode
-        it = elementList.iterator();
-        while (it.hasNext()) {
-            UmlElement element = it.next();
-            if (element instanceof UmlOperation) {
-                it.remove();
-                OperationNode operationNode = new OperationNode(
-                    (UmlOperation) element);
-                nodeNav.addOneOperation(operationNode);
-            }
-        }
+        AddElementHandler.addHandler(elementList);
 
-        // Step 3: General Handle
-        it = elementList.iterator();
-        while (it.hasNext()) {
-            AddElementHandler.handleElement(it.next());
-        }
-
-        // Step 4: Add Operation Node back to Class or Interface Node
-        Iterator<OperationNode> opIt = nodeNav.getOperationNodes();
-        while (opIt.hasNext()) {
-            OperationNode operationNode = opIt.next();
-            String parentId = operationNode.getKernelInstance().getParentId();
-
-            if (nodeNav.containsClassNode(parentId)) {
-                nodeNav.getClassNodeById(parentId).addOperation(operationNode);
-            } else if (nodeNav.containsInterfaceNode(parentId)) {
-                nodeNav.getInterfaceNodeById(parentId).
-                    addOperation(operationNode);
-            } else {
-                System.err.println(String.format("[UMLInteraction]: Error" +
-                        "when add back operation %s to class or interface.",
-                    operationNode.getKernelInstance().getName()));
-            }
-        }
     }
 
+    /* >>>>>>>> UML compoent.model Query <<<<<<<< */
     @Override
     public int getClassCount() {
-        return classCount;
+        return nodeNav.getClassCount();
     }
 
     /* -------- ClassNode Inner Data Analysis -------- */
@@ -256,5 +216,60 @@ public class MyUmlGeneralInteraction implements UmlGeneralInteraction {
         return list;
     }
 
+    /* >>>>>>>> UML Sequence Query <<<<<<<< */
+
+    @Override
+    public int getParticipantCount(String s) throws InteractionNotFoundException, InteractionDuplicatedException {
+        return 0;
+    }
+
+    @Override
+    public int getMessageCount(String s) throws InteractionNotFoundException, InteractionDuplicatedException {
+        return 0;
+    }
+
+    @Override
+    public int getIncomingMessageCount(String s, String s1) throws InteractionNotFoundException, InteractionDuplicatedException, LifelineNotFoundException, LifelineDuplicatedException {
+        return 0;
+    }
+
+    /* >>>>>>>> UML State Query <<<<<<<< */
+
+    @Override
+    public int getStateCount(String s) throws StateMachineNotFoundException, StateMachineDuplicatedException {
+        return 0;
+    }
+
+    @Override
+    public int getTransitionCount(String s) throws StateMachineNotFoundException, StateMachineDuplicatedException {
+        return 0;
+    }
+
+    @Override
+    public int getSubsequentStateCount(String s, String s1) throws StateMachineNotFoundException, StateMachineDuplicatedException, StateNotFoundException, StateDuplicatedException {
+        return 0;
+    }
+
+    /* >>>>>>>> UML Pre Check <<<<<<<< */
+
+    @Override
+    public void checkForAllRules() throws PreCheckRuleException {
+
+    }
+
+    @Override
+    public void checkForUml002() throws UmlRule002Exception {
+
+    }
+
+    @Override
+    public void checkForUml008() throws UmlRule008Exception {
+
+    }
+
+    @Override
+    public void checkForUml009() throws UmlRule009Exception {
+
+    }
 }
 

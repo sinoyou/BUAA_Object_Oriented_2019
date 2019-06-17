@@ -1,4 +1,4 @@
-package component;
+package compoent.model;
 
 import com.oocourse.uml2.interact.common.AttributeClassInformation;
 import com.oocourse.uml2.interact.common.OperationQueryType;
@@ -11,6 +11,7 @@ import com.oocourse.uml2.models.elements.UmlAttribute;
 import com.oocourse.uml2.models.elements.UmlClass;
 import com.oocourse.uml2.models.elements.UmlElement;
 import com.oocourse.uml2.models.elements.UmlInterface;
+import compoent.NodeModel;
 import navigate.IdToUmlElement;
 import navigate.NodeNavigator;
 import tool.VersionCache;
@@ -20,7 +21,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
-public abstract class ClassInterfaceModel {
+public abstract class ClassInterfaceModel implements NodeModel {
     private ArrayList<UmlAssociationEnd> associationEndsList;
     private ArrayList<OperationNode> operationNodeList;
     private ArrayList<UmlAttribute> attributeList;

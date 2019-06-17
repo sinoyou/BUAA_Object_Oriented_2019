@@ -1,4 +1,4 @@
-package component;
+package compoent.model;
 
 
 import com.oocourse.uml2.models.common.Direction;

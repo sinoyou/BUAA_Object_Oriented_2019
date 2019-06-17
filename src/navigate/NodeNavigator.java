@@ -2,15 +2,16 @@ package navigate;
 
 import com.oocourse.uml2.interact.exceptions.user.ClassDuplicatedException;
 import com.oocourse.uml2.interact.exceptions.user.ClassNotFoundException;
-import component.ClassNode;
-import component.InterfaceNode;
-import component.OperationNode;
+import compoent.model.ClassNode;
+import compoent.model.InterfaceNode;
+import compoent.model.OperationNode;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
 public class NodeNavigator {
+    private int classCount;
     private HashMap<String, ArrayList<ClassNode>> nameToClassMap;
     private HashMap<String, ClassNode> idToClassMap;
 
@@ -21,6 +22,7 @@ public class NodeNavigator {
     private static NodeNavigator nodeNavigator = null;
 
     private NodeNavigator() {
+        classCount = 0;
         nameToClassMap = new HashMap<>();
         idToClassMap = new HashMap<>();
         idToInterfaceMap = new HashMap<>();
@@ -36,6 +38,9 @@ public class NodeNavigator {
 
     /* -------- Class Node -------- */
     public void addOneClassNode(ClassNode classNode) {
+        // count
+        classCount++;
+
         // name map
         String name = classNode.getKernelInstance().getName();
         if (!nameToClassMap.containsKey(name)) {
@@ -58,6 +63,10 @@ public class NodeNavigator {
         } else {
             throw new ClassNotFoundException(name);
         }
+    }
+
+    public int getClassCount() {
+        return classCount;
     }
 
     public ClassNode getClassNodeById(String id) {
@@ -102,6 +111,7 @@ public class NodeNavigator {
 
     /* -------- clear for unit test -------- */
     public void clearAll() {
+        classCount = 0;
         nameToClassMap.clear();
         idToClassMap.clear();
         idToInterfaceMap.clear();
