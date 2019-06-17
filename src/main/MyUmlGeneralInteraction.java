@@ -22,8 +22,10 @@ import com.oocourse.uml2.interact.exceptions.user.UmlRule009Exception;
 import com.oocourse.uml2.interact.format.UmlGeneralInteraction;
 import com.oocourse.uml2.models.common.Visibility;
 import com.oocourse.uml2.models.elements.UmlElement;
+import compoent.interaction.InteractionNode;
 import compoent.model.ClassNode;
 import compoent.model.InterfaceNode;
+import compoent.state.StateMachineNode;
 import handler.AddElementHandler;
 import navigate.IdToUmlElement;
 import navigate.NodeNavigator;
@@ -53,7 +55,6 @@ public class MyUmlGeneralInteraction implements UmlGeneralInteraction {
         // todo sort by type
 
         AddElementHandler.addHandler(elementList);
-
     }
 
     /* >>>>>>>> UML compoent.model Query <<<<<<<< */
@@ -220,34 +221,40 @@ public class MyUmlGeneralInteraction implements UmlGeneralInteraction {
 
     @Override
     public int getParticipantCount(String s) throws InteractionNotFoundException, InteractionDuplicatedException {
-        return 0;
+        InteractionNode interactionNode = nodeNav.getInteractionNodeByName(s);
+        return interactionNode.getParticipantCount();
     }
 
     @Override
     public int getMessageCount(String s) throws InteractionNotFoundException, InteractionDuplicatedException {
-        return 0;
+        InteractionNode interactionNode = nodeNav.getInteractionNodeByName(s);
+        return interactionNode.getMessageCount();
     }
 
     @Override
     public int getIncomingMessageCount(String s, String s1) throws InteractionNotFoundException, InteractionDuplicatedException, LifelineNotFoundException, LifelineDuplicatedException {
-        return 0;
+        InteractionNode interactionNode = nodeNav.getInteractionNodeByName(s);
+        return interactionNode.getIncomingMessageCount(s1);
     }
 
     /* >>>>>>>> UML State Query <<<<<<<< */
 
     @Override
     public int getStateCount(String s) throws StateMachineNotFoundException, StateMachineDuplicatedException {
-        return 0;
+        StateMachineNode stateMachineNode = nodeNav.getStateMachineNodeByName(s);
+        return stateMachineNode.getStateCount();
     }
 
     @Override
     public int getTransitionCount(String s) throws StateMachineNotFoundException, StateMachineDuplicatedException {
-        return 0;
+        StateMachineNode stateMachineNode = nodeNav.getStateMachineNodeByName(s);
+        return stateMachineNode.getStateCount();
     }
 
     @Override
     public int getSubsequentStateCount(String s, String s1) throws StateMachineNotFoundException, StateMachineDuplicatedException, StateNotFoundException, StateDuplicatedException {
-        return 0;
+        StateMachineNode stateMachineNode = nodeNav.getStateMachineNodeByName(s);
+        return stateMachineNode.getSubsequentStateCount(s1);
     }
 
     /* >>>>>>>> UML Pre Check <<<<<<<< */
