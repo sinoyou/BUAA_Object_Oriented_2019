@@ -5,14 +5,31 @@ import com.oocourse.uml2.models.elements.UmlAssociationEnd;
 import com.oocourse.uml2.models.elements.UmlAttribute;
 import com.oocourse.uml2.models.elements.UmlClass;
 import com.oocourse.uml2.models.elements.UmlElement;
+import com.oocourse.uml2.models.elements.UmlEndpoint;
+import com.oocourse.uml2.models.elements.UmlEvent;
+import com.oocourse.uml2.models.elements.UmlFinalState;
 import com.oocourse.uml2.models.elements.UmlGeneralization;
+import com.oocourse.uml2.models.elements.UmlInteraction;
 import com.oocourse.uml2.models.elements.UmlInterface;
 import com.oocourse.uml2.models.elements.UmlInterfaceRealization;
+import com.oocourse.uml2.models.elements.UmlLifeline;
+import com.oocourse.uml2.models.elements.UmlMessage;
+import com.oocourse.uml2.models.elements.UmlOpaqueBehavior;
 import com.oocourse.uml2.models.elements.UmlOperation;
 import com.oocourse.uml2.models.elements.UmlParameter;
+import com.oocourse.uml2.models.elements.UmlPseudostate;
+import com.oocourse.uml2.models.elements.UmlRegion;
+import com.oocourse.uml2.models.elements.UmlState;
+import com.oocourse.uml2.models.elements.UmlStateMachine;
+import com.oocourse.uml2.models.elements.UmlTransition;
+import compoent.interaction.InteractionNode;
+import compoent.interaction.LifeLineNode;
 import compoent.model.ClassNode;
 import compoent.model.InterfaceNode;
 import compoent.model.OperationNode;
+import compoent.state.RegionNode;
+import compoent.state.StateMachineNode;
+import compoent.state.StateNode;
 import navigate.IdToUmlElement;
 import navigate.NodeNavigator;
 
@@ -21,6 +38,7 @@ public class GeneralHandler {
     private static NodeNavigator nodeNav = NodeNavigator.getInstance();
 
     public static void handleElement(UmlElement element) {
+        // Uml model
         if (element instanceof UmlAssociation) {
             handleAssociation((UmlAssociation) element);
         } else if (element instanceof UmlAssociationEnd) {
@@ -39,12 +57,41 @@ public class GeneralHandler {
             handleOperation((UmlOperation) element);
         } else if (element instanceof UmlParameter) {
             handleParameter((UmlParameter) element);
+        }
+        // Uml State Machine
+        else if (element instanceof UmlEvent) {
+            handleEvent((UmlEvent) element);
+        } else if (element instanceof UmlFinalState) {
+            handleState((UmlFinalState) element);
+        } else if (element instanceof UmlPseudostate) {
+            handleState((UmlPseudostate) element);
+        } else if (element instanceof UmlRegion) {
+            handleRegion((UmlRegion) element);
+        } else if (element instanceof UmlState) {
+            handleState((UmlState) element);
+        } else if (element instanceof UmlStateMachine) {
+            handleStateMachine((UmlStateMachine) element);
+        } else if (element instanceof UmlTransition) {
+            handleTransition((UmlTransition) element);
+        } else if (element instanceof UmlOpaqueBehavior) {
+            handleOpaque((UmlOpaqueBehavior) element);
+        }
+        // Uml Collaboration
+        else if (element instanceof UmlInteraction) {
+            handleInteraction((UmlInteraction) element);
+        } else if (element instanceof UmlEndpoint) {
+            handleEndpoint((UmlEndpoint) element);
+        } else if (element instanceof UmlLifeline) {
+            handleLifeline((UmlLifeline) element);
+        } else if (element instanceof UmlMessage) {
+            handleMessage((UmlMessage) element);
         } else {
             System.err.println(String.format("[Handler] Unknown UmlElement" +
                 " Type %s %s.", element.getElementType(), element.getId()));
         }
     }
 
+    // >>>>>>>> UML Model <<<<<<<<
     private static void handleAssociation(UmlAssociation umlAssociation) {
         assert idMap.containsElement(umlAssociation.getId());
         // nothing need to do now
@@ -60,8 +107,7 @@ public class GeneralHandler {
             InterfaceNode interfaceNode = nodeNav.getInterfaceNodeById(refId);
             interfaceNode.addAssociateEnd(umlAssociationEnd);
         } else {
-            System.err.println(String.format("[Handler]:Error, End " +
-                "refered to class or interface %s", umlAssociationEnd.getId()));
+            printNotMatch("AssoEnd", umlAssociationEnd, "class|interface");
         }
     }
 
@@ -74,15 +120,16 @@ public class GeneralHandler {
             InterfaceNode interfaceNode =
                 nodeNav.getInterfaceNodeById(parentId);
             interfaceNode.addAttribute(umlAttribute);
+        } else if (nodeNav.containsStateMachineNode(parentId)) {
+            printIgnore("Attribute", umlAttribute);
         } else {
-            System.err.println(String.format("[Handler]:Error, attr is " +
-                "not referred to class or interface %s", umlAttribute.getId()));
+            printNotMatch("Attribute", umlAttribute, "class|interface");
         }
     }
 
     private static void handleClass(UmlClass umlClass) {
-        System.err.println(String.format("[Handler] Error, class element" +
-            "should not be handled here %s ", umlClass.getId()));
+        ClassNode classNode = new ClassNode(umlClass);
+        nodeNav.addOneClassNode(classNode);
     }
 
     private static void handleGeneration(UmlGeneralization umlGeneralization) {
@@ -104,14 +151,13 @@ public class GeneralHandler {
                 nodeNav.getInterfaceNodeById(target);
             interfaceNodeSrc.addGenerateFrom(interfaceNodeDst);
         } else {
-            System.err.println(String.format("[Handler]: Error, unknown " +
-                "generation type %s", umlGeneralization.getId()));
+            printError("HandleGeneration", "Unknown Generation Type", umlGeneralization);
         }
     }
 
     private static void handleInterface(UmlInterface umlInterface) {
-        System.err.println(String.format("[Handler] Error, interface element" +
-            "should not be handled here %s ", umlInterface.getId()));
+        InterfaceNode interfaceNode = new InterfaceNode(umlInterface);
+        nodeNav.addOneInterfaceNode(interfaceNode);
     }
 
     private static void handleInterfaceRealization(
@@ -124,8 +170,7 @@ public class GeneralHandler {
         if (nodeNav.containsInterfaceNode(target)) {
             interfaceNode = nodeNav.getInterfaceNodeById(target);
         } else {
-            System.err.println(String.format("[Handler] Error, interface " +
-                "should exist in realization %s", target));
+            printError("HandleRealization", "interface not found", umlInterfaceRealization);
             return;
         }
         ClassNode classNode;
@@ -135,14 +180,25 @@ public class GeneralHandler {
         } else {
             System.err.println(String.format("[Handler] Error, class " +
                 "should exist in realization %s", target));
+            printError("HandleRealization", "class not found", umlInterfaceRealization);
             return;
         }
         classNode.addRealize(interfaceNode);
     }
 
     private static void handleOperation(UmlOperation umlOperation) {
-        System.err.println(String.format("[Handler] Error,oper element %s " +
-            "should not be handled here.", umlOperation.getId()));
+        OperationNode operationNode = new OperationNode(umlOperation);
+        nodeNav.addOneOperation(operationNode);
+
+        String parentId = operationNode.getKernelInstance().getParentId();
+        if (nodeNav.containsClassNode(parentId)) {
+            nodeNav.getClassNodeById(parentId).addOperation(operationNode);
+        } else if (nodeNav.containsInterfaceNode(parentId)) {
+            nodeNav.getInterfaceNodeById(parentId).
+                addOperation(operationNode);
+        } else {
+            printNotMatch("HandleOperation", umlOperation, "class|interface");
+        }
     }
 
     private static void handleParameter(UmlParameter umlParameter) {
@@ -152,8 +208,104 @@ public class GeneralHandler {
             OperationNode operationNode = nodeNav.getOperationNodeById(opId);
             operationNode.addParameter(umlParameter);
         } else {
-            System.err.println(String.format("[Handler] Error,para %s's op" +
-                "should exist %s", umlParameter.getName(), opId));
+            printError("HandleParameter", "Operation not found", umlParameter);
         }
+    }
+
+    // >>>>>>>> UML State Machine <<<<<<<<
+    private static void handleEvent(UmlEvent umlEvent) {
+        printIgnore("handleEvent", umlEvent);
+    }
+
+    private static void handleState(UmlElement umlStateElement) {
+        StateNode stateNode = new StateNode(umlStateElement);
+        // add to parent's node
+        String pid = umlStateElement.getParentId();
+        if (nodeNav.containsRegionNode(pid)) {
+            nodeNav.getRegionNodeById(pid).addOneState(stateNode);
+        } else {
+            printError("handleState", "region not found", umlStateElement);
+        }
+    }
+
+    private static void handleRegion(UmlRegion umlRegion) {
+        RegionNode regionNode = new RegionNode(umlRegion);
+        // add to nodeNav
+        nodeNav.addOneRegionNode(regionNode);
+        // add to parent's node
+        String pid = umlRegion.getParentId();
+        if (nodeNav.containsStateMachineNode(pid)) {
+            nodeNav.getStateMachineNodeById(pid).addOneRegion(regionNode);
+        } else {
+            printError("handleRegion", "State Machine not found", umlRegion);
+        }
+    }
+
+    private static void handleStateMachine(UmlStateMachine umlStateMachine) {
+        StateMachineNode stateMachineNode = new StateMachineNode(umlStateMachine);
+        // add to nodeNav
+        nodeNav.addOneStateMachine(stateMachineNode);
+    }
+
+    private static void handleTransition(UmlTransition umlTransition) {
+        String pid = umlTransition.getParentId();
+        if (nodeNav.containsRegionNode(pid)) {
+            nodeNav.getRegionNodeById(pid).addOneTransition(umlTransition);
+        } else {
+            printError("handleTransition", "Region not found", umlTransition);
+        }
+    }
+
+    private static void handleOpaque(UmlOpaqueBehavior umlOpaqueBehavior) {
+        printIgnore("handleOpaque", umlOpaqueBehavior);
+    }
+
+    // >>>>>>>> UML Collaboration <<<<<<<<
+    private static void handleInteraction(UmlInteraction umlInteraction) {
+        // add to nodeNav
+        InteractionNode interactionNode = new InteractionNode(umlInteraction);
+        nodeNav.addOneInteractionNode(interactionNode);
+    }
+
+    private static void handleEndpoint(UmlEndpoint umlEndpoint) {
+        printIgnore("handleEndPoint", umlEndpoint);
+    }
+
+    private static void handleLifeline(UmlLifeline umlLifeline) {
+        String pid = umlLifeline.getParentId();
+        LifeLineNode lifeLineNode = new LifeLineNode(umlLifeline);
+        // add to parent's node
+        if (nodeNav.containsInteractionNode(pid)) {
+            nodeNav.getInteractionNodeById(pid).addOneLifeline(lifeLineNode);
+        } else {
+            printError("handleLifeline", "Interaction not found", umlLifeline);
+        }
+    }
+
+    private static void handleMessage(UmlMessage umlMessage) {
+        String pid = umlMessage.getParentId();
+        // add to parent's node
+        if (nodeNav.containsInteractionNode(pid)) {
+            nodeNav.getInteractionNodeById(pid).addOneMessage(umlMessage);
+        } else {
+            printError("handleMessage", "Interaction not found", umlMessage);
+        }
+    }
+
+    // System Error Print
+    private static void printNotMatch(String who, UmlElement element, String expect) {
+        String s = String.format("[%s] type %s not referred to %s %s", who, element.getElementType(), expect, element.getId());
+        System.err.println(s);
+    }
+
+    private static void printError(String who, String message, UmlElement umlElement) {
+        String s = String.format("[%s] %s %s", who, message, umlElement.getId());
+        System.err.println(s);
+    }
+
+    private static void printIgnore(String who, UmlElement element) {
+        String s = String.format("@%s type %s is ignored %s",
+            who, element.getElementType(), element.getId());
+        System.err.println(s);
     }
 }

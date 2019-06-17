@@ -2,11 +2,15 @@ package handler;
 
 import com.oocourse.uml2.models.elements.UmlClass;
 import com.oocourse.uml2.models.elements.UmlElement;
+import com.oocourse.uml2.models.elements.UmlFinalState;
+import com.oocourse.uml2.models.elements.UmlInteraction;
 import com.oocourse.uml2.models.elements.UmlInterface;
+import com.oocourse.uml2.models.elements.UmlLifeline;
 import com.oocourse.uml2.models.elements.UmlOperation;
-import compoent.model.ClassNode;
-import compoent.model.InterfaceNode;
-import compoent.model.OperationNode;
+import com.oocourse.uml2.models.elements.UmlPseudostate;
+import com.oocourse.uml2.models.elements.UmlRegion;
+import com.oocourse.uml2.models.elements.UmlState;
+import com.oocourse.uml2.models.elements.UmlStateMachine;
 import navigate.NodeNavigator;
 
 import java.util.Iterator;
@@ -22,8 +26,6 @@ public class AddElementHandler {
         handleTopElement(elementList);
 
         // Step 2: Process Middle Element : Operation, State, Lifeline
-        // Caution: Middle layer elements are bridge between top and bottom,
-        // it may be added back to top after proceeding bottom.
         handleMiddleElement(elementList);
 
         // Step 3: General Handle
@@ -31,19 +33,17 @@ public class AddElementHandler {
         while (it.hasNext()) {
             GeneralHandler.handleElement(it.next());
         }
-
-        // Step 4: Process Middle Element Backwards
-        handlerMiddleElementBackwards();
     }
 
     /**
      * To handler Top uml elements to prepare other elements' container.
      * 1. Class Node
      * 2. Interface Node
-     * 3. State Machine Node (in fact is Region)
-     * 4. Interaction Node
+     * 3. State Machine Node
+     * 4. Region Node (must follow parent state machine) // todo
+     * 5. Interaction Node
      *
-     * @param elementList
+     * @param elementList elements remains to be proceeded.
      */
     private static void handleTopElement(List<UmlElement> elementList) {
         Iterator<UmlElement> it = elementList.iterator();
@@ -51,20 +51,25 @@ public class AddElementHandler {
             UmlElement element = it.next();
             if (element instanceof UmlClass) {
                 it.remove();
-                ClassNode classNode = new ClassNode((UmlClass) element);
-                nodeNav.addOneClassNode(classNode);
+                GeneralHandler.handleElement(element);
             } else if (element instanceof UmlInterface) {
                 it.remove();
-                InterfaceNode interfaceNode = new InterfaceNode((UmlInterface)
-                    element);
-                nodeNav.addOneInterfaceNode(interfaceNode);
+                GeneralHandler.handleElement(element);
+            } else if (element instanceof UmlStateMachine) {
+                it.remove();
+                GeneralHandler.handleElement(element);
+            } else if (element instanceof UmlRegion) {
+                it.remove();
+                GeneralHandler.handleElement(element);
+            } else if (element instanceof UmlInteraction) {
+                it.remove();
+                GeneralHandler.handleElement(element);
             }
         }
     }
 
     /**
-     * Middle elements are bridge between top and bottom, it has to be
-     * proceeded twice. This time is to make preparation for link bottom.
+     * Middle elements are bridge between top and bottom.
      * 1. Operation Node
      * 2. State Node
      * 3. LifeLine Node
@@ -77,34 +82,15 @@ public class AddElementHandler {
             UmlElement element = it.next();
             if (element instanceof UmlOperation) {
                 it.remove();
-                OperationNode operationNode = new OperationNode(
-                    (UmlOperation) element);
-                nodeNav.addOneOperation(operationNode);
+                GeneralHandler.handleElement(element);
+            } else if (element instanceof UmlState || element instanceof UmlFinalState || element instanceof UmlPseudostate) {
+                it.remove();
+                GeneralHandler.handleElement(element);
+            } else if (element instanceof UmlLifeline) {
+                it.remove();
+                GeneralHandler.handleElement(element);
             }
         }
     }
 
-    /**
-     * Middle elements are bridge between top and bottom,
-     * it has to be proceeded twice.(last time link bottom, this time link top)
-     * 1. Operation :Add Operation Node back to Class or Interface Node
-     */
-    private static void handlerMiddleElementBackwards() {
-        Iterator<OperationNode> opIt = nodeNav.getOperationNodes();
-        while (opIt.hasNext()) {
-            OperationNode operationNode = opIt.next();
-            String parentId = operationNode.getKernelInstance().getParentId();
-
-            if (nodeNav.containsClassNode(parentId)) {
-                nodeNav.getClassNodeById(parentId).addOperation(operationNode);
-            } else if (nodeNav.containsInterfaceNode(parentId)) {
-                nodeNav.getInterfaceNodeById(parentId).
-                    addOperation(operationNode);
-            } else {
-                System.err.println(String.format("[UMLInteraction]: Error" +
-                        "when add back operation %s to class or interface.",
-                    operationNode.getKernelInstance().getName()));
-            }
-        }
-    }
 }
