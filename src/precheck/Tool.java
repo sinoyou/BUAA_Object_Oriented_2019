@@ -5,6 +5,7 @@ import compoent.model.ClassNode;
 import compoent.model.InterfaceNode;
 import navigate.NodeNavigator;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 
@@ -38,29 +39,29 @@ public class Tool {
     public static Iterator<ClassInterfaceModel> getGenerateOrImplement(
         ClassInterfaceModel node
     ) {
-        HashSet<ClassInterfaceModel> set = new HashSet<>();
+        ArrayList<ClassInterfaceModel> list = new ArrayList<>();
 
         if (node instanceof ClassNode) {
             // generation classes
             Iterator<ClassNode> classIt = ((ClassNode) node).getGenerateFrom();
-            while(classIt.hasNext()){
-                set.add(classIt.next());
+            while (classIt.hasNext()) {
+                list.add(classIt.next());
             }
             // implemented interfaces
             Iterator<InterfaceNode> interfaceIt = ((ClassNode) node).getSelfImplementInterface();
             while (interfaceIt.hasNext()) {
-                set.add(interfaceIt.next());
+                list.add(interfaceIt.next());
             }
         } else if (node instanceof InterfaceNode) {
             Iterator<InterfaceNode> interfaceIt = ((InterfaceNode) node).getGenerateFrom();
             // generation interfaces
             while (interfaceIt.hasNext()) {
-                set.add(interfaceIt.next());
+                list.add(interfaceIt.next());
             }
         } else {
             System.err.println(String.format("[uml008]:Wrong type when getting generation or implements %s", node.getKernelInstance().getName()));
         }
 
-        return set.iterator();
+        return list.iterator();
     }
 }

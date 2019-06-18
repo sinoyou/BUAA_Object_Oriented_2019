@@ -34,7 +34,6 @@ import precheck.Uml008Exception;
 import precheck.Uml009Exception;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -61,7 +60,7 @@ public class MyUmlGeneralInteraction implements UmlGeneralInteraction {
         AddElementHandler.addHandler(elementList);
 
         // Step 3: Pre check
-        checkForAllRules();
+        // checkForAllRules();
     }
 
     /* >>>>>>>> UML compoent.model Query <<<<<<<< */
@@ -255,7 +254,7 @@ public class MyUmlGeneralInteraction implements UmlGeneralInteraction {
     @Override
     public int getTransitionCount(String s) throws StateMachineNotFoundException, StateMachineDuplicatedException {
         StateMachineNode stateMachineNode = nodeNav.getStateMachineNodeByName(s);
-        return stateMachineNode.getStateCount();
+        return stateMachineNode.getTransitionCount();
     }
 
     @Override
