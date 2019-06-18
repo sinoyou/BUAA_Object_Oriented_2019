@@ -41,10 +41,7 @@ public class Tool {
 
         if (node instanceof ClassNode) {
             // generation classes
-            Iterator<ClassNode> nodeIt = ((ClassNode) node).getGenerateListIterator();
-            while (nodeIt.hasNext()) {
-                set.add(nodeIt.next());
-            }
+            set.add(((ClassNode) node).getGenerateFrom());
             // implemented interfaces
             Iterator<InterfaceNode> interfaceIt = ((ClassNode) node).getSelfImplementInterface();
             while (interfaceIt.hasNext()) {

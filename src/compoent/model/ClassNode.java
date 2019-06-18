@@ -37,6 +37,10 @@ public class ClassNode extends ClassInterfaceModel {
         return realizeList.iterator();
     }
 
+    public ClassNode getGenerateFrom() {
+        return generateFrom;
+    }
+
     public Iterator<ClassNode> getGenerateListIterator() {
         return getGenerateList().iterator();
     }

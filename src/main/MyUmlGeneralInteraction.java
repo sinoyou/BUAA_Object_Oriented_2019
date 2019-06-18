@@ -46,9 +46,9 @@ public class MyUmlGeneralInteraction implements UmlGeneralInteraction {
     private IdToUmlElement idMap = IdToUmlElement.getInstance();
     private NodeNavigator nodeNav = NodeNavigator.getInstance();
 
-    public MyUmlGeneralInteraction(UmlElement[] elements) {
+    public MyUmlGeneralInteraction(UmlElement[] elements) throws PreCheckRuleException {
 
-        // Transform elements array to arrayList
+        // Step 1: Transform elements array to arrayList
         ArrayList<UmlElement> elementList = new ArrayList<>();
         for (int i = 0; i < elements.length; i++) {
             UmlElement umlElement = elements[i];
@@ -56,9 +56,12 @@ public class MyUmlGeneralInteraction implements UmlGeneralInteraction {
             idMap.addUmlElement(umlElement);
         }
 
+        // Step 2: Build Inner Structure
         // todo sort by type
-
         AddElementHandler.addHandler(elementList);
+
+        // Step 3: Pre check
+        checkForAllRules();
     }
 
     /* >>>>>>>> UML compoent.model Query <<<<<<<< */
