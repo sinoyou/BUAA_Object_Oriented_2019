@@ -46,6 +46,22 @@ public class IdToUmlElement {
         return (UmlAssociation) element;
     }
 
+    public UmlAssociationEnd getOppositeEndByEnd(UmlAssociationEnd umlAssociationEnd) {
+        UmlAssociation umlAssociation = getUmlAssoByUmlEnd(umlAssociationEnd);
+        // Set Opposite End of Association
+        String oppositeEndId;
+        if (umlAssociation.getEnd1().equals(umlAssociationEnd.getId())) {
+            oppositeEndId = umlAssociation.getEnd2();
+        } else {
+            oppositeEndId = umlAssociation.getEnd1();
+        }
+
+        // Get the element of other side
+        UmlAssociationEnd oppositeEnd =
+            (UmlAssociationEnd) getUmlElementById(oppositeEndId);
+        return oppositeEnd;
+    }
+
     /* -------- unit test help function -------- */
     public void clearAll() {
         idMap.clear();

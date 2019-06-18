@@ -45,7 +45,7 @@ public class RegionNode implements NodeModel {
     /**
      * Add one state node to region.
      * Caution : when build name mapping, pre-require is name not null.
-     * @param stateNode
+     * @param stateNode node to be added to region.
      */
     public void addOneState(StateNode stateNode) {
         // id to state node
@@ -83,7 +83,7 @@ public class RegionNode implements NodeModel {
 
     public int getSubStateCount(String name) throws StateDuplicatedException, StateNotFoundException {
         List<StateNode> list = nameToState.getOrDefault(name, null);
-        StateNode srcNode = null;
+        StateNode srcNode;
         if (list != null) {
             if (list.size() == 1) {
                 srcNode = list.get(0);

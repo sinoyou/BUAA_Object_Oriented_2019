@@ -29,8 +29,12 @@ import compoent.state.StateMachineNode;
 import handler.AddElementHandler;
 import navigate.IdToUmlElement;
 import navigate.NodeNavigator;
+import precheck.Uml002Exception;
+import precheck.Uml008Exception;
+import precheck.Uml009Exception;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -261,22 +265,24 @@ public class MyUmlGeneralInteraction implements UmlGeneralInteraction {
 
     @Override
     public void checkForAllRules() throws PreCheckRuleException {
-
+        checkForUml002();
+        checkForUml008();
+        checkForUml009();
     }
 
     @Override
     public void checkForUml002() throws UmlRule002Exception {
-
+        Uml002Exception.check();
     }
 
     @Override
     public void checkForUml008() throws UmlRule008Exception {
-
+        Uml008Exception.uml008Check();
     }
 
     @Override
     public void checkForUml009() throws UmlRule009Exception {
-
+        Uml009Exception.uml009Check();
     }
 }
 

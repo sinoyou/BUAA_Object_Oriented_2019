@@ -19,6 +19,7 @@ import tool.VersionCache;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 
 public abstract class ClassInterfaceModel implements NodeModel {
@@ -108,8 +109,16 @@ public abstract class ClassInterfaceModel implements NodeModel {
         return attributeList.size();
     }
 
+    public Iterator<UmlAttribute> getSelfAttributes() {
+        return attributeList.iterator();
+    }
+
     public int getSelfAssociationAmount() {
         return associationEndsList.size();
+    }
+
+    public Iterator<UmlAssociationEnd> getSelfAssociationEnds() {
+        return associationEndsList.iterator();
     }
 
     public HashSet<ClassNode> getSelfAssociatedClasses() {
@@ -126,6 +135,7 @@ public abstract class ClassInterfaceModel implements NodeModel {
         NodeNavigator nodeNav = NodeNavigator.getInstance();
 
         for (UmlAssociationEnd umlAssociationEnd : associationEndsList) {
+            /*
             UmlAssociation umlAssociation =
                 idMap.getUmlAssoByUmlEnd(umlAssociationEnd);
             // Set Opposite End of Association
@@ -139,6 +149,8 @@ public abstract class ClassInterfaceModel implements NodeModel {
             // Get the element of other side
             UmlAssociationEnd oppositeEnd =
                 (UmlAssociationEnd) idMap.getUmlElementById(oppositeEndId);
+            */
+            UmlAssociationEnd oppositeEnd = idMap.getOppositeEndByEnd(umlAssociationEnd);
             String oppositeElementId = oppositeEnd.getReference();
 
             // Check element's type and record

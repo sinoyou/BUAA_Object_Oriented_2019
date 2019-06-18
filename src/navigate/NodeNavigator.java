@@ -104,6 +104,10 @@ public class NodeNavigator {
         return idToClassMap.containsKey(id);
     }
 
+    public Iterator<ClassNode> getClassNodes() {
+        return idToClassMap.values().iterator();
+    }
+
     /* -------- Interface Node --------*/
     public void addOneInterfaceNode(InterfaceNode interfaceNode) {
         idToInterfaceMap.put(interfaceNode.getKernelInstance().getId(),
@@ -116,6 +120,10 @@ public class NodeNavigator {
 
     public boolean containsInterfaceNode(String id) {
         return idToInterfaceMap.containsKey(id);
+    }
+
+    public Iterator<InterfaceNode> getInerfaces() {
+        return idToInterfaceMap.values().iterator();
     }
 
     /* -------- OperationNode Node -------- */
