@@ -29,7 +29,7 @@ public class Uml002Exception {
             HashMap<String, Integer> map = new HashMap<>();
 
             // step 1: loop over for all opposite association end first.
-            Iterator<UmlAssociationEnd> endIterator = node.getSelfAssociationOppositeEnds();
+            Iterator<UmlAssociationEnd> endIterator = node.getSelfAssociationEnds();
             while (endIterator.hasNext()) {
                 UmlAssociationEnd opEnd = idMap.getOppositeEndByEnd(endIterator.next());
                 if (opEnd.getName() != null) {

@@ -3,16 +3,21 @@ package compoent.state;
 import com.oocourse.uml2.interact.exceptions.user.StateDuplicatedException;
 import com.oocourse.uml2.interact.exceptions.user.StateNotFoundException;
 import com.oocourse.uml2.models.elements.UmlElement;
+import com.oocourse.uml2.models.elements.UmlFinalState;
+import com.oocourse.uml2.models.elements.UmlPseudostate;
 import com.oocourse.uml2.models.elements.UmlRegion;
+import com.oocourse.uml2.models.elements.UmlState;
 import com.oocourse.uml2.models.elements.UmlTransition;
 import compoent.NodeModel;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 public class RegionNode implements NodeModel {
     private UmlElement kernelInstance;
@@ -45,6 +50,7 @@ public class RegionNode implements NodeModel {
     /**
      * Add one state node to region.
      * Caution : when build name mapping, pre-require is name not null.
+     *
      * @param stateNode node to be added to region.
      */
     public void addOneState(StateNode stateNode) {
@@ -74,7 +80,7 @@ public class RegionNode implements NodeModel {
 
     /* -------- Query Method -------- */
     public int getStateCount() {
-        return idToState.size();
+        return duplicatedStateDecrease(idToState.values());
     }
 
     public int getTransitionCount() {
@@ -97,7 +103,6 @@ public class RegionNode implements NodeModel {
         // count : with bfs
         HashSet<StateNode> set = new HashSet<>();
         LinkedList<StateNode> queue = new LinkedList<>();
-        set.add(srcNode);
         queue.addLast(srcNode);
 
         while (!queue.isEmpty()) {
@@ -112,6 +117,32 @@ public class RegionNode implements NodeModel {
             }
         }
 
-        return set.size();
+        // return set.size();
+        return duplicatedStateDecrease(set);
+    }
+
+    /* -------- Inner Help Function -------- */
+    private int duplicatedStateDecrease(Collection<StateNode> set) {
+        int stateSize = 0;
+        int finalSize = 0;
+        int pseudoSize = 0;
+        for (StateNode node : set) {
+            if (node.getKernelInstance() instanceof UmlState) {
+                stateSize++;
+            } else if (node.getKernelInstance() instanceof UmlFinalState) {
+                finalSize++;
+            } else if (node.getKernelInstance() instanceof UmlPseudostate) {
+                pseudoSize++;
+            } else {
+                System.err.println(String.format("[duplicatedStateDecrease] Unexpected Type %s", node.getKernelInstance().getId()));
+            }
+        }
+        if (finalSize > 0) {
+            stateSize++;
+        }
+        if (pseudoSize > 0) {
+            stateSize++;
+        }
+        return stateSize;
     }
 }
