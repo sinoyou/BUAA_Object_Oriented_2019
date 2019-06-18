@@ -25,6 +25,10 @@ public class InterfaceNode extends ClassInterfaceModel {
         return getGenerateList().iterator();
     }
 
+    public Iterator<InterfaceNode> getGenerateFrom() {
+        return generateList.iterator();
+    }
+
     /* ------- Inner Help Function -------- */
 
     /**

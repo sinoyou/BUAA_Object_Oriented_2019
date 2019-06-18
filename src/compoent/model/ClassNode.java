@@ -4,6 +4,7 @@ package compoent.model;
 import com.oocourse.uml2.models.elements.UmlClass;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 
@@ -37,8 +38,12 @@ public class ClassNode extends ClassInterfaceModel {
         return realizeList.iterator();
     }
 
-    public ClassNode getGenerateFrom() {
-        return generateFrom;
+    public Iterator<ClassNode> getGenerateFrom() {
+        HashSet<ClassNode> set = new HashSet<>();
+        if (generateFrom != null) {
+            set.add(generateFrom);
+        }
+        return set.iterator();
     }
 
     public Iterator<ClassNode> getGenerateListIterator() {

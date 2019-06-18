@@ -31,6 +31,7 @@ public class Tool {
     /**
      * Given a node (with class or interface type), return iterator the node
      * generates from and implements from.
+     *
      * @param node source node
      * @return iterator
      */
@@ -41,14 +42,17 @@ public class Tool {
 
         if (node instanceof ClassNode) {
             // generation classes
-            set.add(((ClassNode) node).getGenerateFrom());
+            Iterator<ClassNode> classIt = ((ClassNode) node).getGenerateFrom();
+            while(classIt.hasNext()){
+                set.add(classIt.next());
+            }
             // implemented interfaces
             Iterator<InterfaceNode> interfaceIt = ((ClassNode) node).getSelfImplementInterface();
             while (interfaceIt.hasNext()) {
                 set.add(interfaceIt.next());
             }
         } else if (node instanceof InterfaceNode) {
-            Iterator<InterfaceNode> interfaceIt = ((InterfaceNode) node).getGenerateListIterator();
+            Iterator<InterfaceNode> interfaceIt = ((InterfaceNode) node).getGenerateFrom();
             // generation interfaces
             while (interfaceIt.hasNext()) {
                 set.add(interfaceIt.next());
