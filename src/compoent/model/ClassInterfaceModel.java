@@ -5,7 +5,6 @@ import com.oocourse.uml2.interact.common.OperationQueryType;
 import com.oocourse.uml2.interact.exceptions.user.AttributeDuplicatedException;
 import com.oocourse.uml2.interact.exceptions.user.AttributeNotFoundException;
 import com.oocourse.uml2.models.common.Visibility;
-import com.oocourse.uml2.models.elements.UmlAssociation;
 import com.oocourse.uml2.models.elements.UmlAssociationEnd;
 import com.oocourse.uml2.models.elements.UmlAttribute;
 import com.oocourse.uml2.models.elements.UmlClass;

@@ -6,12 +6,13 @@ import com.oocourse.uml2.models.elements.UmlPseudostate;
 import com.oocourse.uml2.models.elements.UmlState;
 import compoent.NodeModel;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 
 public class StateNode implements NodeModel {
     private UmlElement kernelInstance;
-    private HashSet<StateNode> directSubStateSet;
+    private ArrayList<StateNode> directSubStateList;
 
     public StateNode(UmlElement umlElement) {
         if (umlElement == null) {
@@ -20,7 +21,7 @@ public class StateNode implements NodeModel {
             umlElement instanceof UmlFinalState ||
             umlElement instanceof UmlPseudostate) {
             kernelInstance = umlElement;
-            directSubStateSet = new HashSet<>();
+            directSubStateList = new ArrayList<>();
         } else {
             System.err.println(String.format("[State]:Wrong " +
                     "Type of Kernel UML Element %s %s",
@@ -35,11 +36,11 @@ public class StateNode implements NodeModel {
 
     /* -------- Modification Method -------- */
     public void addOneDirectSubState(StateNode stateNode) {
-        directSubStateSet.add(stateNode);
+        directSubStateList.add(stateNode);
     }
 
     /* -------- Query Method -------- */
     public Iterator<StateNode> getDirectSubState() {
-        return directSubStateSet.iterator();
+        return directSubStateList.iterator();
     }
 }

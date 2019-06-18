@@ -63,7 +63,7 @@ public class MyUmlGeneralInteraction implements UmlGeneralInteraction {
         // checkForAllRules();
     }
 
-    /* >>>>>>>> UML compoent.model Query <<<<<<<< */
+    /* >>>>>>>> UML component.model Query <<<<<<<< */
     @Override
     public int getClassCount() {
         return nodeNav.getClassCount();
