@@ -7,7 +7,6 @@ import com.oocourse.uml2.models.elements.UmlState;
 import compoent.NodeModel;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.Iterator;
 
 public class StateNode implements NodeModel {

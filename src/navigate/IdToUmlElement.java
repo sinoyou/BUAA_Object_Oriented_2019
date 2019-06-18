@@ -1,6 +1,5 @@
 package navigate;
 
-
 import com.oocourse.uml2.models.elements.UmlAssociation;
 import com.oocourse.uml2.models.elements.UmlAssociationEnd;
 import com.oocourse.uml2.models.elements.UmlElement;
@@ -46,7 +45,8 @@ public class IdToUmlElement {
         return (UmlAssociation) element;
     }
 
-    public UmlAssociationEnd getOppositeEndByEnd(UmlAssociationEnd umlAssociationEnd) {
+    public UmlAssociationEnd getOppositeEndByEnd(UmlAssociationEnd
+                                                     umlAssociationEnd) {
         UmlAssociation umlAssociation = getUmlAssoByUmlEnd(umlAssociationEnd);
         // Set Opposite End of Association
         String oppositeEndId;

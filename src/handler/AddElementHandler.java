@@ -83,7 +83,9 @@ public class AddElementHandler {
             if (element instanceof UmlOperation) {
                 it.remove();
                 GeneralHandler.handleElement(element);
-            } else if (element instanceof UmlState || element instanceof UmlFinalState || element instanceof UmlPseudostate) {
+            } else if (element instanceof UmlState
+                || element instanceof UmlFinalState
+                || element instanceof UmlPseudostate) {
                 it.remove();
                 GeneralHandler.handleElement(element);
             } else if (element instanceof UmlLifeline) {

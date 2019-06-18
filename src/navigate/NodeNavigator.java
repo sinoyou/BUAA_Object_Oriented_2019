@@ -157,7 +157,8 @@ public class NodeNavigator {
         nameToStateMachine.get(name).add(stateMachineNode);
     }
 
-    public StateMachineNode getStateMachineNodeByName(String name) throws StateMachineNotFoundException, StateMachineDuplicatedException {
+    public StateMachineNode getStateMachineNodeByName(String name)
+        throws StateMachineNotFoundException, StateMachineDuplicatedException {
         if (!nameToStateMachine.containsKey(name)) {
             throw new StateMachineNotFoundException(name);
         } else {
@@ -211,8 +212,10 @@ public class NodeNavigator {
         return idToInteraction.get(id);
     }
 
-    public InteractionNode getInteractionNodeByName(String name) throws InteractionDuplicatedException, InteractionNotFoundException {
-        List<InteractionNode> list = nameToInteraction.getOrDefault(name, null);
+    public InteractionNode getInteractionNodeByName(String name)
+        throws InteractionDuplicatedException, InteractionNotFoundException {
+        List<InteractionNode> list =
+            nameToInteraction.getOrDefault(name, null);
         if (list != null) {
             if (list.size() == 1) {
                 return list.get(0);

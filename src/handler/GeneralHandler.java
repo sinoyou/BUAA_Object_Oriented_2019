@@ -120,8 +120,6 @@ public class GeneralHandler {
             InterfaceNode interfaceNode =
                 nodeNav.getInterfaceNodeById(parentId);
             interfaceNode.addAttribute(umlAttribute);
-        } else if (nodeNav.containsStateMachineNode(parentId)) {
-            printIgnore("Attribute", umlAttribute);
         } else {
             printNotMatch("Attribute", umlAttribute, "class|interface");
         }
@@ -151,7 +149,8 @@ public class GeneralHandler {
                 nodeNav.getInterfaceNodeById(target);
             interfaceNodeSrc.addGenerateFrom(interfaceNodeDst);
         } else {
-            printError("HandleGeneration", "Unknown Generation Type", umlGeneralization);
+            printError("HandleGeneration",
+                "Unknown Generation Type", umlGeneralization);
         }
     }
 
@@ -170,7 +169,8 @@ public class GeneralHandler {
         if (nodeNav.containsInterfaceNode(target)) {
             interfaceNode = nodeNav.getInterfaceNodeById(target);
         } else {
-            printError("HandleRealization", "interface not found", umlInterfaceRealization);
+            printError("HandleRealization",
+                "interface not found", umlInterfaceRealization);
             return;
         }
         ClassNode classNode;
@@ -178,9 +178,8 @@ public class GeneralHandler {
         if (nodeNav.containsClassNode(source)) {
             classNode = nodeNav.getClassNodeById(source);
         } else {
-            System.err.println(String.format("[Handler] Error, class " +
-                "should exist in realization %s", target));
-            printError("HandleRealization", "class not found", umlInterfaceRealization);
+            printError("HandleRealization",
+                "class not found", umlInterfaceRealization);
             return;
         }
         classNode.addRealize(interfaceNode);
@@ -242,7 +241,8 @@ public class GeneralHandler {
     }
 
     private static void handleStateMachine(UmlStateMachine umlStateMachine) {
-        StateMachineNode stateMachineNode = new StateMachineNode(umlStateMachine);
+        StateMachineNode stateMachineNode =
+            new StateMachineNode(umlStateMachine);
         // add to nodeNav
         nodeNav.addOneStateMachine(stateMachineNode);
     }
@@ -293,13 +293,19 @@ public class GeneralHandler {
     }
 
     // System Error Print
-    private static void printNotMatch(String who, UmlElement element, String expect) {
-        String s = String.format("[%s] type %s not referred to %s %s", who, element.getElementType(), expect, element.getId());
+    private static void printNotMatch(String who,
+                                      UmlElement element,
+                                      String expect) {
+        String s = String.format("#%s type %s not referred to %s %s",
+            who, element.getElementType(), expect, element.getId());
         System.err.println(s);
     }
 
-    private static void printError(String who, String message, UmlElement umlElement) {
-        String s = String.format("[%s] %s %s", who, message, umlElement.getId());
+    private static void printError(String who,
+                                   String message,
+                                   UmlElement umlElement) {
+        String s = String.format("[%s] %s %s",
+            who, message, umlElement.getId());
         System.err.println(s);
     }
 

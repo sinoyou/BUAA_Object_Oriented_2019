@@ -1,6 +1,5 @@
 package compoent.model;
 
-
 import com.oocourse.uml2.models.common.Direction;
 import com.oocourse.uml2.models.elements.UmlOperation;
 import com.oocourse.uml2.models.elements.UmlParameter;

@@ -1,6 +1,5 @@
 package compoent.model;
 
-
 import com.oocourse.uml2.models.elements.UmlClass;
 
 import java.util.ArrayList;

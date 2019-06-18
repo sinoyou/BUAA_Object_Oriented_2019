@@ -48,18 +48,22 @@ public class Tool {
                 list.add(classIt.next());
             }
             // implemented interfaces
-            Iterator<InterfaceNode> interfaceIt = ((ClassNode) node).getSelfImplementInterface();
+            Iterator<InterfaceNode> interfaceIt =
+                ((ClassNode) node).getSelfImplementInterface();
             while (interfaceIt.hasNext()) {
                 list.add(interfaceIt.next());
             }
         } else if (node instanceof InterfaceNode) {
-            Iterator<InterfaceNode> interfaceIt = ((InterfaceNode) node).getGenerateFrom();
+            Iterator<InterfaceNode> interfaceIt =
+                ((InterfaceNode) node).getGenerateFrom();
             // generation interfaces
             while (interfaceIt.hasNext()) {
                 list.add(interfaceIt.next());
             }
         } else {
-            System.err.println(String.format("[uml008]:Wrong type when getting generation or implements %s", node.getKernelInstance().getName()));
+            System.err.println(String.format(
+                "[uml008]:Wrong type when getting generation or implements %s",
+                node.getKernelInstance().getName()));
         }
 
         return list.iterator();

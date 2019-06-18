@@ -6,7 +6,6 @@ import com.oocourse.uml2.models.elements.UmlElement;
 import com.oocourse.uml2.models.elements.UmlInteraction;
 import com.oocourse.uml2.models.elements.UmlMessage;
 import compoent.NodeModel;
-import compoent.state.StateNode;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -44,20 +43,20 @@ public class InteractionNode implements NodeModel {
     /**
      * Add one life line object to interaction.
      * Caution: pre-require of build name map is that name not null.
+     *
      * @param lifeLineNode life line to be added
      */
     public void addOneLifeline(LifeLineNode lifeLineNode) {
+        String id = lifeLineNode.getKernelInstance().getId();
+        String name = lifeLineNode.getKernelInstance().getName();
         // id add
-        idToLifeline.put(lifeLineNode.getKernelInstance().getId(), lifeLineNode);
+        idToLifeline.put(id, lifeLineNode);
         // name add
-        if (lifeLineNode.getKernelInstance().getName() != null) {
-            if (!nameToLifeline.containsKey(lifeLineNode.getKernelInstance().getName())) {
-                nameToLifeline.put(lifeLineNode.getKernelInstance().getName(),
-                    new ArrayList<>());
-                nameToLifeline.get(lifeLineNode.getKernelInstance().getName()).add(lifeLineNode);
-            } else {
-                nameToLifeline.get(lifeLineNode.getKernelInstance().getName()).add(lifeLineNode);
+        if (name != null) {
+            if (!nameToLifeline.containsKey(name)) {
+                nameToLifeline.put(name, new ArrayList<>());
             }
+            nameToLifeline.get(name).add(lifeLineNode);
         }
     }
 
@@ -69,7 +68,8 @@ public class InteractionNode implements NodeModel {
             LifeLineNode node = idToLifeline.get(targetId);
             node.addIncomingMessage(umlMessage);
         } else {
-            System.err.println(String.format("[Interaction]:Unknown dst of message %s", umlMessage.getId()));
+            System.err.println(String.format("" +
+                "[Interaction]:Unknown dst of message %s", umlMessage.getId()));
         }
     }
 
@@ -82,12 +82,14 @@ public class InteractionNode implements NodeModel {
         return idToLifeline.size();
     }
 
-    public int getIncomingMessageCount(String name) throws LifelineNotFoundException, LifelineDuplicatedException {
+    public int getIncomingMessageCount(String name)
+        throws LifelineNotFoundException, LifelineDuplicatedException {
         List<LifeLineNode> list = nameToLifeline.getOrDefault(name, null);
+        String interactionName = kernelInstance.getName();
         if (list == null) {
-            throw new LifelineNotFoundException(kernelInstance.getName(), name);
+            throw new LifelineNotFoundException(interactionName, name);
         } else if (list.size() > 1) {
-            throw new LifelineDuplicatedException(kernelInstance.getName(), name);
+            throw new LifelineDuplicatedException(interactionName, name);
         } else {
             return list.get(0).getIncomingMessageCount();
         }

@@ -45,7 +45,7 @@ public class MyUmlGeneralInteraction implements UmlGeneralInteraction {
     private IdToUmlElement idMap = IdToUmlElement.getInstance();
     private NodeNavigator nodeNav = NodeNavigator.getInstance();
 
-    public MyUmlGeneralInteraction(UmlElement[] elements) throws PreCheckRuleException {
+    public MyUmlGeneralInteraction(UmlElement[] elements) {
 
         // Step 1: Transform elements array to arrayList
         ArrayList<UmlElement> elementList = new ArrayList<>();
@@ -226,19 +226,26 @@ public class MyUmlGeneralInteraction implements UmlGeneralInteraction {
     /* >>>>>>>> UML Sequence Query <<<<<<<< */
 
     @Override
-    public int getParticipantCount(String s) throws InteractionNotFoundException, InteractionDuplicatedException {
+    public int getParticipantCount(String s)
+        throws InteractionNotFoundException, InteractionDuplicatedException {
         InteractionNode interactionNode = nodeNav.getInteractionNodeByName(s);
         return interactionNode.getParticipantCount();
     }
 
     @Override
-    public int getMessageCount(String s) throws InteractionNotFoundException, InteractionDuplicatedException {
+    public int getMessageCount(String s)
+        throws InteractionNotFoundException, InteractionDuplicatedException {
         InteractionNode interactionNode = nodeNav.getInteractionNodeByName(s);
         return interactionNode.getMessageCount();
     }
 
     @Override
-    public int getIncomingMessageCount(String s, String s1) throws InteractionNotFoundException, InteractionDuplicatedException, LifelineNotFoundException, LifelineDuplicatedException {
+    public int getIncomingMessageCount(String s, String s1)
+        throws InteractionNotFoundException,
+        InteractionDuplicatedException,
+        LifelineNotFoundException,
+        LifelineDuplicatedException {
+
         InteractionNode interactionNode = nodeNav.getInteractionNodeByName(s);
         return interactionNode.getIncomingMessageCount(s1);
     }
@@ -246,20 +253,32 @@ public class MyUmlGeneralInteraction implements UmlGeneralInteraction {
     /* >>>>>>>> UML State Query <<<<<<<< */
 
     @Override
-    public int getStateCount(String s) throws StateMachineNotFoundException, StateMachineDuplicatedException {
-        StateMachineNode stateMachineNode = nodeNav.getStateMachineNodeByName(s);
+    public int getStateCount(String s)
+        throws StateMachineNotFoundException, StateMachineDuplicatedException {
+        StateMachineNode stateMachineNode =
+            nodeNav.getStateMachineNodeByName(s);
         return stateMachineNode.getStateCount();
     }
 
     @Override
-    public int getTransitionCount(String s) throws StateMachineNotFoundException, StateMachineDuplicatedException {
-        StateMachineNode stateMachineNode = nodeNav.getStateMachineNodeByName(s);
+    public int getTransitionCount(String s)
+        throws StateMachineNotFoundException, StateMachineDuplicatedException {
+
+        StateMachineNode stateMachineNode =
+            nodeNav.getStateMachineNodeByName(s);
         return stateMachineNode.getTransitionCount();
     }
 
     @Override
-    public int getSubsequentStateCount(String s, String s1) throws StateMachineNotFoundException, StateMachineDuplicatedException, StateNotFoundException, StateDuplicatedException {
-        StateMachineNode stateMachineNode = nodeNav.getStateMachineNodeByName(s);
+    public int getSubsequentStateCount(String s, String s1)
+        throws StateMachineNotFoundException,
+        StateMachineDuplicatedException,
+        StateNotFoundException,
+        StateDuplicatedException {
+
+        StateMachineNode stateMachineNode =
+            nodeNav.getStateMachineNodeByName(s);
+
         return stateMachineNode.getSubsequentStateCount(s1);
     }
 

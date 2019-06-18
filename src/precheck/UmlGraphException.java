@@ -44,7 +44,9 @@ public abstract class UmlGraphException {
             } else if (element instanceof UmlInterface) {
                 set.add((UmlInterface) element);
             } else {
-                System.err.println(String.format("[uml008/9]:Wrong type when adding %s", element.getId()));
+                System.err.println(
+                    String.format("[uml008/9]:Wrong type when adding %s",
+                        element.getId()));
             }
         }
         return set;

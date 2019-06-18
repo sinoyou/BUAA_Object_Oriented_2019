@@ -53,15 +53,16 @@ public class RegionNode implements NodeModel {
      * @param stateNode node to be added to region.
      */
     public void addOneState(StateNode stateNode) {
+        String name = stateNode.getKernelInstance().getName();
         // id to state node
         idToState.put(stateNode.getKernelInstance().getId(), stateNode);
         // name to state node
-        if (stateNode.getKernelInstance().getName() != null) {
-            if (!nameToState.containsKey(stateNode.getKernelInstance().getName())) {
-                nameToState.put(stateNode.getKernelInstance().getName(),
+        if (name != null) {
+            if (!nameToState.containsKey(name)) {
+                nameToState.put(name,
                     new ArrayList<>());
             }
-            nameToState.get(stateNode.getKernelInstance().getName()).add(stateNode);
+            nameToState.get(name).add(stateNode);
         }
     }
 
@@ -69,11 +70,14 @@ public class RegionNode implements NodeModel {
         transitionList.add(umlTransition);
         String sourceId = umlTransition.getSource();
         String targetId = umlTransition.getTarget();
-        if (idToState.containsKey(sourceId) && idToState.containsKey(targetId)) {
+        if (idToState.containsKey(sourceId)
+            && idToState.containsKey(targetId)) {
             idToState.get(sourceId).addOneDirectSubState(
                 idToState.get(targetId));
         } else {
-            System.err.println(String.format("[Region]:Unknown src | dst of transition %s", umlTransition.getId()));
+            System.err.println(String.format(
+                "[Region]:Unknown src | dst of transition %s",
+                umlTransition.getId()));
         }
     }
 
@@ -86,14 +90,16 @@ public class RegionNode implements NodeModel {
         return transitionList.size();
     }
 
-    public int getSubStateCount(String name) throws StateDuplicatedException, StateNotFoundException {
+    public int getSubStateCount(String name)
+        throws StateDuplicatedException, StateNotFoundException {
         List<StateNode> list = nameToState.getOrDefault(name, null);
         StateNode srcNode;
         if (list != null) {
             if (list.size() == 1) {
                 srcNode = list.get(0);
             } else {
-                throw new StateDuplicatedException(kernelInstance.getName(), name);
+                throw new StateDuplicatedException(
+                    kernelInstance.getName(), name);
             }
         } else {
             throw new StateNotFoundException(kernelInstance.getName(), name);
@@ -133,7 +139,9 @@ public class RegionNode implements NodeModel {
             } else if (node.getKernelInstance() instanceof UmlPseudostate) {
                 pseudoSize++;
             } else {
-                System.err.println(String.format("[duplicatedStateDecrease] Unexpected Type %s", node.getKernelInstance().getId()));
+                System.err.println(String.format(
+                    "[duplicatedStateDecrease] Unexpected Type %s",
+                    node.getKernelInstance().getId()));
             }
         }
         if (finalSize > 0) {

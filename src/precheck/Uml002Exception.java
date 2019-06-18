@@ -29,11 +29,14 @@ public class Uml002Exception {
             HashMap<String, Integer> map = new HashMap<>();
 
             // step 1: loop over for all opposite association end first.
-            Iterator<UmlAssociationEnd> endIterator = node.getSelfAssociationEnds();
+            Iterator<UmlAssociationEnd> endIterator =
+                node.getSelfAssociationEnds();
             while (endIterator.hasNext()) {
-                UmlAssociationEnd opEnd = idMap.getOppositeEndByEnd(endIterator.next());
+                UmlAssociationEnd opEnd =
+                    idMap.getOppositeEndByEnd(endIterator.next());
                 if (opEnd.getName() != null) {
-                    Integer count = map.getOrDefault(opEnd.getName(), 0);
+                    Integer count =
+                        map.getOrDefault(opEnd.getName(), 0);
                     map.put(opEnd.getName(), count + 1);
                 }
             }
@@ -51,7 +54,8 @@ public class Uml002Exception {
             // check map for error 002 in the class
             for (Map.Entry<String, Integer> entry : map.entrySet()) {
                 if (entry.getValue() > 1) {
-                    set.add(new AttributeClassInformation(entry.getKey(), node.getKernelInstance().getName()));
+                    set.add(new AttributeClassInformation(entry.getKey(),
+                        node.getKernelInstance().getName()));
                 }
             }
         }

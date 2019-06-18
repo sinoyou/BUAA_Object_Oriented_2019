@@ -53,7 +53,8 @@ public class StateMachineNode implements NodeModel {
      * @throws StateDuplicatedException multiple states shared same name
      * @throws StateNotFoundException no state with name given
      */
-    public int getSubsequentStateCount(String name) throws StateDuplicatedException, StateNotFoundException {
+    public int getSubsequentStateCount(String name)
+        throws StateDuplicatedException, StateNotFoundException {
         try {
             return regionNode.getSubStateCount(name);
         } catch (StateDuplicatedException e1) {

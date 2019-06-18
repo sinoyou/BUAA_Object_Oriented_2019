@@ -149,7 +149,8 @@ public abstract class ClassInterfaceModel implements NodeModel {
             UmlAssociationEnd oppositeEnd =
                 (UmlAssociationEnd) idMap.getUmlElementById(oppositeEndId);
             */
-            UmlAssociationEnd oppositeEnd = idMap.getOppositeEndByEnd(umlAssociationEnd);
+            UmlAssociationEnd oppositeEnd =
+                idMap.getOppositeEndByEnd(umlAssociationEnd);
             String oppositeElementId = oppositeEnd.getReference();
 
             // Check element's type and record
