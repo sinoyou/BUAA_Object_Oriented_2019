@@ -5,6 +5,7 @@ import com.oocourse.uml2.models.elements.UmlLifeline;
 import com.oocourse.uml2.models.elements.UmlMessage;
 import compoent.NodeModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class LifeLineNode implements NodeModel {
@@ -16,6 +17,7 @@ public class LifeLineNode implements NodeModel {
             System.err.println("[Lifeline]:null");
         } else if (umlElement instanceof UmlLifeline) {
             kernelInstance = umlElement;
+            incomingMessage = new ArrayList<>();
         } else {
             System.err.println(String.format("[Lifeline]:Wrong " +
                     "Type of Kernel UML Element %s %s",

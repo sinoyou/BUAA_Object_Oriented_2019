@@ -48,7 +48,7 @@ public class InteractionNode implements NodeModel {
      */
     public void addOneLifeline(LifeLineNode lifeLineNode) {
         // id add
-        idToLifeline.put(lifeLineNode.getKernelInstance().getName(), lifeLineNode);
+        idToLifeline.put(lifeLineNode.getKernelInstance().getId(), lifeLineNode);
         // name add
         if (lifeLineNode.getKernelInstance().getName() != null) {
             if (!nameToLifeline.containsKey(lifeLineNode.getKernelInstance().getName())) {
@@ -83,7 +83,7 @@ public class InteractionNode implements NodeModel {
     }
 
     public int getIncomingMessageCount(String name) throws LifelineNotFoundException, LifelineDuplicatedException {
-        List<LifeLineNode> list = nameToLifeline.getOrDefault(kernelInstance.getName(), null);
+        List<LifeLineNode> list = nameToLifeline.getOrDefault(name, null);
         if (list == null) {
             throw new LifelineNotFoundException(kernelInstance.getName(), name);
         } else if (list.size() > 1) {
