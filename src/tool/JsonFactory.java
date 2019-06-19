@@ -7,6 +7,7 @@ import java.util.HashMap;
  */
 public class JsonFactory {
 
+    /* >>>>>>>> MODEL <<<<<<<< */
     public static Object produceClass(
         String id,
         String name,
@@ -135,6 +136,179 @@ public class JsonFactory {
         writeAbstract(map, id, name, parent);
         writeVisibility(map, visibility);
         map.put("type", type);
+        return map;
+    }
+
+    /* >>>>>>>> State Machine <<<<<<<< */
+    public static Object produceEvent(
+        String id,
+        String name,
+        String parent,
+        String visibility,
+        String value,
+        String expression
+    ) {
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("_type", "UMLEvent");
+        writeAbstract(map, id, name, parent);
+        writeVisibility(map, visibility);
+        map.put("value", value);
+        map.put("expression", expression);
+        return map;
+    }
+
+    public static Object produceFinalState(
+        String id,
+        String name,
+        String parent,
+        String visibility
+    ) {
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("_type", "UMLFinalState");
+        writeAbstract(map, id, name, parent);
+        writeVisibility(map, visibility);
+        return map;
+    }
+
+    public static Object producePseudostate(
+        String id,
+        String name,
+        String parent,
+        String visibility
+    ) {
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("_type", "UMLPseudoState");
+        writeAbstract(map, id, name, parent);
+        writeVisibility(map, visibility);
+        return map;
+    }
+
+    public static Object produceRegion(
+        String id,
+        String name,
+        String parent,
+        String visibility
+    ) {
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("_type", "UMLRegion");
+        writeAbstract(map, id, name, parent);
+        writeVisibility(map, visibility);
+        return map;
+    }
+
+    public static Object produceState(
+        String id,
+        String name,
+        String parent,
+        String visibility
+    ) {
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("_type", "UMLState");
+        writeAbstract(map, id, name, parent);
+        writeVisibility(map, visibility);
+        return map;
+    }
+
+    public static Object produceStateMachine(
+        String id,
+        String name,
+        String parent
+    ) {
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("_type", "UMLStateMachine");
+        writeAbstract(map, id, name, parent);
+        return map;
+    }
+
+    public static Object produceTransition(
+        String id,
+        String name,
+        String parent,
+        String visibility,
+        String source,
+        String target,
+        String guard
+    ) {
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("_type", "UMLTransition");
+        writeAbstract(map, id, name, parent);
+        writeVisibility(map, visibility);
+        map.put("source", source);
+        map.put("target", target);
+        map.put("guard", guard);
+        return map;
+    }
+
+    /* >>>>>>>> Collaboration <<<<<<<<*/
+
+    public static Object produceEndPoint(
+        String id,
+        String name,
+        String parent,
+        String visibility
+    ) {
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("_type", "UMLEndPoint");
+        writeAbstract(map, id, name, parent);
+        writeVisibility(map, visibility);
+        return map;
+    }
+
+    public static Object produceInteraction(
+        String id,
+        String name,
+        String parent,
+        String visibility
+    ) {
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("_type", "UMLInteraction");
+        writeAbstract(map, id, name, parent);
+        writeVisibility(map, visibility);
+        return map;
+    }
+
+    public static Object produceLifeLine(
+        String id,
+        String name,
+        String parent,
+        String visibility,
+        String represent,
+        String isMultiInstance
+    ) {
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("_type", "UMLLifeline");
+        writeAbstract(map, id, name, parent);
+        writeVisibility(map, visibility);
+        if (represent != null) {
+            map.put("represent", represent);
+        } else {
+            map.put("represent", "0");
+        }
+        if (isMultiInstance != null) {
+            map.put("isMultiInstance", isMultiInstance);
+
+        }
+        return map;
+    }
+
+    public static Object produceMessage(
+        String id,
+        String name,
+        String parent,
+        String visibility,
+        String source,
+        String target,
+        String messageSort
+    ) {
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("_type", "UMLEndPoint");
+        writeAbstract(map, id, name, parent);
+        writeVisibility(map, visibility);
+        map.put("source", source);
+        map.put("target", target);
+        if (messageSort != null) {
+            map.put("messageSort", messageSort);
+        }
         return map;
     }
 

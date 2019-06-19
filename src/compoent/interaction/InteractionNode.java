@@ -69,7 +69,7 @@ public class InteractionNode implements NodeModel {
             node.addIncomingMessage(umlMessage);
         } else {
             System.err.println(String.format("" +
-                "[Interaction]:Unknown dst of message %s", umlMessage.getId()));
+                "#Interaction:Unknown dst of message %s", umlMessage.getId()));
         }
     }
 

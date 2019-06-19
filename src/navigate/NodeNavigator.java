@@ -243,6 +243,6 @@ public class NodeNavigator {
         nameToStateMachine.clear();
         idToRegion.clear();
         idToInteraction.clear();
-        nameToStateMachine.clear();
+        nameToInteraction.clear();
     }
 }
