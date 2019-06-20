@@ -45,6 +45,12 @@ public class MyUmlGeneralInteraction implements UmlGeneralInteraction {
     private IdToUmlElement idMap = IdToUmlElement.getInstance();
     private NodeNavigator nodeNav = NodeNavigator.getInstance();
 
+    private static String mode = "7";
+
+    public static void setMode(String i) {
+        mode = i;
+    }
+
     public MyUmlGeneralInteraction(UmlElement[] elements) {
 
         // Step 1: Transform elements array to arrayList
@@ -286,9 +292,19 @@ public class MyUmlGeneralInteraction implements UmlGeneralInteraction {
 
     @Override
     public void checkForAllRules() throws PreCheckRuleException {
-        checkForUml002();
-        checkForUml008();
-        checkForUml009();
+        int modeInt = Integer.valueOf(mode);
+        int en9 = modeInt & 1;
+        int en8 = modeInt & 2;
+        int en2 = modeInt & 4;
+        if (en2 > 0) {
+            checkForUml002();
+        }
+        if (en8 > 0) {
+            checkForUml008();
+        }
+        if (en9 > 0) {
+            checkForUml009();
+        }
     }
 
     @Override

@@ -58,10 +58,16 @@ public class AddElementHandler {
             } else if (element instanceof UmlStateMachine) {
                 it.remove();
                 GeneralHandler.handleElement(element);
-            } else if (element instanceof UmlRegion) {
+            } else if (element instanceof UmlInteraction) {
                 it.remove();
                 GeneralHandler.handleElement(element);
-            } else if (element instanceof UmlInteraction) {
+            }
+        }
+
+        it = elementList.iterator();
+        while (it.hasNext()) {
+            UmlElement element = it.next();
+            if (element instanceof UmlRegion) {
                 it.remove();
                 GeneralHandler.handleElement(element);
             }
