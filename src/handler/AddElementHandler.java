@@ -40,7 +40,7 @@ public class AddElementHandler {
      * 1. Class Node
      * 2. Interface Node
      * 3. State Machine Node
-     * 4. Region Node (must follow parent state machine) // todo
+     * 4. Region Node (must follow parent state machine)
      * 5. Interaction Node
      *
      * @param elementList elements remains to be proceeded.

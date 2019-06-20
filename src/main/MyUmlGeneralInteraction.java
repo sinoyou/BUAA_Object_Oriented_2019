@@ -62,7 +62,6 @@ public class MyUmlGeneralInteraction implements UmlGeneralInteraction {
         }
 
         // Step 2: Build Inner Structure
-        // todo sort by type
         AddElementHandler.addHandler(elementList);
 
         // Step 3: Pre check
