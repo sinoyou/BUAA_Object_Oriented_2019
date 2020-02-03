@@ -1,0 +1,49 @@
+卷 本地磁盘 的文件夹 PATH 列表
+卷序列号为 DC7B-5EAD
+H:.
+│  tree.txt
+│  
+├─compoent
+│  │  NodeModel.java
+│  │  
+│  ├─interaction
+│  │      InteractionNode.java
+│  │      LifeLineNode.java
+│  │      
+│  ├─model
+│  │      ClassInterfaceModel.java
+│  │      ClassNode.java
+│  │      InterfaceNode.java
+│  │      OperationNode.java
+│  │      
+│  └─state
+│          RegionNode.java
+│          StateMachineNode.java
+│          StateNode.java
+│          
+├─handler
+│      AddElementHandler.java
+│      GeneralHandler.java
+│      
+├─main
+│      Main.java
+│      MyUmlGeneralInteraction.java
+│      
+├─META-INF
+│      MANIFEST.MF
+│      
+├─navigate
+│      IdToUmlElement.java
+│      NodeNavigator.java
+│      
+├─precheck
+│      Tool.java
+│      Uml002Exception.java
+│      Uml008Exception.java
+│      Uml009Exception.java
+│      UmlGraphException.java
+│      
+└─tool
+        JsonFactory.java
+        VersionCache.java
+        

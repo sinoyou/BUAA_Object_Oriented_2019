@@ -3,10 +3,11 @@ package compoent.model;
 import com.oocourse.uml2.models.common.Direction;
 import com.oocourse.uml2.models.elements.UmlOperation;
 import com.oocourse.uml2.models.elements.UmlParameter;
+import compoent.NodeModel;
 
 import java.util.ArrayList;
 
-public class OperationNode {
+public class OperationNode implements NodeModel {
     private ArrayList<UmlParameter> parameterList;
     private UmlOperation kernelInstance;
     private Boolean hasReturn;
